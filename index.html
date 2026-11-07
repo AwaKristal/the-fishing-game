@@ -59,7 +59,7 @@
 
     .admin-corner { display: none; }
 
-    /* Contenedor Principal en el Centro */
+    /* Contenedor Central */
     .main-container {
       display: flex;
       flex-direction: column;
@@ -67,7 +67,7 @@
       justify-content: center;
       flex-grow: 1;
       height: 100vh;
-      gap: 30px;
+      gap: 35px;
     }
 
     .title-box {
@@ -90,60 +90,50 @@
     .title-fishing { color: #3498db; }
     .title-game { color: #e74c3c; }
 
-    .fish-logo-svg {
-      width: 75px;
-      height: 75px;
+    /* Logo exacto que pasaste */
+    .fish-logo-img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
       filter: drop-shadow(2px 2px 0px #000);
     }
 
-    /* Botones bajo el logo (con sus iconos afuera, arriba o al lado del botón) */
+    /* Menú Central con tus Imágenes como Botones */
     .center-menu {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
+      gap: 20px;
     }
 
     .menu-row {
       display: flex;
-      gap: 20px;
+      gap: 25px;
       align-items: center;
       justify-content: center;
     }
 
-    .menu-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .menu-item img {
-      width: 36px;
-      height: 36px;
-      object-fit: contain;
-    }
-
-    /* Botones limpios (SIN IMÁGENES DENTRO) */
-    .btn {
-      background: var(--accent-color);
-      color: white;
-      border: 2px solid #fff;
-      padding: 10px 24px;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: bold;
+    .img-btn {
+      background: none;
+      border: none;
       cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      padding: 0;
+      transition: transform 0.2s ease, filter 0.2s ease;
     }
 
-    .btn:hover {
-      background: var(--btn-hover);
-      transform: translateY(-3px);
+    .img-btn:hover {
+      transform: scale(1.08);
+      filter: brightness(1.2);
     }
 
-    /* Esquinas Absolutas (Account a la izq, News a la der) */
+    .img-btn img {
+      width: 140px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+    }
+
+    /* Esquinas Absolutas */
     .corner-bottom-left {
       position: absolute;
       bottom: 25px;
@@ -162,23 +152,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
       z-index: 10;
     }
 
-    .btn-news {
+    .btn-news-img {
+      width: 70px !important;
+      height: 70px !important;
       border-radius: 50%;
-      width: 65px;
-      height: 65px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn-news img {
-      width: 32px;
-      height: 32px;
     }
 
     .user-profile-badge {
@@ -269,6 +249,19 @@
       background: var(--btn-hover);
     }
 
+    .modal-action-btn {
+      background: var(--accent-color);
+      color: white;
+      border: 2px solid #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .modal-action-btn:hover { background: var(--btn-hover); }
+
     #toast-container {
       position: fixed;
       bottom: 20px; right: 20px;
@@ -293,11 +286,10 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Responsive móviles */
     @media (max-width: 768px) {
       body { overflow: auto; }
       .title-box h1 { font-size: 2.2rem; }
-      .fish-logo-svg { width: 50px; height: 50px; }
+      .fish-logo-img { width: 50px; height: 50px; }
       .corner-bottom-left, .corner-bottom-right {
         position: relative;
         bottom: auto; left: auto; right: auto;
@@ -306,9 +298,6 @@
         margin-top: 10px;
       }
       .menu-row { flex-direction: column; width: 100%; }
-      .menu-item { width: 100%; }
-      .btn { width: 100%; text-align: center; }
-      .btn-news { border-radius: 12px; width: 100%; height: auto; padding: 10px; }
     }
   </style>
 </head>
@@ -316,25 +305,26 @@
 
   <header>
     <div id="admin-panel-btn" class="admin-corner">
-      <button class="btn" onclick="openModal('modal-admin')">⚙️ Admin Panel</button>
+      <button class="modal-action-btn" onclick="openModal('modal-admin')">⚙️ Admin Panel</button>
     </div>
     <div class="version-tag">v.1.0.0.0</div>
   </header>
 
-  <!-- ESQUINA INFERIOR IZQUIERDA: Account y Logout -->
+  <!-- ESQUINA INFERIOR IZQUIERDA: Account / Logout -->
   <div class="corner-bottom-left">
     <div id="user-badge" class="user-profile-badge" onclick="openModal('modal-profile')">
       <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar">
       <span id="user-display-name">Username</span>
     </div>
-    <div class="menu-item" id="account-container">
-      <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account Icon">
-      <button id="btn-acc" class="btn" onclick="openModal('modal-auth')">Account</button>
+    <div id="account-container">
+      <button class="img-btn" onclick="openModal('modal-auth')">
+        <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account">
+      </button>
     </div>
-    <button id="btn-logout" class="btn" style="display:none;" onclick="logout()">🚪 Log out</button>
+    <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto;" onclick="logout()">🚪 Log out</button>
   </div>
 
-  <!-- CENTRO: Título y Botones Play, Achievements, Shop justo abajo -->
+  <!-- CENTRO: Título, Logo y Botones de Imagen (Play, Achievements, Shop) -->
   <main class="main-container">
     <div class="title-box">
       <h1>
@@ -342,39 +332,31 @@
         <span class="title-fishing">Fishing</span> 
         <span class="title-game">Game</span>
       </h1>
-      <svg class="fish-logo-svg" viewBox="0 0 100 100" fill="#3498db">
-        <path d="M20 50 C40 20, 80 20, 80 50 C80 80, 40 80, 20 50 Z"/>
-        <circle cx="65" cy="40" r="5" fill="#ffffff"/>
-        <path d="M20 50 L5 30 L5 70 Z"/>
-      </svg>
+      <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="Logo" class="fish-logo-img">
     </div>
 
     <div class="center-menu">
       <div class="menu-row">
-        <div class="menu-item">
-          <img src="https://i.postimg.cc/d36Z9BQ7/play.png" alt="Play Icon">
-          <button class="btn" onclick="startGame()">Play</button>
-        </div>
-        <div class="menu-item">
-          <img src="https://i.postimg.cc/rsjR9JyD/achievements.png" alt="Achievements Icon">
-          <button class="btn" onclick="openModal('modal-achievements')">Achievements</button>
-        </div>
+        <button class="img-btn" onclick="startGame()">
+          <img src="https://i.postimg.cc/d36Z9BQ7/play.png" alt="Play">
+        </button>
+        <button class="img-btn" onclick="openModal('modal-achievements')">
+          <img src="https://i.postimg.cc/rsjR9JyD/achievements.png" alt="Achievements">
+        </button>
       </div>
       <div class="menu-row">
-        <div class="menu-item">
-          <img src="https://i.postimg.cc/2yGLxwj8/shop.png" alt="Shop Icon">
-          <button class="btn" onclick="openModal('modal-shop')">Shop</button>
-        </div>
+        <button class="img-btn" onclick="openModal('modal-shop')">
+          <img src="https://i.postimg.cc/2yGLxwj8/shop.png" alt="Shop">
+        </button>
       </div>
     </div>
   </main>
 
   <!-- ESQUINA INFERIOR DERECHA: News -->
   <div class="corner-bottom-right">
-    <div class="menu-item">
-      <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News Icon">
-      <button class="btn btn-news" onclick="openModal('modal-news')" title="News"></button>
-    </div>
+    <button class="img-btn" onclick="openModal('modal-news')">
+      <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
+    </button>
   </div>
 
   <!-- MODALS -->
@@ -398,7 +380,7 @@
         <div class="form-group">
           <div class="g-recaptcha" data-sitekey="6Lex8BMuAAAAAPx6P5c7RwFUNi_9dpZPX0hw_Il9"></div>
         </div>
-        <button type="submit" class="btn" style="width:100%;">Sign In</button>
+        <button type="submit" class="modal-action-btn">Sign In</button>
         <p style="font-size:0.85rem; text-align:center; margin-top:10px; cursor:pointer; color:#3498db;" onclick="handleForgotPassword()">Forgot password?</p>
         <p style="font-size:0.85rem; text-align:center; margin-top:5px; cursor:pointer; color:#2ecc71;" onclick="handleResendVerification()">Resend verification link</p>
       </form>
@@ -423,7 +405,7 @@
         <div class="form-group">
           <div class="g-recaptcha" data-sitekey="6Lex8BMuAAAAAPx6P5c7RwFUNi_9dpZPX0hw_Il9"></div>
         </div>
-        <button type="submit" class="btn" style="width:100%;">Create Account</button>
+        <button type="submit" class="modal-action-btn">Create Account</button>
       </form>
     </div>
   </div>
@@ -579,17 +561,23 @@
       }
     }
 
+    // ARREGLADO: Ahora pide el correo directamente o usa el usuario actual para reenviar la verificación sin fallos
     async function handleResendVerification() {
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          await user.sendEmailVerification();
-          showToast("📧 Verification link resent to your email.");
-        } catch (err) {
-          showToast("❌ Error sending email: " + err.message);
+      const emailInput = document.getElementById('login-email').value;
+      try {
+        let userToVerify = auth.currentUser;
+        if (!userToVerify && emailInput) {
+          showToast("⚠️ Please sign in with your credentials first to resend the verification link.");
+          return;
         }
-      } else {
-        showToast("⚠️ Please sign in first or enter your details to resend verification.");
+        if (userToVerify) {
+          await userToVerify.sendEmailVerification();
+          showToast("📧 Verification link resent to your email.");
+        } else {
+          showToast("⚠️ Please enter your email and log in first.");
+        }
+      } catch (err) {
+        showToast("❌ Error sending email: " + err.message);
       }
     }
 
