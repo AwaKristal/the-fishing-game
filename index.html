@@ -16,12 +16,12 @@
 
   <style>
     :root {
-      --bg-color: #1a1a2e;
+      --bg-color: #111425;
       --panel-bg: #16213e;
       --accent-color: #0f3460;
       --text-color: #ffffff;
       --btn-hover: #e94560;
-      --modal-bg: rgba(0, 0, 0, 0.75);
+      --modal-bg: rgba(0, 0, 0, 0.8);
     }
 
     * { box-sizing: border-box; }
@@ -36,80 +36,136 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      overflow: hidden;
     }
 
     /* Header */
     header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 30px;
+      padding: 20px;
+      z-index: 10;
     }
 
     .version-tag {
       font-size: 1.1rem;
       font-weight: bold;
       background: rgba(255,255,255,0.1);
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 8px;
     }
 
     .admin-corner { display: none; }
 
-    /* Main Content */
+    /* Main Container */
     .main-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       flex-grow: 1;
-      padding: 20px;
+      height: 100vh;
     }
 
     .title-box {
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-wrap: wrap;
       gap: 15px;
-      margin-bottom: 50px;
-      text-align: center;
+      margin-bottom: 40px;
     }
 
     .title-box h1 {
-      font-size: 3.5rem;
+      font-size: 4rem;
       margin: 0;
       text-shadow: 3px 3px 0px #000;
       font-weight: 800;
-      letter-spacing: 1px;
+      display: flex;
+      gap: 12px;
     }
 
-    /* Colores del título */
-    .title-the { color: #f1c40f; }   /* Amarillo */
-    .title-fishing { color: #3498db; } /* Azul */
-    .title-game { color: #e74c3c; }    /* Rojo */
+    .title-the { color: #f1c40f; }
+    .title-fishing { color: #3498db; }
+    .title-game { color: #e74c3c; }
 
-    .fish-logo {
-      width: 80px;
-      height: 80px;
-      filter: drop-shadow(2px 2px 0px #000);
+    .fish-logo-img {
+      width: 75px;
+      height: 75px;
+      object-fit: contain;
     }
 
-    /* Bottom Layout: Esquina a Esquina */
+    /* Layout en Esquinas */
     .bottom-layout {
-      width: 100%;
-      max-width: 1200px;
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      padding: 0 30px 30px 30px;
+      padding: 25px;
     }
 
-    .left-controls {
+    .corner-left {
       display: flex;
       flex-direction: column;
+      gap: 10px;
+    }
+
+    .center-controls {
+      display: flex;
       gap: 15px;
-      align-items: flex-start;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 25px;
+    }
+
+    .corner-right {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    /* Botones con Imagen */
+    .btn {
+      background: var(--accent-color);
+      color: white;
+      border: 2px solid #fff;
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .btn img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .btn:hover {
+      background: var(--btn-hover);
+      transform: translateY(-3px);
+    }
+
+    .btn-news {
+      border-radius: 50%;
+      width: 65px;
+      height: 65px;
+      padding: 0;
+      justify-content: center;
+    }
+
+    .btn-news img {
+      width: 32px;
+      height: 32px;
     }
 
     .user-profile-badge {
@@ -118,7 +174,7 @@
       gap: 10px;
       cursor: pointer;
       background: var(--panel-bg);
-      padding: 5px 15px 5px 5px;
+      padding: 6px 16px 6px 6px;
       border-radius: 30px;
       border: 2px solid #fff;
     }
@@ -130,51 +186,14 @@
       object-fit: cover;
     }
 
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      background: var(--accent-color);
-      color: white;
-      border: 2px solid #fff;
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
-
-    .btn:hover {
-      background: var(--btn-hover);
-      transform: translateY(-2px);
-    }
-
-    .btn-news {
-      border-radius: 50%;
-      width: 65px;
-      height: 65px;
-      justify-content: center;
-      padding: 0;
-      font-size: 1.4rem;
-    }
-
-    /* Custom Modals */
+    /* Modales */
     .modal-overlay {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: var(--modal-bg);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(5px);
       z-index: 1000;
       justify-content: center;
       align-items: center;
@@ -189,7 +208,7 @@
       max-width: 450px;
       padding: 25px;
       position: relative;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
     }
 
     .modal-close {
@@ -209,7 +228,7 @@
       gap: 5px;
     }
 
-    .form-group input, .form-group textarea {
+    .form-group input {
       padding: 10px;
       border-radius: 8px;
       border: 1px solid #444;
@@ -237,7 +256,7 @@
       background: var(--btn-hover);
     }
 
-    /* Toast Notifications */
+    /* Notifications Toast */
     #toast-container {
       position: fixed;
       bottom: 20px; right: 20px;
@@ -262,33 +281,29 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Diseño Adaptativo para Celulares (Responsive) */
+    /* UI Responsive Móviles */
     @media (max-width: 768px) {
-      .title-box h1 {
-        font-size: 2.5rem;
-      }
-      .fish-logo {
-        width: 60px;
-        height: 60px;
-      }
+      body { overflow: auto; }
+      .title-box h1 { font-size: 2.2rem; }
+      .fish-logo-img { width: 50px; height: 50px; }
       .bottom-layout {
+        position: relative;
         flex-direction: column;
         align-items: center;
-        gap: 20px;
-        padding: 0 15px 20px 15px;
+        gap: 15px;
+        padding: 20px;
       }
-      .left-controls {
-        width: 100%;
-        align-items: center;
-      }
-      .action-buttons {
+      .center-controls {
+        position: relative;
+        left: 0;
+        transform: none;
+        bottom: 0;
         flex-direction: column;
         width: 100%;
       }
-      .btn {
-        width: 100%;
-        justify-content: center;
-      }
+      .corner-left, .corner-right { width: 100%; align-items: center; }
+      .btn { width: 100%; justify-content: center; }
+      .btn-news { border-radius: 12px; width: 100%; height: auto; padding: 10px; }
     }
   </style>
 </head>
@@ -297,12 +312,12 @@
   <!-- Header -->
   <header>
     <div id="admin-panel-btn" class="admin-corner">
-      <button class="btn" onclick="openModal('modal-admin')">⚙️ Admin Panel</button>
+      <button class="btn" onclick="navigateTo('/#/admin')">⚙️ Admin Panel</button>
     </div>
     <div class="version-tag">v.1.0.0.0</div>
   </header>
 
-  <!-- Main Landing Page -->
+  <!-- Portada Principal -->
   <main class="main-container">
     <div class="title-box">
       <h1>
@@ -310,47 +325,55 @@
         <span class="title-fishing">Fishing</span> 
         <span class="title-game">Game</span>
       </h1>
-      <!-- Pez Azul Estilizado -->
-      <svg class="fish-logo" viewBox="0 0 100 100" fill="#3498db">
-        <path d="M20 50 C40 20, 80 20, 80 50 C80 80, 40 80, 20 50 Z"/>
-        <circle cx="65" cy="40" r="5" fill="#ffffff"/>
-        <path d="M20 50 L5 30 L5 70 Z"/>
-      </svg>
+      <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="Logo Pez" class="fish-logo-img">
     </div>
 
-    <!-- Controls Layout (Esquinas) -->
+    <!-- Layout Esquinas -->
     <div class="bottom-layout">
-      <div class="left-controls">
-        <div id="user-badge" class="user-profile-badge" onclick="openModal('modal-profile')">
+      <!-- Esquina Inferior Izquierda -->
+      <div class="corner-left">
+        <div id="user-badge" class="user-profile-badge" onclick="navigateTo('/#/profile')">
           <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar">
           <span id="user-display-name">Username</span>
         </div>
-
-        <div class="action-buttons">
-          <button id="btn-acc" class="btn" onclick="openModal('modal-auth')">👤 Account</button>
-          <button id="btn-logout" class="btn" style="display:none;" onclick="logout()">🚪 Log out</button>
-          <button class="btn" onclick="startGame()">▶️ Play</button>
-          <button class="btn" onclick="openModal('modal-achievements')">🏆 Achievements</button>
-          <button class="btn" onclick="openModal('modal-shop')">🛒 Shop</button>
-        </div>
+        <button id="btn-acc" class="btn" onclick="navigateTo('/#/account')">
+          <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account"> Account
+        </button>
+        <button id="btn-logout" class="btn" style="display:none;" onclick="logout()">🚪 Log out</button>
       </div>
 
-      <div>
-        <button class="btn btn-news btn-news" onclick="openModal('modal-news')" title="News">📰</button>
+      <!-- Centro -->
+      <div class="center-controls">
+        <button class="btn" onclick="navigateTo('/#/play')">
+          <img src="https://i.postimg.cc/d36Z9BQ7/play.png" alt="Play"> Play
+        </button>
+        <button class="btn" onclick="navigateTo('/#/achievements')">
+          <img src="https://i.postimg.cc/rsjR9JyD/achievements.png" alt="Achievements"> Achievements
+        </button>
+        <button class="btn" onclick="navigateTo('/#/shop')">
+          <img src="https://i.postimg.cc/2yGLxwj2/shop.png" alt="Shop"> Shop
+        </button>
+      </div>
+
+      <!-- Esquina Inferior Derecha -->
+      <div class="corner-right">
+        <button class="btn btn-news" onclick="navigateTo('/#/news')" title="News">
+          <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News">
+        </button>
       </div>
     </div>
   </main>
 
-  <!-- AUTH MODAL -->
+  <!-- MODAL AUTH -->
   <div id="modal-auth" class="modal-overlay">
     <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-auth')">✖</button>
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
       <div class="tab-container">
         <button id="tab-login-btn" class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
         <button id="tab-register-btn" class="tab-btn" onclick="switchAuthTab('register')">Register</button>
       </div>
 
-      <!-- Login Form -->
+      <!-- Login -->
       <form id="form-login" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label>Email Address</label>
@@ -364,10 +387,11 @@
           <div class="g-recaptcha" data-sitekey="6Lex8BMuAAAAAPx6P5c7RwFUNi_9dpZPX0hw_Il9"></div>
         </div>
         <button type="submit" class="btn" style="width:100%; justify-content:center;">Sign In</button>
-        <p style="font-size:0.85rem; text-align:center; margin-top:10px; cursor:pointer; color:#3498db;" onclick="handleForgotPassword()">Forgot your password?</p>
+        <p style="font-size:0.85rem; text-align:center; margin-top:10px; cursor:pointer; color:#3498db;" onclick="handleForgotPassword()">Forgot password?</p>
+        <p style="font-size:0.85rem; text-align:center; margin-top:5px; cursor:pointer; color:#2ecc71;" onclick="handleResendVerification()">Resend verification link</p>
       </form>
 
-      <!-- Register Form -->
+      <!-- Register -->
       <form id="form-register" onsubmit="handleRegister(event)" style="display:none;">
         <div class="form-group">
           <label>Username</label>
@@ -393,19 +417,18 @@
     </div>
   </div>
 
-  <!-- NEWS MODAL -->
+  <!-- OTROS MODALES -->
   <div id="modal-news" class="modal-overlay">
     <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-news')">✖</button>
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>📰 Game News</h2>
       <div id="news-list">Loading news...</div>
     </div>
   </div>
 
-  <!-- PROFILE MODAL -->
   <div id="modal-profile" class="modal-overlay">
     <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-profile')">✖</button>
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>👤 Player Profile</h2>
       <p>💰 Coins: <span id="profile-coins">0</span></p>
       <p>🐟 Fish Caught: <span id="profile-fish-count">0</span></p>
@@ -414,25 +437,22 @@
     </div>
   </div>
 
-  <!-- ACHIEVEMENTS MODAL -->
   <div id="modal-achievements" class="modal-overlay">
     <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-achievements')">✖</button>
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>🏆 Achievements</h2>
       <p>Unlock achievements as you catch rare fish!</p>
     </div>
   </div>
 
-  <!-- SHOP MODAL -->
   <div id="modal-shop" class="modal-overlay">
     <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-shop')">✖</button>
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>🛒 Fishing Shop</h2>
       <p>Upgrade your rods, bait, and tanks here.</p>
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div id="toast-container"></div>
 
   <script>
@@ -452,9 +472,9 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    let ADMIN_UID = ""; // Pásame tu UID cuando lo tengas para activar el botón de Admin
+    let ADMIN_UID = "";
 
-    // 2. Custom Toast Notifications
+    // 2. Sistema de Notificaciones Toast
     function showToast(message) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -464,9 +484,44 @@
       setTimeout(() => toast.remove(), 4000);
     }
 
-    // 3. Modal Controls
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    // 3. Enrutador Hash /#/
+    function navigateTo(path) {
+      window.location.hash = path.replace('/#/', '');
+    }
+
+    function closeAllModals() {
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      if (window.location.hash !== '') history.pushState("", document.title, window.location.pathname + window.location.search);
+    }
+
+    function handleRouting() {
+      const route = window.location.hash.replace('#/', '').replace('#', '');
+      closeAllModals();
+
+      switch(route) {
+        case 'account':
+          document.getElementById('modal-auth').style.display = 'flex';
+          break;
+        case 'news':
+          document.getElementById('modal-news').style.display = 'flex';
+          break;
+        case 'profile':
+          document.getElementById('modal-profile').style.display = 'flex';
+          break;
+        case 'achievements':
+          document.getElementById('modal-achievements').style.display = 'flex';
+          break;
+        case 'shop':
+          document.getElementById('modal-shop').style.display = 'flex';
+          break;
+        case 'play':
+          showToast("🎮 Entering the fishing grounds...");
+          break;
+      }
+    }
+
+    window.addEventListener('hashchange', handleRouting);
+    window.addEventListener('load', handleRouting);
 
     function switchAuthTab(tab) {
       if (tab === 'login') {
@@ -482,18 +537,12 @@
       }
     }
 
-    // 4. reCAPTCHA v2 Verification Handler
-    function getRecaptchaResponse() {
-      return grecaptcha.getResponse();
-    }
+    // 4. Autenticación y Reenvío de Correo
+    function getRecaptchaResponse() { return grecaptcha.getResponse(); }
 
     async function handleLogin(e) {
       e.preventDefault();
-      const captcha = getRecaptchaResponse();
-      if (!captcha) {
-        showToast("⚠️ Please complete the reCAPTCHA verification.");
-        return;
-      }
+      if (!getRecaptchaResponse()) return showToast("⚠️ Please complete the reCAPTCHA.");
 
       const email = document.getElementById('login-email').value;
       const pass = document.getElementById('login-password').value;
@@ -501,7 +550,7 @@
       try {
         await auth.signInWithEmailAndPassword(email, pass);
         showToast("🚀 Welcome back!");
-        closeModal('modal-auth');
+        closeAllModals();
         grecaptcha.reset();
       } catch (err) {
         showToast("❌ Login error: " + err.message);
@@ -510,11 +559,7 @@
 
     async function handleRegister(e) {
       e.preventDefault();
-      const captcha = getRecaptchaResponse();
-      if (!captcha) {
-        showToast("⚠️ Please complete the reCAPTCHA verification.");
-        return;
-      }
+      if (!getRecaptchaResponse()) return showToast("⚠️ Please complete the reCAPTCHA.");
 
       const username = document.getElementById('reg-username').value;
       const email = document.getElementById('reg-email').value;
@@ -522,8 +567,7 @@
       const fileInput = document.getElementById('reg-avatar');
 
       if (fileInput.files.length > 0 && fileInput.files[0].size > 1024 * 1024) {
-        showToast("⚠️ Profile picture must not exceed 1 MB.");
-        return;
+        return showToast("⚠️ Profile picture must not exceed 1 MB.");
       }
 
       try {
@@ -531,7 +575,7 @@
         const user = userCred.user;
 
         await user.sendEmailVerification();
-        showToast("📧 Verification email sent. You have 3 days to verify your account.");
+        showToast("📧 Verification link sent! Check your inbox.");
 
         let photoURL = "";
         if (fileInput.files.length > 0) {
@@ -542,16 +586,11 @@
         }
 
         await user.updateProfile({ displayName: username, photoURL });
-        
         await db.collection('jugadores').doc(user.uid).set({
-          username,
-          email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          coins: 0,
-          fishes: []
+          username, email, coins: 0, fishes: [], createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        closeModal('modal-auth');
+        closeAllModals();
         grecaptcha.reset();
       } catch (err) {
         showToast("❌ Registration error: " + err.message);
@@ -560,15 +599,26 @@
 
     async function handleForgotPassword() {
       const email = document.getElementById('login-email').value;
-      if (!email) {
-        showToast("⚠️ Enter your email address above to reset your password.");
-        return;
-      }
+      if (!email) return showToast("⚠️ Enter your email address above first.");
       try {
         await auth.sendPasswordResetEmail(email);
-        showToast("📬 Password reset email sent. Check your inbox.");
+        showToast("📬 Password reset link sent to your email.");
       } catch (err) {
         showToast("❌ Error: " + err.message);
+      }
+    }
+
+    async function handleResendVerification() {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await user.sendEmailVerification();
+          showToast("📧 Verification link resent to your email.");
+        } catch (err) {
+          showToast("❌ Error sending email: " + err.message);
+        }
+      } else {
+        showToast("⚠️ Please sign in first or enter your details to resend verification.");
       }
     }
 
@@ -595,10 +645,6 @@
     function logout() {
       auth.signOut();
       showToast("Logged out successfully.");
-    }
-
-    function startGame() {
-      showToast("🎮 Entering the fishing grounds...");
     }
   </script>
 </body>
