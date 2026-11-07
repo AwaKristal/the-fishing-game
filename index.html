@@ -66,38 +66,24 @@
       justify-content: center;
       flex-grow: 1;
       height: 100vh;
-      gap: 40px;
+      gap: 30px;
     }
 
     .title-box {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 15px;
     }
 
-    .title-box h1 {
-      font-size: 4rem;
-      margin: 0;
-      text-shadow: 3px 3px 0px #000;
-      font-weight: 800;
-      display: flex;
-      gap: 12px;
-    }
-
-    .title-the { color: #f1c40f; }
-    .title-fishing { color: #3498db; }
-    .title-game { color: #e74c3c; }
-
-    /* Logo nuevo */
+    /* Imagen oficial única y poderosa del logo (sin texto viejo) */
     .fish-logo-img {
-      width: 85px;
-      height: 85px;
+      max-width: 420px;
+      width: 90%;
+      height: auto;
       object-fit: contain;
-      filter: drop-shadow(2px 2px 0px #000);
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.8));
     }
 
-    /* 3 Botones centrales: Shop, Play, Achievements */
     .center-menu {
       display: flex;
       gap: 30px;
@@ -125,7 +111,6 @@
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
-    /* Esquinas Absolutas */
     .corner-bottom-left {
       position: absolute;
       bottom: 25px;
@@ -147,12 +132,12 @@
       z-index: 10;
     }
 
+    /* Botón News con el mismo tamaño grande de los demás (160px) */
     .btn-news-img {
-      width: 95px !important;
-      height: 95px !important;
-      border-radius: 50%;
+      width: 160px !important;
+      height: auto !important;
       object-fit: contain;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7));
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
     .user-profile-badge {
@@ -173,7 +158,6 @@
       object-fit: cover;
     }
 
-    /* Modales y Subpáginas */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -285,8 +269,7 @@
 
     @media (max-width: 768px) {
       body { overflow: auto; }
-      .title-box h1 { font-size: 2.2rem; }
-      .fish-logo-img { width: 50px; height: 50px; }
+      .fish-logo-img { max-width: 250px; }
       .corner-bottom-left, .corner-bottom-right {
         position: relative;
         bottom: auto; left: auto; right: auto;
@@ -296,6 +279,7 @@
       }
       .center-menu { flex-direction: column; width: 100%; }
       .img-btn img { width: 130px; }
+      .btn-news-img { width: 130px !important; }
     }
   </style>
 </head>
@@ -303,52 +287,47 @@
 
   <header>
     <div id="admin-panel-btn" class="admin-corner">
-      <button class="modal-action-btn" onclick="navigateTo('/admin')">⚙️ Admin Panel</button>
+      <button class="modal-action-btn" onclick="openModal('modal-admin')">⚙️ Admin Panel</button>
     </div>
     <div class="version-tag">v.1.0.0.0</div>
   </header>
 
   <!-- ESQUINA INFERIOR IZQUIERDA: Account -->
   <div class="corner-bottom-left">
-    <div id="user-badge" class="user-profile-badge" onclick="navigateTo('/profile')">
+    <div id="user-badge" class="user-profile-badge" onclick="openModal('modal-profile')">
       <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar">
       <span id="user-display-name">Username</span>
     </div>
     <div id="account-container">
-      <button class="img-btn" onclick="navigateTo('/account')">
+      <button class="img-btn" onclick="openModal('modal-account')">
         <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account">
       </button>
     </div>
     <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto;" onclick="logout()">🚪 Log out</button>
   </div>
 
-  <!-- CENTRO: Título, Logo nuevo y los 3 botones en orden (Shop, Play, Achievements) -->
+  <!-- CENTRO: Únicamente la imagen de tu logo oficial y los 3 botones en orden -->
   <main class="main-container">
     <div class="title-box">
-      <h1>
-        <span class="title-the">The</span> 
-        <span class="title-fishing">Fishing</span> 
-        <span class="title-game">Game</span>
-      </h1>
-      <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="Logo" class="fish-logo-img">
+      <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="The Fishing Game Logo" class="fish-logo-img">
     </div>
 
     <div class="center-menu">
-      <button class="img-btn" onclick="navigateTo('/shop')">
+      <button class="img-btn" onclick="openModal('modal-shop')">
         <img src="https://i.postimg.cc/2yGLxwj8/shop.png" alt="Shop">
       </button>
-      <button class="img-btn" onclick="navigateTo('/play')">
+      <button class="img-btn" onclick="startGame()">
         <img src="https://i.postimg.cc/d36Z9BQ7/play.png" alt="Play">
       </button>
-      <button class="img-btn" onclick="navigateTo('/achievements')">
+      <button class="img-btn" onclick="openModal('modal-achievements')">
         <img src="https://i.postimg.cc/rsjR9JyD/achievements.png" alt="Achievements">
       </button>
     </div>
   </main>
 
-  <!-- ESQUINA INFERIOR DERECHA: News grande -->
+  <!-- ESQUINA INFERIOR DERECHA: News grande a tamaño completo -->
   <div class="corner-bottom-right">
-    <button class="img-btn" onclick="navigateTo('/news')">
+    <button class="img-btn" onclick="openModal('modal-news')">
       <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
     </button>
   </div>
@@ -382,7 +361,7 @@
       <form id="form-register" onsubmit="handleRegister(event)" style="display:none;">
         <div class="form-group">
           <label>Username</label>
-          <input type="text" id="reg-username" autocomplete="username" required maxlength="15">
+          <input type="text" id="reg-username" autocomplete="nickname" required maxlength="15">
         </div>
         <div class="form-group">
           <label>Email Address</label>
@@ -408,7 +387,7 @@
     </div>
   </div>
 
-  <!-- MODAL PROFILE (Actualizar biografía y foto) -->
+  <!-- MODAL PROFILE -->
   <div id="modal-profile" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -436,7 +415,7 @@
     </div>
   </div>
 
-  <!-- OTROS MODALES / SUBPÁGINAS -->
+  <!-- OTROS MODALES -->
   <div id="modal-news" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -490,7 +469,6 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage();
 
     let ADMIN_UID = "";
 
@@ -503,37 +481,21 @@
       setTimeout(() => toast.remove(), 4000);
     }
 
-    function navigateTo(path) {
-      window.location.hash = '#/' + path.replace('/', '');
+    function openModal(modalId) {
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.getElementById(modalId).style.display = 'flex';
+      if (modalId === 'modal-profile') {
+        loadProfileData();
+      }
     }
 
     function closeAllModals() {
       document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
-      window.location.hash = '#/';
     }
 
-    async function handleRouting() {
-      const hash = window.location.hash || '#/';
-      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
-
-      if (hash === '#/account') {
-        document.getElementById('modal-account').style.display = 'flex';
-      } else if (hash === '#/news') {
-        document.getElementById('modal-news').style.display = 'flex';
-      } else if (hash === '#/profile') {
-        document.getElementById('modal-profile').style.display = 'flex';
-        await loadProfileData();
-      } else if (hash === '#/achievements') {
-        document.getElementById('modal-achievements').style.display = 'flex';
-      } else if (hash === '#/shop') {
-        document.getElementById('modal-shop').style.display = 'flex';
-      } else if (hash === '#/play') {
-        showToast("🎮 Entering the fishing grounds...");
-      }
+    function startGame() {
+      showToast("🎮 Entering the fishing grounds...");
     }
-
-    window.addEventListener('hashchange', handleRouting);
-    window.addEventListener('load', handleRouting);
 
     function switchAuthTab(tab) {
       if (tab === 'login') {
