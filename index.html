@@ -4,609 +4,611 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Fishing Game</title>
-
-  <!-- Firebase v10.8.0 Compat SDKs -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- SDKs de Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-
-  <!-- Google reCAPTCHA v2 API -->
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <!-- Script de Google reCAPTCHA API -->
+  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 
   <style>
-    :root {
-      --bg-color: #111425;
-      --panel-bg: #16213e;
-      --accent-color: #0f3460;
-      --text-color: #ffffff;
-      --btn-hover: #e94560;
-      --modal-bg: rgba(0, 0, 0, 0.8);
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
-    }
-
-    header {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px;
-      z-index: 10;
-    }
-
-    .version-tag {
-      font-size: 1.1rem;
-      font-weight: bold;
-      background: rgba(255,255,255,0.1);
-      padding: 6px 14px;
-      border-radius: 8px;
-    }
-
-    .admin-corner { display: none; }
-
-    /* Contenedor Central */
-    .main-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-grow: 1;
-      height: 100vh;
-      gap: 35px;
-    }
-
-    .title-box {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-    }
-
-    .title-box h1 {
-      font-size: 4rem;
-      margin: 0;
-      text-shadow: 3px 3px 0px #000;
-      font-weight: 800;
-      display: flex;
-      gap: 12px;
-    }
-
-    .title-the { color: #f1c40f; }
-    .title-fishing { color: #3498db; }
-    .title-game { color: #e74c3c; }
-
-    /* Logo exacto que pasaste */
-    .fish-logo-img {
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-      filter: drop-shadow(2px 2px 0px #000);
-    }
-
-    /* Menú Central con tus Imágenes como Botones */
-    .center-menu {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .menu-row {
-      display: flex;
-      gap: 25px;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .img-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      transition: transform 0.2s ease, filter 0.2s ease;
-    }
-
-    .img-btn:hover {
-      transform: scale(1.08);
-      filter: brightness(1.2);
-    }
-
-    .img-btn img {
-      width: 140px;
-      height: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-    }
-
-    /* Esquinas Absolutas */
-    .corner-bottom-left {
-      position: absolute;
-      bottom: 25px;
-      left: 25px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-      z-index: 10;
-    }
-
-    .corner-bottom-right {
-      position: absolute;
-      bottom: 25px;
-      right: 25px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 10;
-    }
-
-    .btn-news-img {
-      width: 70px !important;
-      height: 70px !important;
-      border-radius: 50%;
-    }
-
-    .user-profile-badge {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      background: var(--panel-bg);
-      padding: 6px 16px 6px 6px;
-      border-radius: 30px;
-      border: 2px solid #fff;
-    }
-
-    .user-profile-badge img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    /* Modales */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: var(--modal-bg);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-    }
-
-    .modal-card {
-      background: var(--panel-bg);
-      border: 2px solid #fff;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 450px;
-      padding: 25px;
-      position: relative;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 15px; right: 15px;
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .form-group input {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #0f172a;
-      color: #fff;
-    }
-
-    .tab-container {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 8px;
-      background: #0f172a;
-      border: 1px solid #fff;
-      color: #fff;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .tab-btn.active {
-      background: var(--btn-hover);
-    }
-
-    .modal-action-btn {
-      background: var(--accent-color);
-      color: white;
-      border: 2px solid #fff;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .modal-action-btn:hover { background: var(--btn-hover); }
-
-    #toast-container {
-      position: fixed;
-      bottom: 20px; right: 20px;
-      z-index: 2000;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .toast {
-      background: var(--panel-bg);
-      color: #fff;
-      border: 2px solid var(--btn-hover);
-      padding: 12px 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      animation: fadeIn 0.3s forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 768px) {
-      body { overflow: auto; }
-      .title-box h1 { font-size: 2.2rem; }
-      .fish-logo-img { width: 50px; height: 50px; }
-      .corner-bottom-left, .corner-bottom-right {
-        position: relative;
-        bottom: auto; left: auto; right: auto;
-        width: 100%;
-        align-items: center;
-        margin-top: 10px;
-      }
-      .menu-row { flex-direction: column; width: 100%; }
+    body { background-color: #0c0f1d; color: #e2e8f0; font-family: system-ui, sans-serif; }
+    .gd-border { border: 2px solid #00f0ff; box-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
+    .gd-btn-green { background: linear-gradient(180deg, #22c55e 0%, #15803d 100%); border-bottom: 4px solid #166534; }
+    .gd-btn-green:hover { background: #22c55e; }
+    .gd-card { background: #161b33; border: 1px solid #2a345e; transition: all 0.2s ease; }
+    .gd-card:hover { border-color: #00f0ff; transform: translateY(-2px); }
+    
+    input[type="file"]::file-selector-button {
+      content: attr(data-browse);
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col relative pb-8">
 
-  <header>
-    <div id="admin-panel-btn" class="admin-corner">
-      <button class="modal-action-btn" onclick="openModal('modal-admin')">⚙️ Admin Panel</button>
+  <!-- NAVBAR -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#/" class="flex items-center gap-2 text-xl font-black text-cyan-400 tracking-wider">
+        <i data-lucide="square"></i> GD LEVEL SHARE
+      </a>
+      <nav class="hidden md:flex items-center gap-6 font-semibold text-sm">
+        <a href="#/" class="hover:text-cyan-400 transition" id="nav-home">Home</a>
+        <a href="#/buscar-codigo" class="hover:text-cyan-400 transition" id="nav-code">Search Code</a>
+        <a href="#/buscar-usuarios" class="hover:text-cyan-400 transition" id="nav-users">Search Users</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button onclick="toggleInfoModal()" class="p-2 rounded bg-slate-800 hover:bg-slate-700 text-cyan-400" title="Information">
+          <i data-lucide="help-circle" class="w-5 h-5"></i>
+        </button>
+        <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-slate-800 text-xs px-2 py-1.5 rounded border border-slate-700 font-semibold cursor-pointer">
+          <option value="en">EN 🇺🇸</option>
+          <option value="es">ES 🇪🇸</option>
+        </select>
+        <div id="auth-nav-container">
+          <a href="#/login" class="px-3 py-1.5 text-xs font-bold rounded bg-cyan-600 hover:bg-cyan-500 text-white" id="btn-login-text">Login</a>
+        </div>
+      </div>
     </div>
-    <div class="version-tag">v.1.0.0.0</div>
+    <div class="flex md:hidden bg-slate-950 border-t border-slate-800 px-4 py-2 justify-around text-xs font-bold">
+      <a href="#/" class="text-cyan-400 hover:text-white" id="nav-home-m">Home</a>
+      <a href="#/buscar-codigo" class="text-cyan-400 hover:text-white" id="nav-code-m">Search Code</a>
+      <a href="#/buscar-usuarios" class="text-cyan-400 hover:text-white" id="nav-users-m">Search Users</a>
+    </div>
   </header>
 
-  <!-- ESQUINA INFERIOR IZQUIERDA: Account / Logout -->
-  <div class="corner-bottom-left">
-    <div id="user-badge" class="user-profile-badge" onclick="openModal('modal-profile')">
-      <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar">
-      <span id="user-display-name">Username</span>
-    </div>
-    <div id="account-container">
-      <button class="img-btn" onclick="openModal('modal-auth')">
-        <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account">
+  <!-- CONTENEDOR DE NOTIFICACIONES FLOTANTES -->
+  <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- CONTENIDO CAMBIANTE -->
+  <main class="flex-grow max-w-6xl w-full mx-auto p-4" id="app-content"></main>
+
+  <!-- INDICADOR DE VERSIÓN FLOTANTE -->
+  <div class="fixed bottom-2 right-3 bg-slate-900/80 backdrop-blur border border-slate-800 px-2.5 py-1 rounded-md text-[10px] font-mono text-cyan-400 z-50 pointer-events-none shadow-lg">
+    VERSION: <span class="text-white font-bold">v1.3.5.2</span>
+  </div>
+
+  <!-- MODAL DE INFORMACIÓN -->
+  <div id="info-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+    <div class="bg-slate-900 border-2 border-cyan-500 rounded-xl p-6 max-w-md w-full shadow-2xl relative">
+      <button onclick="toggleInfoModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-4 text-cyan-400">
+        <i data-lucide="info" class="w-8 h-8"></i>
+        <h3 class="text-xl font-bold" id="info-title">What is this site for?</h3>
+      </div>
+      <p class="text-slate-300 text-sm leading-relaxed mb-3" id="info-desc">
+        This platform is built to share <strong>.gdlvl</strong> level files directly with friends without having to upload them to the official Geometry Dash servers.
+      </p>
+      <div class="bg-red-950/40 border border-red-500/40 p-3 rounded text-xs text-red-300 mb-4" id="info-warning">
+        ⚠️ <strong>Disclaimer:</strong> We are not responsible if another user steals your creation's credits, because <strong>YOU decided to upload and share it here</strong>.
+      </div>
+      <button onclick="toggleInfoModal()" class="w-full py-2 bg-cyan-600 hover:bg-cyan-500 font-bold rounded text-sm text-white" id="info-btn">
+        Got it
       </button>
     </div>
-    <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto;" onclick="logout()">🚪 Log out</button>
   </div>
-
-  <!-- CENTRO: Título, Logo y Botones de Imagen (Play, Achievements, Shop) -->
-  <main class="main-container">
-    <div class="title-box">
-      <h1>
-        <span class="title-the">The</span> 
-        <span class="title-fishing">Fishing</span> 
-        <span class="title-game">Game</span>
-      </h1>
-      <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="Logo" class="fish-logo-img">
-    </div>
-
-    <div class="center-menu">
-      <div class="menu-row">
-        <button class="img-btn" onclick="startGame()">
-          <img src="https://i.postimg.cc/d36Z9BQ7/play.png" alt="Play">
-        </button>
-        <button class="img-btn" onclick="openModal('modal-achievements')">
-          <img src="https://i.postimg.cc/rsjR9JyD/achievements.png" alt="Achievements">
-        </button>
-      </div>
-      <div class="menu-row">
-        <button class="img-btn" onclick="openModal('modal-shop')">
-          <img src="https://i.postimg.cc/2yGLxwj8/shop.png" alt="Shop">
-        </button>
-      </div>
-    </div>
-  </main>
-
-  <!-- ESQUINA INFERIOR DERECHA: News -->
-  <div class="corner-bottom-right">
-    <button class="img-btn" onclick="openModal('modal-news')">
-      <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
-    </button>
-  </div>
-
-  <!-- MODALS -->
-  <div id="modal-auth" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-auth')">✖</button>
-      <div class="tab-container">
-        <button id="tab-login-btn" class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
-        <button id="tab-register-btn" class="tab-btn" onclick="switchAuthTab('register')">Register</button>
-      </div>
-
-      <form id="form-login" onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="login-email" required>
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" required>
-        </div>
-        <div class="form-group">
-          <div class="g-recaptcha" data-sitekey="6Lex8BMuAAAAAPx6P5c7RwFUNi_9dpZPX0hw_Il9"></div>
-        </div>
-        <button type="submit" class="modal-action-btn">Sign In</button>
-        <p style="font-size:0.85rem; text-align:center; margin-top:10px; cursor:pointer; color:#3498db;" onclick="handleForgotPassword()">Forgot password?</p>
-        <p style="font-size:0.85rem; text-align:center; margin-top:5px; cursor:pointer; color:#2ecc71;" onclick="handleResendVerification()">Resend verification link</p>
-      </form>
-
-      <form id="form-register" onsubmit="handleRegister(event)" style="display:none;">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="reg-username" required maxlength="15">
-        </div>
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="reg-email" required>
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="reg-password" required minlength="6">
-        </div>
-        <div class="form-group">
-          <label>Profile Picture (Max 1MB)</label>
-          <input type="file" id="reg-avatar" accept="image/*">
-        </div>
-        <div class="form-group">
-          <div class="g-recaptcha" data-sitekey="6Lex8BMuAAAAAPx6P5c7RwFUNi_9dpZPX0hw_Il9"></div>
-        </div>
-        <button type="submit" class="modal-action-btn">Create Account</button>
-      </form>
-    </div>
-  </div>
-
-  <div id="modal-news" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-news')">✖</button>
-      <h2>📰 Game News</h2>
-      <div id="news-list">Loading news...</div>
-    </div>
-  </div>
-
-  <div id="modal-profile" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-profile')">✖</button>
-      <h2>👤 Player Profile</h2>
-      <p>💰 Coins: <span id="profile-coins">0</span></p>
-      <p>🐟 Fish Caught: <span id="profile-fish-count">0</span></p>
-      <h3>🐠 Public Aquarium</h3>
-      <div id="profile-aquarium">Your aquarium is empty.</div>
-    </div>
-  </div>
-
-  <div id="modal-achievements" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-achievements')">✖</button>
-      <h2>🏆 Achievements</h2>
-      <p>Unlock achievements as you catch rare fish!</p>
-    </div>
-  </div>
-
-  <div id="modal-shop" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeModal('modal-shop')">✖</button>
-      <h2>🛒 Fishing Shop</h2>
-      <p>Upgrade your rods, bait, and tanks here.</p>
-    </div>
-  </div>
-
-  <div id="toast-container"></div>
 
   <script>
+    const RECAPTCHA_SITE_KEY = "6Lex8BMuAAAAAPx6P5c7RwFUNi_9dpZPX0hw_Il9";
+    let recaptchaWidgetId = null;
+
+    function onloadCallback() {
+      renderizarCaptchaSeguro();
+    }
+
+    function renderizarCaptchaSeguro() {
+      const contenedor = document.getElementById('recaptcha-container');
+      if (contenedor && window.grecaptcha && window.grecaptcha.render) {
+        contenedor.innerHTML = "";
+        try {
+          recaptchaWidgetId = grecaptcha.render('recaptcha-container', {
+            'sitekey': RECAPTCHA_SITE_KEY
+          });
+        } catch (e) {
+          console.error("Error al renderizar reCAPTCHA:", e);
+        }
+      }
+    }
+
+    const _k = ["AIzaSyCrKSQuC", "snPoQR4VrVk6ENq5", "vbLcfdaRGk"];
     const firebaseConfig = {
-      apiKey: "AIzaSyAqd4GXj6YKm_7c5TF5mIGPPbo1pk4mKig",
-      authDomain: "the-fishing-game-digitalized.firebaseapp.com",
-      projectId: "the-fishing-game-digitalized",
-      storageBucket: "the-fishing-game-digitalized.firebasestorage.app",
-      messagingSenderId: "543997573488",
-      appId: "1:543997573488:web:5f40d69af320e6d1f977b5",
-      measurementId: "G-54GSL312X2"
+      apiKey: _k.join(''),
+      authDomain: "gd-lvl-share.firebaseapp.com",
+      projectId: "gd-lvl-share",
+      storageBucket: "gd-lvl-share.firebasestorage.app",
+      messagingSenderId: "44995913839",
+      appId: "1:44995913839:web:ab13af88a274355279059a",
+      measurementId: "G-WPNR1G8D9C"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const storage = firebase.storage();
 
-    let ADMIN_UID = "";
-
-    function showToast(message) {
+    function mostrarToast(mensaje, tipo = 'success') {
       const container = document.getElementById('toast-container');
+      if (!container) return;
       const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.innerText = message;
+      const bgColor = tipo === 'success' ? 'bg-slate-900 border-cyan-500 text-cyan-400' : 'bg-red-950 border-red-500 text-red-300';
+      toast.className = `pointer-events-auto border px-4 py-3 rounded-xl shadow-2xl text-xs font-bold flex items-center gap-2 transition transform translate-y-2 opacity-0 ${bgColor}`;
+      toast.innerHTML = `<span>${tipo === 'success' ? '✅' : '❌'}</span> <span>${mensaje}</span>`;
       container.appendChild(toast);
-      setTimeout(() => toast.remove(), 4000);
+      setTimeout(() => { toast.classList.remove('translate-y-2', 'opacity-0'); }, 50);
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
     }
 
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function switchAuthTab(tab) {
-      if (tab === 'login') {
-        document.getElementById('form-login').style.display = 'block';
-        document.getElementById('form-register').style.display = 'none';
-        document.getElementById('tab-login-btn').classList.add('active');
-        document.getElementById('tab-register-btn').classList.remove('active');
-      } else {
-        document.getElementById('form-login').style.display = 'none';
-        document.getElementById('form-register').style.display = 'block';
-        document.getElementById('tab-register-btn').classList.add('active');
-        document.getElementById('tab-login-btn').classList.remove('active');
+    const translations = {
+      en: {
+        home: "Home", code: "Search Code", users: "Search Users", login: "Login", logout: "Log Out",
+        infoTitle: "What is this site for?",
+        infoDesc: "This platform is built to share .gdlvl level files directly with friends without having to upload them to the official Geometry Dash servers.",
+        infoWarning: "⚠️ Disclaimer: We are not responsible if another user steals your creation's credits, because YOU decided to upload and share it here.",
+        infoBtn: "Got it",
+        mainMenu: "Main Menu",
+        recentLevels: "Recent Levels (Public)", popularLevels: "Most Popular Levels", featuredLevels: "Featured Levels",
+        recentDesc: "Explore the latest levels uploaded by the community in real time.",
+        popularDesc: "Discover the most downloaded and rated levels.",
+        featuredDesc: "Handpicked community gems of high quality.",
+        searchByCode: "Enter Unlisted Access Code", unlistedCodePlaceholder: "E.g.: X8K2P9",
+        uploadTitle: "Upload .gdlvl Level", levelName: "Level Name", levelDesc: "Level Description", levelDescPlaceholder: "Write a short description or tips for your level...", visibility: "Initial Visibility",
+        public: "Public (Visible on feed)", unlisted: "Unlisted (Code required)", private: "Private (Only you)",
+        imageLabel: "Image (Max 1 MB)", fileLabel: ".gdlvl File", publishBtn: "Publish Level", cancelText: "Cancel",
+        loginTitle: "Log In", registerTitle: "Register", usernamePlaceholder: "Username (e.g. DashKing)", emailPlaceholder: "email@example.com", passPlaceholder: "Password (min. 6 chars)", bioPlaceholder: "Short bio or description...", avatarLabel: "Profile Picture (Max 1MB)",
+        enterBtn: "Log In", registerBtn: "Create Account", downloadBtn: "Download", searchBtn: "Search", deleteBtn: "Delete Level", editBtn: "Edit Level", searchUsersPlaceholder: "Search by username...", searchUserBtn: "Search Creator",
+        forgotPass: "Forgot password?", resendEmail: "Resend verification email",
+        editProfile: "✏️ Edit Profile", noBio: "No description.", publicLevelsTitle: "Creator's Public Levels", noLevelsUser: "This user has no public levels published.",
+        loadingText: "Loading...", authorPanel: "Author Panel:", codeLabel: "Code:", visibilityLabel: "Visibility:", backToMenu: "← Main Menu",
+        noDescription: "No description provided for this level.", downloads: "Downloads",
+        followers: "Followers", following: "Following", followBtn: "Follow", unfollowBtn: "Unfollow", hideStats: "Hide Stats",
+        viewFollowing: "👀 View Following List",
+        browseFile: "Browse...", regSuccessMsg: "Account created successfully! Verification email sent. (Check spam)",
+        captchaErr: "Please verify that you are not a robot (Captcha required)."
+      },
+      es: {
+        home: "Inicio", code: "Buscar Código", users: "Buscar Usuarios", login: "Iniciar Sesión", logout: "Cerrar Sesión",
+        infoTitle: "¿Para qué sirve esta página?",
+        infoDesc: "Esta plataforma está hecha para compartir archivos .gdlvl de Geometry Dash sin necesidad de subirlos a los servidores oficiales.",
+        infoWarning: "⚠️ Aviso legal: No nos hacemos responsables si algún usuario te roba los créditos de tu creación, ya que tú eres el único que decide subirlo y exponerlo aquí.",
+        infoBtn: "Entendido",
+        mainMenu: "Menú Principal",
+        recentLevels: "Niveles Recientes (Públicos)", popularLevels: "Niveles Más Populares", featuredLevels: "Niveles Destacados",
+        recentDesc: "Explora los últimos niveles subidos por la comunidad en tiempo real.",
+        popularDesc: "Descubre los niveles más descargados y valorados por todos.",
+        featuredDesc: "Joyas seleccionadas de la comunidad por su alta calidad.",
+        searchByCode: "Ingresa el Código de Acceso Único", unlistedCodePlaceholder: "Ej: X8K2P9",
+        uploadTitle: "Subir Nivel .gdlvl", levelName: "Nombre del Nivel", levelDesc: "Descripción del Nivel", levelDescPlaceholder: "Escribe una breve descripción o consejos para tu nivel...", visibility: "Visibilidad inicial",
+        public: "Público (Visible en el feed)", unlisted: "No Listado (Solo con código)", private: "Privado (Solo tú)",
+        imageLabel: "Imagen (Máximo 1 MB)", fileLabel: "Archivo .gdlvl", publishBtn: "Publicar Nivel", cancelText: "Cancelar",
+        loginTitle: "Iniciar Sesión", registerTitle: "Registrarse", usernamePlaceholder: "Nombre de usuario (ej. DashKing)", emailPlaceholder: "correo@ejemplo.com", passPlaceholder: "Contraseña (mín. 6 caracteres)", bioPlaceholder: "Descripción o biografía corta...", avatarLabel: "Foto de perfil (Máx 1MB)",
+        enterBtn: "Entrar", registerBtn: "Crear Cuenta", downloadBtn: "Descargar", searchBtn: "Buscar", deleteBtn: "Eliminar Nivel", editBtn: "Editar Nivel", searchUsersPlaceholder: "Buscar por nombre de usuario...", searchUserBtn: "Buscar Creador",
+        forgotPass: "¿Olvidaste tu contraseña?", resendEmail: "Reenviar correo de verificación",
+        editProfile: "✏️ Editar Perfil", noBio: "Sin descripción.", publicLevelsTitle: "Niveles Públicos del Creador", noLevelsUser: "Este usuario no tiene niveles públicos publicados.",
+        loadingText: "Cargando...", authorPanel: "Panel de Autor:", codeLabel: "Código:", visibilityLabel: "Visibilidad:", backToMenu: "← Menú Principal",
+        noDescription: "Este nivel no tiene descripción proporcionada.", downloads: "Descargas",
+        followers: "Seguidores", following: "Siguiendo", followBtn: "Seguir", unfollowBtn: "Dejar de seguir", hideStats: "Ocultar contadores",
+        viewFollowing: "👀 Ver a quién sigues",
+        browseFile: "Examinar...", regSuccessMsg: "¡Cuenta creada con éxito! Correo de verificación enviado. (Revisa spam)",
+        captchaErr: "Por favor verifica que no eres un robot (Captcha requerido)."
       }
-    }
+    };
 
-    function getRecaptchaResponse() { return grecaptcha.getResponse(); }
+    let currentLang = 'en';
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      if (!getRecaptchaResponse()) return showToast("⚠️ Please complete the reCAPTCHA.");
-
-      const email = document.getElementById('login-email').value;
-      const pass = document.getElementById('login-password').value;
-
-      try {
-        await auth.signInWithEmailAndPassword(email, pass);
-        showToast("🚀 Welcome back!");
-        closeModal('modal-auth');
-        grecaptcha.reset();
-      } catch (err) {
-        showToast("❌ Login error: " + err.message);
-      }
-    }
-
-    async function handleRegister(e) {
-      e.preventDefault();
-      if (!getRecaptchaResponse()) return showToast("⚠️ Please complete the reCAPTCHA.");
-
-      const username = document.getElementById('reg-username').value;
-      const email = document.getElementById('reg-email').value;
-      const pass = document.getElementById('reg-password').value;
-      const fileInput = document.getElementById('reg-avatar');
-
-      if (fileInput.files.length > 0 && fileInput.files[0].size > 1024 * 1024) {
-        return showToast("⚠️ Profile picture must not exceed 1 MB.");
-      }
-
-      try {
-        const userCred = await auth.createUserWithEmailAndPassword(email, pass);
-        const user = userCred.user;
-
-        await user.sendEmailVerification();
-        showToast("📧 Verification link sent! Check your inbox.");
-
-        let photoURL = "";
-        if (fileInput.files.length > 0) {
-          const file = fileInput.files[0];
-          const ref = storage.ref(`avatars/${user.uid}`);
-          await ref.put(file);
-          photoURL = await ref.getDownloadURL();
-        }
-
-        await user.updateProfile({ displayName: username, photoURL });
-        await db.collection('jugadores').doc(user.uid).set({
-          username, email, coins: 0, fishes: [], createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        closeModal('modal-auth');
-        grecaptcha.reset();
-      } catch (err) {
-        showToast("❌ Registration error: " + err.message);
-      }
-    }
-
-    async function handleForgotPassword() {
-      const email = document.getElementById('login-email').value;
-      if (!email) return showToast("⚠️ Enter your email address above first.");
-      try {
-        await auth.sendPasswordResetEmail(email);
-        showToast("📬 Password reset link sent to your email.");
-      } catch (err) {
-        showToast("❌ Error: " + err.message);
-      }
-    }
-
-    // ARREGLADO: Ahora pide el correo directamente o usa el usuario actual para reenviar la verificación sin fallos
-    async function handleResendVerification() {
-      const emailInput = document.getElementById('login-email').value;
-      try {
-        let userToVerify = auth.currentUser;
-        if (!userToVerify && emailInput) {
-          showToast("⚠️ Please sign in with your credentials first to resend the verification link.");
-          return;
-        }
-        if (userToVerify) {
-          await userToVerify.sendEmailVerification();
-          showToast("📧 Verification link resent to your email.");
-        } else {
-          showToast("⚠️ Please enter your email and log in first.");
-        }
-      } catch (err) {
-        showToast("❌ Error sending email: " + err.message);
-      }
-    }
-
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(async user => {
+      const authContainer = document.getElementById('auth-nav-container');
+      if (!authContainer) return;
+      const t = translations[currentLang];
       if (user) {
-        document.getElementById('account-container').style.display = 'none';
-        document.getElementById('btn-logout').style.display = 'inline-flex';
-        document.getElementById('user-badge').style.display = 'flex';
-        document.getElementById('user-display-name').innerText = user.displayName || "Player";
-        if (user.photoURL) document.getElementById('user-avatar').src = user.photoURL;
-
-        if (ADMIN_UID && user.uid === ADMIN_UID) {
-          document.querySelector('.admin-corner').style.display = 'block';
+        try {
+          const docUser = await db.collection("usuarios").doc(user.uid).get();
+          if (docUser.exists) {
+            const u = docUser.data();
+            const avatar = u.avatar || 'https://via.placeholder.com/40';
+            const username = u.username || user.displayName || 'User';
+            authContainer.innerHTML = `
+              <div class="flex items-center gap-2">
+                <a href="#/perfil/${user.uid}" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 p-1 pr-2 sm:pr-3 rounded-full border border-slate-700 transition shrink-0">
+                  <img src="${avatar}" class="w-7 h-7 min-w-[28px] min-h-[28px] rounded-full object-cover border border-cyan-400 shrink-0">
+                  <span class="text-xs font-bold text-cyan-400 max-w-[90px] sm:max-w-none truncate">${username}</span>
+                </a>
+                <button onclick="cerrarSesion()" class="p-1.5 text-xs font-bold rounded bg-slate-800 hover:bg-slate-700 text-red-400 shrink-0" title="${t.logout}">
+                  <i data-lucide="log-out" class="w-4 h-4"></i>
+                </button>
+              </div>
+            `;
+            lucide.createIcons();
+          }
+        } catch (e) {
+          console.error(e);
         }
       } else {
-        document.getElementById('account-container').style.display = 'flex';
-        document.getElementById('btn-logout').style.display = 'none';
-        document.getElementById('user-badge').style.display = 'none';
-        document.querySelector('.admin-corner').style.display = 'none';
+        authContainer.innerHTML = `<a href="#/login" class="px-3 py-1.5 text-xs font-bold rounded bg-cyan-600 hover:bg-cyan-500 text-white" id="btn-login-text">${t.login}</a>`;
       }
     });
 
-    function logout() {
-      auth.signOut();
-      showToast("Logged out successfully.");
+    function cerrarSesion() {
+      auth.signOut().then(() => { window.location.hash = '#/'; });
     }
 
-    function startGame() {
-      showToast("🎮 Entering the fishing grounds...");
+    function changeLanguage(lang) {
+      currentLang = lang;
+      document.getElementById('lang-select').value = lang;
+      const t = translations[lang];
+      document.getElementById('nav-home').innerText = t.home;
+      document.getElementById('nav-code').innerText = t.code;
+      document.getElementById('nav-users').innerText = t.users;
+      document.getElementById('nav-home-m').innerText = t.home;
+      document.getElementById('nav-code-m').innerText = t.code;
+      document.getElementById('nav-users-m').innerText = t.users;
+      document.getElementById('info-title').innerText = t.infoTitle;
+      document.getElementById('info-desc').innerText = t.infoDesc;
+      document.getElementById('info-warning').innerHTML = t.infoWarning;
+      document.getElementById('info-btn').innerText = t.infoBtn;
+      
+      const btnLogin = document.getElementById('btn-login-text');
+      if (btnLogin) btnLogin.innerText = t.login;
+
+      renderRoute();
+    }
+
+    function toggleInfoModal() {
+      document.getElementById('info-modal').classList.toggle('hidden');
+    }
+
+    window.addEventListener('hashchange', renderRoute);
+    window.addEventListener('load', () => { 
+      document.getElementById('lang-select').value = currentLang;
+      lucide.createIcons(); 
+      renderRoute(); 
+    });
+
+    function renderRoute() {
+      const hash = window.location.hash || '#/';
+      const app = document.getElementById('app-content');
+      const t = translations[currentLang];
+
+      if (hash === '#/') {
+        app.innerHTML = `
+          <div class="flex justify-between items-center mb-6 mt-2">
+            <h1 class="text-2xl font-black text-cyan-400">${t.mainMenu}</h1>
+            <a href="#/subir" class="px-4 py-2 gd-btn-green font-bold rounded text-sm text-white flex items-center gap-1.5">
+              <i data-lucide="upload" class="w-4 h-4"></i> ${t.uploadTitle}
+            </a>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <a href="#/recientes" class="gd-card p-6 rounded-2xl flex flex-col items-center text-center group">
+              <div class="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mb-4 group-hover:scale-110 transition">
+                <i data-lucide="clock" class="w-8 h-8"></i>
+              </div>
+              <h2 class="text-xl font-bold text-white mb-2">${t.recentLevels.split(' ')[0]}</h2>
+              <p class="text-xs text-slate-400">${t.recentDesc}</p>
+            </a>
+
+            <a href="#/populares" class="gd-card p-6 rounded-2xl flex flex-col items-center text-center group">
+              <div class="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center text-green-400 mb-4 group-hover:scale-110 transition">
+                <i data-lucide="trending-up" class="w-8 h-8"></i>
+              </div>
+              <h2 class="text-xl font-bold text-white mb-2">${t.popularLevels.split(' ')[0]}</h2>
+              <p class="text-xs text-slate-400">${t.popularDesc}</p>
+            </a>
+
+            <a href="#/destacados" class="gd-card p-6 rounded-2xl flex flex-col items-center text-center group">
+              <div class="w-16 h-16 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-yellow-400 mb-4 group-hover:scale-110 transition">
+                <i data-lucide="star" class="w-8 h-8"></i>
+              </div>
+              <h2 class="text-xl font-bold text-white mb-2">${t.featuredLevels.split(' ')[0]}</h2>
+              <p class="text-xs text-slate-400">${t.featuredDesc}</p>
+            </a>
+          </div>
+        `;
+      } else if (hash === '#/recientes') {
+        app.innerHTML = `
+          <div class="flex items-center justify-between mb-6">
+            <a href="#/" class="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1">${t.backToMenu}</a>
+            <h1 class="text-2xl font-black text-cyan-400">${t.recentLevels}</h1>
+            <div></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-niveles">
+            <p class="text-slate-400 text-sm">${t.loadingText}</p>
+          </div>
+        `;
+        cargarNivelesPorFiltro('recientes');
+      } else if (hash === '#/populares') {
+        app.innerHTML = `
+          <div class="flex items-center justify-between mb-6">
+            <a href="#/" class="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1">${t.backToMenu}</a>
+            <h1 class="text-2xl font-black text-green-400">${t.popularLevels}</h1>
+            <div></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-niveles">
+            <p class="text-slate-400 text-sm">${t.loadingText}</p>
+          </div>
+        `;
+        cargarNivelesPorFiltro('populares');
+      } else if (hash === '#/destacados') {
+        app.innerHTML = `
+          <div class="flex items-center justify-between mb-6">
+            <a href="#/" class="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1">${t.backToMenu}</a>
+            <h1 class="text-2xl font-black text-yellow-400">${t.featuredLevels}</h1>
+            <div></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="grid-niveles">
+            <p class="text-slate-400 text-sm">${t.loadingText}</p>
+          </div>
+        `;
+        cargarNivelesPorFiltro('destacados');
+      } else if (hash === '#/subir') {
+        app.innerHTML = `
+          <div class="max-w-lg mx-auto bg-slate-900 border border-slate-800 p-6 rounded-xl mt-4">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold text-cyan-400">${t.uploadTitle}</h2>
+              <a href="#/" class="text-xs text-slate-400 hover:text-white">${t.cancelText}</a>
+            </div>
+            <form onsubmit="subirNivelBase64(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">${t.levelName}</label>
+                <input type="text" id="nombre-nivel" required class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm text-white outline-none focus:border-cyan-400">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">${t.levelDesc}</label>
+                <textarea id="desc-nivel" placeholder="${t.levelDescPlaceholder}" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm text-white outline-none focus:border-cyan-400 h-20 resize-none"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">${t.visibility}</label>
+                <select id="visibilidad-nivel" class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-sm text-white">
+                  <option value="publico">${t.public}</option>
+                  <option value="nolistado">${t.unlisted}</option>
+                  <option value="privado">${t.private}</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">${t.imageLabel}</label>
+                <input type="file" id="input-imagen" accept="image/*" required data-browse="${t.browseFile}" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-cyan-600 file:text-white cursor-pointer">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">${t.fileLabel}</label>
+                <input type="file" id="input-archivo" accept=".gdlvl" required data-browse="${t.browseFile}" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-green-600 file:text-white cursor-pointer">
+              </div>
+              <div class="flex justify-center my-2">
+                <div id="recaptcha-container"></div>
+              </div>
+              <button type="submit" class="w-full py-2 gd-btn-green font-bold rounded text-white text-sm">${t.publishBtn}</button>
+            </form>
+          </div>
+        `;
+        renderizarCaptchaSeguro();
+      } else if (hash === '#/buscar-codigo') {
+        app.innerHTML = `
+          <div class="max-w-md mx-auto text-center py-12">
+            <h2 class="text-xl font-bold mb-2">${t.searchByCode}</h2>
+            <div class="flex gap-2 mt-4">
+              <input type="text" id="codigo-busqueda" placeholder="${t.unlistedCodePlaceholder}" class="w-full bg-slate-800 border border-slate-700 rounded px-4 py-2 text-center uppercase font-mono text-lg text-white outline-none">
+              <button onclick="buscarPorCodigo()" class="px-6 py-2 bg-cyan-600 font-bold rounded hover:bg-cyan-500 text-white">${t.searchBtn}</button>
+            </div>
+            <div id="resultado-codigo" class="mt-6"></div>
+          </div>
+        `;
+      } else if (hash === '#/buscar-usuarios') {
+        app.innerHTML = `
+          <div class="max-w-xl mx-auto py-8">
+            <h2 class="text-2xl font-black text-cyan-400 mb-4">${t.users}</h2>
+            <div class="flex gap-2 mb-6">
+              <input type="text" id="input-busqueda-usuario" placeholder="${t.searchUsersPlaceholder}" class="w-full bg-slate-800 border border-slate-700 rounded px-4 py-2 text-sm text-white outline-none focus:border-cyan-400">
+              <button onclick="buscarUsuarios()" class="px-6 py-2 bg-cyan-600 font-bold rounded hover:bg-cyan-500 text-white text-sm">${t.searchUserBtn}</button>
+            </div>
+            <div id="resultado-usuarios" class="space-y-3"></div>
+          </div>
+        `;
+      } else if (hash.startsWith('#/perfil/')) {
+        const uidPerfil = hash.split('/')[2];
+        cargarPerfilUsuario(uidPerfil);
+      } else if (hash === '#/login' || hash === '#/registro') {
+        if (auth.currentUser) {
+          window.location.hash = '#/';
+          return;
+        }
+        const esRegistro = hash === '#/registro';
+        app.innerHTML = `
+          <div class="max-w-sm mx-auto bg-slate-900 border border-slate-800 p-6 rounded-xl mt-6">
+            <div class="flex border-b border-slate-800 mb-4">
+              <a href="#/login" class="w-1/2 text-center pb-2 text-sm font-bold ${!esRegistro ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-400'}">${t.loginTitle}</a>
+              <a href="#/registro" class="w-1/2 text-center pb-2 text-sm font-bold ${esRegistro ? 'text-cyan-400 border-b-2 border-cyan-400' : 'text-slate-400'}">${t.registerTitle}</a>
+            </div>
+            ${esRegistro ? `
+              <input type="text" id="register-username" placeholder="${t.usernamePlaceholder}" class="w-full bg-slate-800 border border-slate-700 rounded p-2 mb-3 text-sm text-white outline-none focus:border-cyan-400">
+            ` : ''}
+            <input type="email" id="login-email" placeholder="${t.emailPlaceholder}" class="w-full bg-slate-800 border border-slate-700 rounded p-2 mb-3 text-sm text-white outline-none focus:border-cyan-400">
+            <input type="password" id="login-pass" placeholder="${t.passPlaceholder}" class="w-full bg-slate-800 border border-slate-700 rounded p-2 mb-3 text-sm text-white outline-none focus:border-cyan-400">
+            ${esRegistro ? `
+              <textarea id="register-bio" placeholder="${t.bioPlaceholder}" class="w-full bg-slate-800 border border-slate-700 rounded p-2 mb-3 text-sm text-white outline-none focus:border-cyan-400 h-20 resize-none"></textarea>
+              <div class="mb-4">
+                <label class="block text-xs font-semibold text-slate-400 mb-1">${t.avatarLabel}</label>
+                <input type="file" id="register-avatar" accept="image/*" data-browse="${t.browseFile}" class="w-full text-xs text-slate-400 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-cyan-600 file:text-white cursor-pointer">
+              </div>
+            ` : ''}
+            <div class="flex justify-center my-3">
+              <div id="recaptcha-container"></div>
+            </div>
+            ${esRegistro ? `
+              <button onclick="registrarUsuario()" class="w-full py-2 bg-cyan-600 font-bold rounded text-sm hover:bg-cyan-500 text-white">${t.registerBtn}</button>
+            ` : `
+              <button onclick="iniciarSesion()" class="w-full py-2 bg-cyan-600 font-bold rounded text-sm hover:bg-cyan-500 text-white mb-3">${t.enterBtn}</button>
+              <div class="flex justify-between text-xs text-slate-400 border-t border-slate-800 pt-3">
+                <button onclick="recuperarPassword()" class="hover:text-cyan-400 transition">${t.forgotPass}</button>
+                <button onclick="reenviarVerificacion()" class="hover:text-cyan-400 transition">${t.resendEmail}</button>
+              </div>
+            `}
+          </div>
+        `;
+        renderizarCaptchaSeguro();
+      }
+      lucide.createIcons();
+    }
+
+    const leerComoBase64 = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    };
+
+    async function subirNivelBase64(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('nombre-nivel').value;
+      const descripcion = document.getElementById('desc-nivel').value;
+      const visibilidad = document.getElementById('visibilidad-nivel').value;
+      const inputImagen = document.getElementById('input-imagen').files[0];
+      const inputArchivo = document.getElementById('input-archivo').files[0];
+
+      if (!auth.currentUser) {
+        mostrarToast(currentLang === 'es' ? 'Debes iniciar sesión para subir un nivel.' : 'You must log in to upload a level.', 'error');
+        return;
+      }
+
+      if (inputImagen.size > 1024 * 1024) {
+        mostrarToast(currentLang === 'es' ? 'La imagen no puede pesar más de 1 MB.' : 'Image cannot exceed 1 MB.', 'error');
+        return;
+      }
+
+      const recaptchaResponse = grecaptcha.getResponse(recaptchaWidgetId);
+      if (!recaptchaResponse) {
+        mostrarToast(translations[currentLang].captchaErr, 'error');
+        return;
+      }
+
+      try {
+        mostrarToast(currentLang === 'es' ? 'Subiendo nivel...' : 'Uploading level...', 'success');
+        const imgBase64 = await leerComoBase64(inputImagen);
+        const archivoBase64 = await leerComoBase64(inputArchivo);
+        const codigoUnico = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+        await db.collection('niveles').add({
+          nombre,
+          descripcion,
+          visibilidad,
+          imagen: imgBase64,
+          archivo: archivoBase64,
+          nombreArchivo: inputArchivo.name,
+          autorUid: auth.currentUser.uid,
+          autorNombre: auth.currentUser.displayName || 'Anonymous',
+          descargas: 0,
+          codigoUnico,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        mostrarToast(currentLang === 'es' ? '¡Nivel subido con éxito!' : 'Level uploaded successfully!', 'success');
+        window.location.hash = '#/';
+      } catch (err) {
+        console.error(err);
+        mostrarToast(err.message, 'error');
+      }
+    }
+
+    async function registrarUsuario() {
+      const username = document.getElementById('register-username').value;
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-pass').value;
+      const bio = document.getElementById('register-bio').value;
+      const avatarFile = document.getElementById('register-avatar').files[0];
+
+      if (!username || !email || !pass) {
+        mostrarToast(currentLang === 'es' ? 'Completa todos los campos obligatorios.' : 'Complete all required fields.', 'error');
+        return;
+      }
+
+      const recaptchaResponse = grecaptcha.getResponse(recaptchaWidgetId);
+      if (!recaptchaResponse) {
+        mostrarToast(translations[currentLang].captchaErr, 'error');
+        return;
+      }
+
+      try {
+        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+        await cred.user.sendEmailVerification();
+        
+        let avatarBase64 = 'https://via.placeholder.com/150';
+        if (avatarFile) {
+          if (avatarFile.size > 1024 * 1024) {
+            mostrarToast(currentLang === 'es' ? 'La foto de perfil no puede pesar más de 1 MB.' : 'Avatar cannot exceed 1 MB.', 'error');
+            return;
+          }
+          avatarBase64 = await leerComoBase64(avatarFile);
+        }
+
+        await db.collection('usuarios').doc(cred.user.uid).set({
+          username,
+          email,
+          bio,
+          avatar: avatarBase64,
+          seguidores: [],
+          siguiendo: [],
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        await cred.user.updateProfile({ displayName: username });
+        mostrarToast(translations[currentLang].regSuccessMsg, 'success');
+        window.location.hash = '#/';
+      } catch (err) {
+        mostrarToast(err.message, 'error');
+      }
+    }
+
+    async function iniciarSesion() {
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-pass').value;
+      const recaptchaResponse = grecaptcha.getResponse(recaptchaWidgetId);
+      if (!recaptchaResponse) {
+        mostrarToast(translations[currentLang].captchaErr, 'error');
+        return;
+      }
+
+      try {
+        await auth.signInWithEmailAndPassword(email, pass);
+        mostrarToast(currentLang === 'es' ? '¡Bienvenido de nuevo!' : 'Welcome back!', 'success');
+        window.location.hash = '#/';
+      } catch (err) {
+        mostrarToast(err.message, 'error');
+      }
+    }
+
+    async function recuperarPassword() {
+      const email = document.getElementById('login-email').value;
+      if (!email) {
+        mostrarToast(currentLang === 'es' ? 'Ingresa tu correo electrónico arriba.' : 'Enter your email above.', 'error');
+        return;
+      }
+      try {
+        await auth.sendPasswordResetEmail(email);
+        mostrarToast(currentLang === 'es' ? 'Correo de recuperación enviado.' : 'Recovery email sent.', 'success');
+      } catch (err) {
+        mostrarToast(err.message, 'error');
+      }
+    }
+
+    async function reenviarVerificacion() {
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-pass').value;
+      if (!email || !pass) {
+        mostrarToast(currentLang === 'es' ? 'Ingresa tu correo y contraseña para reenviar la verificación.' : 'Enter your email and password to resend verification.', 'error');
+        return;
+      }
+      try {
+        const cred = await auth.signInWithEmailAndPassword(email, pass);
+        await cred.user.sendEmailVerification();
+        mostrarToast(currentLang === 'es' ? '¡Correo de verificación reenviado!' : 'Verification email resent!', 'success');
+        auth.signOut();
+      } catch (err) {
+        mostrarToast(err.message, 'error');
+      }
     }
   </script>
 </body>
