@@ -90,7 +90,7 @@
     .title-fishing { color: #3498db; }
     .title-game { color: #e74c3c; }
 
-    /* Logo nuevo limpio */
+    /* Único logo nuevo */
     .fish-logo-img {
       width: 85px;
       height: 85px;
@@ -98,7 +98,7 @@
       filter: drop-shadow(2px 2px 0px #000);
     }
 
-    /* Los 3 botones en la misma línea */
+    /* Los 3 botones en la misma línea y en orden: Shop, Play, Achievements */
     .center-menu {
       display: flex;
       gap: 30px;
@@ -148,10 +148,13 @@
       z-index: 10;
     }
 
+    /* Botón News grande y proporcionado */
     .btn-news-img {
-      width: 75px !important;
-      height: 75px !important;
+      width: 85px !important;
+      height: 85px !important;
       border-radius: 50%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
     .user-profile-badge {
@@ -172,7 +175,7 @@
       object-fit: cover;
     }
 
-    /* Contenedor dinámico de subpáginas / modales */
+    /* Modales / Subpáginas */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -299,26 +302,26 @@
 
   <header>
     <div id="admin-panel-btn" class="admin-corner">
-      <button class="modal-action-btn" onclick="navigateTo('/#/admin')">⚙️ Admin Panel</button>
+      <button class="modal-action-btn" onclick="navigateTo('/admin')">⚙️ Admin Panel</button>
     </div>
     <div class="version-tag">v.1.0.0.0</div>
   </header>
 
   <!-- ESQUINA INFERIOR IZQUIERDA: Account -->
   <div class="corner-bottom-left">
-    <div id="user-badge" class="user-profile-badge" onclick="navigateTo('/#/profile')">
+    <div id="user-badge" class="user-profile-badge" onclick="navigateTo('/profile')">
       <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar">
       <span id="user-display-name">Username</span>
     </div>
     <div id="account-container">
-      <button class="img-btn" onclick="navigateTo('/#/account')">
+      <button class="img-btn" onclick="navigateTo('/account')">
         <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account">
       </button>
     </div>
     <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto;" onclick="logout()">🚪 Log out</button>
   </div>
 
-  <!-- CENTRO: Título, Logo nuevo y los 3 botones en la misma línea -->
+  <!-- CENTRO: Título, Logo nuevo y los 3 botones en orden (Shop, Play, Achievements) -->
   <main class="main-container">
     <div class="title-box">
       <h1>
@@ -329,23 +332,22 @@
       <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="Logo" class="fish-logo-img">
     </div>
 
-    <!-- Los 3 botones grandes en una sola línea -->
     <div class="center-menu">
-      <button class="img-btn" onclick="navigateTo('/#/play')">
+      <button class="img-btn" onclick="navigateTo('/shop')">
+        <img src="https://i.postimg.cc/2yGLxwj8/shop.png" alt="Shop">
+      </button>
+      <button class="img-btn" onclick="navigateTo('/play')">
         <img src="https://i.postimg.cc/d36Z9BQ7/play.png" alt="Play">
       </button>
-      <button class="img-btn" onclick="navigateTo('/#/achievements')">
+      <button class="img-btn" onclick="navigateTo('/achievements')">
         <img src="https://i.postimg.cc/rsjR9JyD/achievements.png" alt="Achievements">
-      </button>
-      <button class="img-btn" onclick="navigateTo('/#/shop')">
-        <img src="https://i.postimg.cc/2yGLxwj8/shop.png" alt="Shop">
       </button>
     </div>
   </main>
 
   <!-- ESQUINA INFERIOR DERECHA: News -->
   <div class="corner-bottom-right">
-    <button class="img-btn" onclick="navigateTo('/#/news')">
+    <button class="img-btn" onclick="navigateTo('/news')">
       <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
     </button>
   </div>
@@ -479,9 +481,9 @@
       setTimeout(() => toast.remove(), 4000);
     }
 
-    // Enrutador Hash /#/
+    // Enrutador Hash /#/ limpio
     function navigateTo(path) {
-      window.location.hash = path;
+      window.location.hash = '#/' + path.replace('/', '');
     }
 
     function closeAllModals() {
@@ -611,7 +613,6 @@
       }
     }
 
-    // ARREGLADO: Función robusta para reenvío de correo sin errores de sesión previa
     async function handleResendVerification() {
       const email = document.getElementById('login-email').value;
       const pass = document.getElementById('login-password').value;
