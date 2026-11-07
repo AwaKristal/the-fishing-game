@@ -59,7 +59,6 @@
 
     .admin-corner { display: none; }
 
-    /* Contenedor Principal */
     .main-container {
       display: flex;
       flex-direction: column;
@@ -81,7 +80,7 @@
       font-size: 4rem;
       margin: 0;
       text-shadow: 3px 3px 0px #000;
-      font-weight: 805;
+      font-weight: 800;
       display: flex;
       gap: 12px;
     }
@@ -90,7 +89,7 @@
     .title-fishing { color: #3498db; }
     .title-game { color: #e74c3c; }
 
-    /* Único logo nuevo */
+    /* Logo nuevo */
     .fish-logo-img {
       width: 85px;
       height: 85px;
@@ -98,7 +97,7 @@
       filter: drop-shadow(2px 2px 0px #000);
     }
 
-    /* Los 3 botones centrales en orden: Shop, Play, Achievements */
+    /* 3 Botones centrales: Shop, Play, Achievements */
     .center-menu {
       display: flex;
       gap: 30px;
@@ -148,7 +147,6 @@
       z-index: 10;
     }
 
-    /* Botón News más grande */
     .btn-news-img {
       width: 95px !important;
       height: 95px !important;
@@ -175,7 +173,7 @@
       object-fit: cover;
     }
 
-    /* Modales / Subpáginas */
+    /* Modales y Subpáginas */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -187,6 +185,7 @@
       justify-content: center;
       align-items: center;
       padding: 15px;
+      overflow-y: auto;
     }
 
     .modal-card {
@@ -198,6 +197,8 @@
       padding: 25px;
       position: relative;
       box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .modal-close {
@@ -345,7 +346,7 @@
     </div>
   </main>
 
-  <!-- ESQUINA INFERIOR DERECHA: News más grande -->
+  <!-- ESQUINA INFERIOR DERECHA: News grande -->
   <div class="corner-bottom-right">
     <button class="img-btn" onclick="navigateTo('/news')">
       <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
@@ -364,11 +365,11 @@
       <form id="form-login" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label>Email Address</label>
-          <input type="email" id="login-email" required>
+          <input type="email" id="login-email" autocomplete="email" required>
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="login-password" required>
+          <input type="password" id="login-password" autocomplete="current-password" required>
         </div>
         <div class="form-group">
           <div id="recaptcha-login"></div>
@@ -381,15 +382,19 @@
       <form id="form-register" onsubmit="handleRegister(event)" style="display:none;">
         <div class="form-group">
           <label>Username</label>
-          <input type="text" id="reg-username" required maxlength="15">
+          <input type="text" id="reg-username" autocomplete="username" required maxlength="15">
         </div>
         <div class="form-group">
           <label>Email Address</label>
-          <input type="email" id="reg-email" required>
+          <input type="email" id="reg-email" autocomplete="email" required>
         </div>
         <div class="form-group">
           <label>Password</label>
-          <input type="password" id="reg-password" required minlength="6">
+          <input type="password" id="reg-password" autocomplete="new-password" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Bio / Description</label>
+          <textarea id="reg-bio" placeholder="Tell us something about you..." maxlength="150" style="resize:none; height:60px;"></textarea>
         </div>
         <div class="form-group">
           <label>Profile Picture (Max 1MB)</label>
@@ -403,23 +408,40 @@
     </div>
   </div>
 
+  <!-- MODAL PROFILE (Actualizar biografía y foto) -->
+  <div id="modal-profile" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>👤 Player Profile</h2>
+      <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+        <img id="profile-modal-avatar" src="https://via.placeholder.com/60" alt="Avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid #fff;">
+        <div>
+          <h3 id="profile-modal-name" style="margin:0; font-size:1.2rem;">Username</h3>
+          <p style="margin:5px 0 0 0; font-size:0.9rem; color:#a0aec0;">💰 Coins: <span id="profile-coins">0</span> | 🐟 Fish: <span id="profile-fish-count">0</span></p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Bio / Description</label>
+        <textarea id="profile-edit-bio" placeholder="Write your new description..." maxlength="150" style="resize:none; height:60px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Change Profile Picture (Max 1MB)</label>
+        <input type="file" id="profile-edit-avatar" accept="image/*">
+      </div>
+      <button type="button" class="modal-action-btn" onclick="updateProfileData()">Save Changes</button>
+
+      <h3 style="margin-top:20px; font-size:1.1rem;">🐠 Public Aquarium</h3>
+      <div id="profile-aquarium" style="font-size:0.9rem; color:#a0aec0;">Your aquarium is empty.</div>
+    </div>
+  </div>
+
   <!-- OTROS MODALES / SUBPÁGINAS -->
   <div id="modal-news" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>📰 Game News</h2>
       <div id="news-list">Loading news...</div>
-    </div>
-  </div>
-
-  <div id="modal-profile" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>👤 Player Profile</h2>
-      <p>💰 Coins: <span id="profile-coins">0</span></p>
-      <p>🐟 Fish Caught: <span id="profile-fish-count">0</span></p>
-      <h3>🐠 Public Aquarium</h3>
-      <div id="profile-aquarium">Your aquarium is empty.</div>
     </div>
   </div>
 
@@ -490,7 +512,7 @@
       window.location.hash = '#/';
     }
 
-    function handleRouting() {
+    async function handleRouting() {
       const hash = window.location.hash || '#/';
       document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
 
@@ -500,6 +522,7 @@
         document.getElementById('modal-news').style.display = 'flex';
       } else if (hash === '#/profile') {
         document.getElementById('modal-profile').style.display = 'flex';
+        await loadProfileData();
       } else if (hash === '#/achievements') {
         document.getElementById('modal-achievements').style.display = 'flex';
       } else if (hash === '#/shop') {
@@ -567,6 +590,7 @@
       const username = document.getElementById('reg-username').value;
       const email = document.getElementById('reg-email').value;
       const pass = document.getElementById('reg-password').value;
+      const bio = document.getElementById('reg-bio').value;
       const fileInput = document.getElementById('reg-avatar').files[0];
 
       if (fileInput && fileInput.size > 1024 * 1024) {
@@ -588,13 +612,75 @@
 
         await user.updateProfile({ displayName: username, photoURL });
         await db.collection('jugadores').doc(user.uid).set({
-          username, email, coins: 0, fishes: [], createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          username: username,
+          email: email,
+          bio: bio,
+          coins: 0,
+          fishes: [],
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
         closeAllModals();
         grecaptcha.reset(recaptchaRegisterId);
       } catch (err) {
         showToast("❌ Registration error: " + err.message);
+      }
+    }
+
+    async function loadProfileData() {
+      const user = auth.currentUser;
+      if (!user) return;
+      
+      document.getElementById('profile-modal-name').innerText = user.displayName || "Player";
+      if (user.photoURL) document.getElementById('profile-modal-avatar').src = user.photoURL;
+
+      try {
+        const doc = await db.collection('jugadores').doc(user.uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          document.getElementById('profile-edit-bio').value = data.bio || "";
+          document.getElementById('profile-coins').innerText = data.coins || 0;
+          document.getElementById('profile-fish-count').innerText = (data.fishes || []).length;
+        }
+      } catch (err) {
+        console.error("Error loading profile:", err);
+      }
+    }
+
+    async function updateProfileData() {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("⚠️ You must be logged in.");
+        return;
+      }
+
+      const newBio = document.getElementById('profile-edit-bio').value;
+      const fileInput = document.getElementById('profile-edit-avatar').files[0];
+
+      if (fileInput && fileInput.size > 1024 * 1024) {
+        showToast("⚠️ Profile picture must not exceed 1 MB.");
+        return;
+      }
+
+      try {
+        showToast("⏳ Saving profile changes...");
+        let photoURL = user.photoURL;
+
+        if (fileInput) {
+          photoURL = await leerComoBase64(fileInput);
+          await user.updateProfile({ photoURL });
+          document.getElementById('user-avatar').src = photoURL;
+          document.getElementById('profile-modal-avatar').src = photoURL;
+        }
+
+        await db.collection('jugadores').doc(user.uid).update({
+          bio: newBio
+        });
+
+        showToast("✅ Profile updated successfully!");
+        closeAllModals();
+      } catch (err) {
+        showToast("❌ Error updating profile: " + err.message);
       }
     }
 
@@ -612,7 +698,6 @@
       }
     }
 
-    // ARREGLADO: Inicia sesión de manera limpia y genera un token nuevo y fresco de verificación sin invalidarlo
     async function handleResendVerification() {
       const email = document.getElementById('login-email').value;
       const pass = document.getElementById('login-password').value;
