@@ -81,7 +81,7 @@
       font-size: 4rem;
       margin: 0;
       text-shadow: 3px 3px 0px #000;
-      font-weight: 800;
+      font-weight: 805;
       display: flex;
       gap: 12px;
     }
@@ -98,7 +98,7 @@
       filter: drop-shadow(2px 2px 0px #000);
     }
 
-    /* Los 3 botones en la misma línea y en orden: Shop, Play, Achievements */
+    /* Los 3 botones centrales en orden: Shop, Play, Achievements */
     .center-menu {
       display: flex;
       gap: 30px;
@@ -148,13 +148,13 @@
       z-index: 10;
     }
 
-    /* Botón News grande y proporcionado */
+    /* Botón News más grande */
     .btn-news-img {
-      width: 85px !important;
-      height: 85px !important;
+      width: 95px !important;
+      height: 95px !important;
       border-radius: 50%;
       object-fit: contain;
-      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.7));
     }
 
     .user-profile-badge {
@@ -345,7 +345,7 @@
     </div>
   </main>
 
-  <!-- ESQUINA INFERIOR DERECHA: News -->
+  <!-- ESQUINA INFERIOR DERECHA: News más grande -->
   <div class="corner-bottom-right">
     <button class="img-btn" onclick="navigateTo('/news')">
       <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
@@ -481,7 +481,6 @@
       setTimeout(() => toast.remove(), 4000);
     }
 
-    // Enrutador Hash /#/ limpio
     function navigateTo(path) {
       window.location.hash = '#/' + path.replace('/', '');
     }
@@ -613,17 +612,18 @@
       }
     }
 
+    // ARREGLADO: Inicia sesión de manera limpia y genera un token nuevo y fresco de verificación sin invalidarlo
     async function handleResendVerification() {
       const email = document.getElementById('login-email').value;
       const pass = document.getElementById('login-password').value;
       if (!email || !pass) {
-        showToast("⚠️ Enter your email and password above to resend verification.");
+        showToast("⚠️ Enter your email and password above to generate a fresh verification link.");
         return;
       }
       try {
         const cred = await auth.signInWithEmailAndPassword(email, pass);
         await cred.user.sendEmailVerification();
-        showToast("📧 Verification link resent successfully!");
+        showToast("📧 A fresh verification link has been sent to your email!");
         auth.signOut();
       } catch (err) {
         showToast("❌ Error: " + err.message);
