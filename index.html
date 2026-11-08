@@ -672,7 +672,7 @@
     </div>
   </div>
 
-  <!-- MODAL ACUARIO (4 SLOTS ARRIBA, 4 SLOTS ABAJO, TANQUES Y PECES LIGERAMENTE MÁS GRANDES) -->
+  <!-- MODAL ACUARIO (4 SLOTS ARRIBA, 4 SLOTS ABAJO, CON TANQUE GLOBAL) -->
   <div id="modal-aquarium" class="modal-overlay">
     <div class="modal-card" style="max-width: 640px; padding: 15px; background: #0f172a; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
@@ -702,8 +702,7 @@
 
       <!-- CONTROLES O INFO DE CONFIGURACIÓN -->
       <div id="aquarium-owner-controls" style="display: none; background: #16213e; padding: 10px; border-radius: 8px; text-align: center;">
-        <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #2ecc71;">💡 Click on any shelf tank slot to place or change a fish!</p>
-        <span style="font-size: 0.75rem; color: #a0aec0;">(Requires owning the Mini Tank and having the fish in your inventory)</span>
+        <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #2ecc71;">💡 Click on any slot to place or change a fish! (Requires owning at least 1 Mini Tank)</p>
       </div>
     </div>
   </div>
@@ -785,7 +784,7 @@
         <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
           <img src="https://i.postimg.cc/DZs0wKSx/tanque-mini.png" alt="Mini Tank" style="width: 40px; height: 40px; object-fit: contain;">
           <div>
-            <strong>🐠 Mini Tank</strong><br><span style="font-size: 0.8rem; color: #a0aec0;">Display a fish in your aquarium</span>
+            <strong>🐠 Mini Tank (Unlock Tanks)</strong><br><span style="font-size: 0.8rem; color: #a0aec0;">Allows displaying fish in your aquarium</span>
           </div>
         </div>
         <button id="buy-tank-btn" class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="buyMiniTank()">75 💰</button>
@@ -809,7 +808,7 @@
       
       <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
         <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #3498db;">🎒 Items Owned</h3>
-        <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tanks: 0</p>
+        <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tank: Unlocked (0/1)</p>
       </div>
 
       <div style="background: #0f172a; padding: 12px; border-radius: 8px;">
@@ -1123,11 +1122,11 @@
       db.collection('jugadores').doc(user.uid).get().then(doc => {
         if (doc.exists) {
           const data = doc.data();
-          const tanksCount = data.miniTanks || 0;
+          const hasTankUnlocked = (data.miniTanks || 0) > 0;
           const fishes = data.fishes || [];
 
-          if (tanksCount <= shelfIndex) {
-            showToast(`⚠️ You need at least ${shelfIndex + 1} Mini Tanks bought from Bob's Shop to use this slot!`);
+          if (!hasTankUnlocked) {
+            showToast("⚠️ You need to buy at least 1 Mini Tank from Bob's Shop to display fish!");
             return;
           }
 
@@ -1321,7 +1320,15 @@
         const playerRef = db.collection('jugadores').doc(user.uid);
         const doc = await playerRef.get();
         if (doc.exists) {
-          const coins = doc.data().coins || 0;
+          const data = doc.data();
+          const coins = data.coins || 0;
+          const currentTanks = data.miniTanks || 0;
+
+          if (currentTanks > 0) {
+            showToast("⚠️ You already own a Mini Tank! You can place tanks in any slot now.");
+            return;
+          }
+
           if (coins < cost) {
             showToast("❌ Not enough coins! You need 75 💰.");
             return;
@@ -1329,10 +1336,10 @@
 
           await playerRef.update({
             coins: coins - cost,
-            miniTanks: firebase.firestore.FieldValue.increment(1)
+            miniTanks: 1
           });
 
-          showToast("🎉 Success! You bought a Mini Tank!");
+          showToast("🎉 Success! Mini Tank unlocked for all slots!");
           loadBackpackData();
         }
       } catch (err) {
@@ -1350,7 +1357,8 @@
         const doc = await db.collection('jugadores').doc(user.uid).get();
         if (doc.exists) {
           const data = doc.data();
-          document.getElementById('backpack-tanks-count').innerText = `Mini Tanks: ${data.miniTanks || 0}`;
+          const hasTank = (data.miniTanks || 0) > 0;
+          document.getElementById('backpack-tanks-count').innerText = `Mini Tank: ${hasTank ? 'Unlocked (Active)' : 'Not Owned (Locked)'}`;
           
           const fishes = data.fishes || [];
           if (fishes.length === 0) {
