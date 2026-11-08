@@ -1136,7 +1136,6 @@
           const data = doc.data();
           let achievements = data.achievements || {};
 
-          // Logro 1: Catch! (Primer pez atrapado)
           if (fishesCount > 0 && !achievements.catchFirst) {
             achievements.catchFirst = true;
             await docRef.update({ achievements: achievements });
@@ -1179,7 +1178,7 @@
     }
     // --- FIN LOGROS ---
 
-    // --- SISTEMA DE MERCADO Y VENTA ---
+    // --- SISTEMA DE MERCADO Y VENTA (CON CORRECCIÓN DE BUG DE PECES EN USO) ---
     function openMarketModal() {
       const user = auth.currentUser;
       if (!user) {
@@ -1329,18 +1328,32 @@
       }
     }
 
+    // CORRECCIÓN DE BUG 1: Validar que el pez no esté expuesto en el acuario antes de vender por Bot
     async function botSellFish(fishIndex, fishName, fishValue) {
       const user = auth.currentUser;
       if (!user) return;
 
       try {
         const playerRef = db.collection('jugadores').doc(user.uid);
+        let canSell = false;
+
         await db.runTransaction(async (transaction) => {
           const doc = await transaction.get(playerRef);
           if (!doc.exists) throw new Error("Player not found");
           
           let fishes = doc.data().fishes || [];
+          let tanks = doc.data().aquariumTanks || new Array(8).fill(null);
           if (fishes.length <= fishIndex) throw new Error("Fish not found");
+
+          // Validar si este pez exacto está siendo usado en el acuario
+          let usedInAquariumCount = tanks.filter(t => t === fishName).length;
+          if (usedInAquariumCount > 0) {
+            // Contamos cuántos de este mismo tipo preceden al índice actual
+            let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
+            if (precedingSameType < usedInAquariumCount) {
+              throw new Error(`You cannot sell ${fishName} because it is currently displayed in your Aquarium! Remove it from the aquarium first.`);
+            }
+          }
 
           fishes.splice(fishIndex, 1);
 
@@ -1348,13 +1361,16 @@
             coins: firebase.firestore.FieldValue.increment(fishValue),
             fishes: fishes
           });
+          canSell = true;
         });
 
-        showToast(`💰 Bot sold ${fishName} for +${fishValue} coins!`);
-        loadMyFishesForMarket();
-        updateGameHUD();
+        if (canSell) {
+          showToast(`💰 Bot sold ${fishName} for +${fishValue} coins!`);
+          loadMyFishesForMarket();
+          updateGameHUD();
+        }
       } catch (err) {
-        showToast("❌ Error selling fish: " + err.message);
+        showToast("⚠️ " + err.message);
       }
     }
 
@@ -1365,6 +1381,7 @@
       document.getElementById('modal-market-price-prompt').style.display = 'flex';
     }
 
+    // CORRECCIÓN DE BUG 1: Validar que el pez no esté expuesto en el acuario antes de ponerlo en el Mercado
     async function confirmMarketSell() {
       const user = auth.currentUser;
       if (!user || !selectedFishToMarket) return;
@@ -1382,26 +1399,40 @@
 
         const playerData = playerSnap.data();
         let fishes = playerData.fishes || [];
+        let tanks = playerData.aquariumTanks || new Array(8).fill(null);
+        const fishIndex = selectedFishToMarket.index;
+        const fishName = selectedFishToMarket.name;
 
-        if (fishes.length <= selectedFishToMarket.index) {
+        if (fishes.length <= fishIndex) {
           showToast("❌ Fish no longer exists in your inventory.");
           document.getElementById('modal-market-price-prompt').style.display = 'none';
           return;
         }
 
-        fishes.splice(selectedFishToMarket.index, 1);
+        // Validar si está en uso en el acuario
+        let usedInAquariumCount = tanks.filter(t => t === fishName).length;
+        if (usedInAquariumCount > 0) {
+          let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
+          if (precedingSameType < usedInAquariumCount) {
+            showToast(`⚠️ You cannot list ${fishName} on the market because it is currently displayed in your Aquarium!`);
+            document.getElementById('modal-market-price-prompt').style.display = 'none';
+            return;
+          }
+        }
+
+        fishes.splice(fishIndex, 1);
 
         await db.collection('marketListings').add({
           sellerUid: user.uid,
           sellerName: playerData.username || "Player",
-          fishName: selectedFishToMarket.name,
+          fishName: fishName,
           price: priceInput,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
         await playerRef.update({ fishes: fishes });
 
-        showToast(`✅ ${selectedFishToMarket.name} successfully listed on the Market for ${priceInput} 💰!`);
+        showToast(`✅ ${fishName} successfully listed on the Market for ${priceInput} 💰!`);
         document.getElementById('modal-market-price-prompt').style.display = 'none';
         loadMyFishesForMarket();
         loadMyActiveListings();
@@ -1560,6 +1591,7 @@
       }
     }
 
+    // CORRECCIÓN DE BUG 2: Validar inventario de Mini Tanques correctamente antes de abrir el modal del slot
     function handleShelfClick(shelfIndex) {
       if (!isViewingMyAquarium) return;
       selectedShelfIndex = shelfIndex;
@@ -1574,13 +1606,13 @@
           const fishes = data.fishes || [];
           const tanks = data.aquariumTanks || new Array(8).fill(null);
 
-          // Si el slot ya tiene un tanque/pez, permitimos cambiarlo o quitarlo
+          // Si el slot ya tiene tanque asignado, abrimos selección directo
           if (tanks[selectedShelfIndex]) {
             openSelectFishModal(fishes);
             return;
           }
 
-          // Si el slot está vacío, requiere gastar 1 tanque del inventario del jugador
+          // Si está vacío, validamos que tenga al menos 1 tanque en inventario
           if (tanksCount <= 0) {
             showToast("⚠️ You need a Mini Tank in your inventory! Buy one in Bob's Shop.");
             return;
@@ -1614,6 +1646,7 @@
       document.getElementById('modal-select-fish').style.display = 'flex';
     }
 
+    // CORRECCIÓN DE BUG 2: Validar que existan suficientes ejemplares si se quiere duplicar el pez en el acuario y descontar el tanque exacto
     async function assignFishToShelf(fishName) {
       const user = auth.currentUser;
       if (!user) return;
@@ -1623,14 +1656,21 @@
         const doc = await docRef.get();
         if (doc.exists) {
           const data = doc.data();
-          let tanks = data.aquariumTanks;
-          if (!Array.isArray(tanks) || tanks.length !== 8) {
-            tanks = new Array(8).fill(null);
-          }
-
+          let tanks = data.aquariumTanks || new Array(8).fill(null);
+          let fishes = data.fishes || [];
           let tanksCount = data.miniTanksCount || 0;
 
-          // Si este slot estaba vacío, consumimos 1 tanque del inventario
+          // Contar cuántos peces de este tipo tiene en total el jugador en su mochila
+          let totalInInventory = fishes.filter(f => f.name === fishName).length;
+          // Contar cuántos de este mismo tipo ya están mostrados en otras repisas del acuario
+          let alreadyOnDisplay = tanks.filter((t, idx) => t === fishName && idx !== selectedShelfIndex).length;
+
+          if (alreadyOnDisplay >= totalInInventory) {
+            showToast(`⚠️ You only have ${totalInInventory} ${fishName}(s) in your backpack and ${alreadyOnDisplay} already in your aquarium. You need another one to place it twice!`);
+            return;
+          }
+
+          // Si el slot estaba vacío, consumimos 1 tanque del inventario
           if (!tanks[selectedShelfIndex]) {
             if (tanksCount <= 0) {
               showToast("⚠️ Not enough Mini Tanks in inventory!");
@@ -1648,13 +1688,14 @@
           
           showToast(`✅ ${fishName} placed in tank! (Mini Tank consumed)`);
           document.getElementById('modal-select-fish').style.display = 'none';
-          renderAquarium(data.username || "My", data.fishes || [], tanks);
+          renderAquarium(data.username || "My", fishes, tanks);
         }
       } catch (err) {
         showToast("❌ Error updating tank: " + err.message);
       }
     }
 
+    // CORRECCIÓN DE BUG 2: Devolver el tanque al inventario al vaciar la repisa
     async function removeFishFromShelf() {
       const user = auth.currentUser;
       if (!user) return;
@@ -1664,12 +1705,8 @@
         const doc = await docRef.get();
         if (doc.exists) {
           const data = doc.data();
-          let tanks = data.aquariumTanks;
-          if (!Array.isArray(tanks) || tanks.length !== 8) {
-            tanks = new Array(8).fill(null);
-          }
+          let tanks = data.aquariumTanks || new Array(8).fill(null);
 
-          // Si había un tanque en este slot, devolvemos 1 tanque al inventario del jugador
           if (tanks[selectedShelfIndex]) {
             let tanksCount = (data.miniTanksCount || 0) + 1;
             tanks[selectedShelfIndex] = null;
@@ -1795,7 +1832,6 @@
           showToast(`🎉 You caught a ${caught.name}! Added to backpack.`);
           updateGameHUD();
 
-          // Verificar logros (Catch!)
           checkAchievements(currentFishes.length + 1);
         } catch (err) {
           showToast("❌ Error saving catch: " + err.message);
