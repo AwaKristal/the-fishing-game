@@ -207,7 +207,6 @@
       object-fit: cover;
     }
 
-    /* PANTALLA DE JUEGO (PLAY VIEW) CON MAPA NUEVO map2.png */
     #game-screen {
       display: none;
       position: fixed;
@@ -286,7 +285,6 @@
     }
     .cast-line-btn:hover { background: #27ae60; }
 
-    /* MINIJUEGO DE PESCA ESTILO FISCH */
     #fishing-minigame-overlay {
       display: none;
       position: absolute;
@@ -594,7 +592,6 @@
     </div>
   </header>
 
-  <!-- ESQUINA INFERIOR IZQUIERDA: Account -->
   <div class="corner-bottom-left">
     <div id="user-badge" class="user-profile-badge" onclick="openMyProfileModal()">
       <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar">
@@ -608,7 +605,6 @@
     <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto; padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">🚪 Log out</button>
   </div>
 
-  <!-- CENTRO (MENÚ PRINCIPAL) -->
   <main class="main-container" id="main-menu-container">
     <div class="title-box">
       <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="The Fishing Game Logo" class="fish-logo-img">
@@ -627,7 +623,6 @@
     </div>
   </main>
 
-  <!-- PANTALLA DE JUEGO (PLAY VIEW) -->
   <div id="game-screen">
     <img src="https://i.postimg.cc/bNcMt94Y/backpack.png" alt="Backpack" class="backpack-on-map" onclick="openModal('modal-backpack')" title="Open Backpack">
 
@@ -639,7 +634,6 @@
     <button class="exit-game-btn" onclick="exitGame()">🚪 Exit</button>
     <button id="cast-btn" class="cast-line-btn" onclick="castLine()">🎣 Cast Line!</button>
 
-    <!-- INTERFAZ MINIJUEGO DE PESCA TIPO FISCH -->
     <div id="fishing-minigame-overlay">
       <div class="minigame-container">
         <div class="minigame-title">🎣 CATCH THE FISH!</div>
@@ -658,7 +652,6 @@
     </div>
   </div>
 
-  <!-- ESQUINA INFERIOR DERECHA: Market, News y Index -->
   <div class="corner-bottom-right">
     <button class="img-btn" onclick="openMarketModal()">
       <img src="https://i.postimg.cc/pXqPJd8Z/market.png" alt="Market" class="btn-market-img">
@@ -671,12 +664,10 @@
     </button>
   </div>
 
-  <!-- BOTÓN ADMIN FLOTANTE -->
   <button id="adminBtn" class="admin-trigger-btn" onclick="openModal('modal-admin')">
     <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
   </button>
 
-  <!-- MODAL MARKET -->
   <div id="modal-market" class="modal-overlay">
     <div class="modal-card" style="max-width: 650px;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -709,7 +700,6 @@
     </div>
   </div>
 
-  <!-- MODAL PRECIO DE VENTA EN MARKET -->
   <div id="modal-market-price-prompt" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 320px;">
       <button class="modal-close" onclick="document.getElementById('modal-market-price-prompt').style.display='none'">✖</button>
@@ -723,7 +713,6 @@
     </div>
   </div>
 
-  <!-- MODAL ACCOUNT / AUTH -->
   <div id="modal-account" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -778,7 +767,6 @@
     </div>
   </div>
 
-  <!-- MODAL REENVIAR VERIFICACIÓN POR CORREO -->
   <div id="modal-resend-verification" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -797,7 +785,6 @@
     </div>
   </div>
 
-  <!-- MODAL FORGOT PASSWORD -->
   <div id="modal-forgot" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -812,7 +799,6 @@
     </div>
   </div>
 
-  <!-- MODAL PROFILE (MI PERFIL) -->
   <div id="modal-profile" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -850,7 +836,6 @@
     </div>
   </div>
 
-  <!-- MODAL VER OTRO PERFIL AJENO -->
   <div id="modal-view-profile" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="openModal('modal-profile')">✖</button>
@@ -871,14 +856,12 @@
     </div>
   </div>
 
-  <!-- MODAL ACUARIO CON MÚLTIPLES CUARTOS -->
   <div id="modal-aquarium" class="modal-overlay">
     <div class="modal-card" style="max-width: 680px; padding: 15px; background: #0f172a; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
       <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 3px; font-size: 1.3rem;">🐠 Aquarium</h2>
       <p style="font-size: 0.8rem; color: #a0aec0; text-align: center; margin-top:0; margin-bottom: 10px;" id="aquarium-subtitle">Viewing aquarium...</p>
       
-      <!-- NAVEGADOR DE CUARTOS DE ACUARIO -->
       <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 10px;">
         <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(-1)">◀ Prev Room</button>
         <span id="aquarium-room-indicator" style="font-weight: bold; font-size: 0.95rem; color: #f1c40f;">Room 1</span>
@@ -909,7 +892,6 @@
     </div>
   </div>
 
-  <!-- MODAL SELECCIONAR PEZ PARA LA REPISA -->
   <div id="modal-select-fish" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 350px;">
       <button class="modal-close" onclick="document.getElementById('modal-select-fish').style.display='none'">✖</button>
@@ -920,14 +902,12 @@
     </div>
   </div>
 
-  <!-- MODAL INDEX DE PECES CON FILTRO POR RAREZA -->
   <div id="modal-index" class="modal-overlay">
     <div class="modal-card" style="max-width: 420px; text-align: center;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>📖 Fish Index</h2>
       <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 12px;">Discover all the fish species available in the game.</p>
       
-      <!-- SELECTOR DE RAREZA -->
       <div class="form-group" style="margin-bottom: 12px; text-align: left;">
         <label style="font-size: 0.8rem; color: #3498db; font-weight: bold;">Filter by Rarity:</label>
         <select id="index-rarity-select" onchange="onRarityFilterChange()">
@@ -952,7 +932,6 @@
     </div>
   </div>
 
-  <!-- MODAL NEWS -->
   <div id="modal-news" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -967,7 +946,6 @@
     </div>
   </div>
 
-  <!-- MODAL SHOP -->
   <div id="modal-shop" class="modal-overlay">
     <div class="modal-card" style="text-align: center;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -1008,7 +986,6 @@
     </div>
   </div>
 
-  <!-- MODAL BACKPACK -->
   <div id="modal-backpack" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -1030,7 +1007,6 @@
     </div>
   </div>
 
-  <!-- MODAL ACHIEVEMENTS -->
   <div id="modal-achievements" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -1052,8 +1028,8 @@
           <div style="font-size: 2rem;">🏆</div>
           <div>
             <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #3498db;">Glu glu tank</h4>
-            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #fff; font-weight: bold;">amazing!</p>
-            <span style="font-size: 0.75rem; color: #a0aec0;">buy a fish tank.</span>
+            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #fff; font-weight: bold;">Amazing!</p>
+            <span style="font-size: 0.75rem; color: #a0aec0;">Buy a fish tank.</span>
           </div>
           <div id="ach-glu-glu-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
         </div>
@@ -1061,7 +1037,6 @@
     </div>
   </div>
 
-  <!-- MODAL ADMIN PANEL -->
   <div id="modal-admin" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -1087,6 +1062,16 @@
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
         <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyCoins(1)">Give Coins</button>
         <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyCoins(-1)">Remove Coins</button>
+      </div>
+
+      <!-- GESTIÓN DE MINI TANKS EN ADMIN -->
+      <div class="form-group">
+        <label>Mini Tanks Amount</label>
+        <input type="number" id="adminTanksAmount" placeholder="Tanks amount" value="1" min="1">
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyTanks(1)">Give Tanks</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyTanks(-1)">Remove Tanks</button>
       </div>
 
       <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
@@ -1140,7 +1125,6 @@
     </div>
   </div>
 
-  <!-- MODAL CUSTOM PARA TEMP BAN -->
   <div id="modal-temp-ban" class="modal-overlay">
     <div class="modal-card" style="max-width: 350px;">
       <button class="modal-close" onclick="document.getElementById('modal-temp-ban').style.display='none'">✖</button>
@@ -1153,7 +1137,6 @@
     </div>
   </div>
 
-  <!-- MODAL REMOVER CANTIDAD DE PECES EN ADMIN -->
   <div id="modal-admin-remove-fish" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 300px;">
       <button class="modal-close" onclick="document.getElementById('modal-admin-remove-fish').style.display='none'">✖</button>
@@ -1186,7 +1169,6 @@
     let selectedFishToMarket = null;
     let adminSelectedFishToRemove = "";
 
-    // MINIJUEGO VARIABLES
     let isMouseDown = false;
     let minigameLoop = null;
     let catchBarY = 0;
@@ -1372,7 +1354,7 @@
           if (tankBought && !achievements.gluGluTank) {
             achievements.gluGluTank = true;
             updated = true;
-            showToast("🏆 Achievement Unlocked: Glu glu tank! (amazing!)");
+            showToast("🏆 Achievement Unlocked: Glu glu tank! (Amazing!)");
           }
 
           if (updated) {
@@ -1519,7 +1501,6 @@
             return;
           }
 
-          // Agrupar peces por nombre para calcular cantidades y conservar referencias de índice si es necesario
           let fishCounts = {};
           fishes.forEach((f, idx) => {
             if (!fishCounts[f.name]) {
@@ -2884,6 +2865,37 @@
         loadTargetUserInventoryForAdmin();
       } catch (err) {
         showToast("❌ Error adding fish: " + err.message);
+      }
+    }
+
+    async function adminModifyTanks(multiplier) {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      const amount = parseInt(document.getElementById('adminTanksAmount').value);
+      if (!username || isNaN(amount) || amount <= 0) {
+        showToast("⚠️ Enter a valid username and tank amount.");
+        return;
+      }
+
+      try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
+
+        const playerRef = db.collection('jugadores').doc(targetUid);
+        const docSnap = await playerRef.get();
+        if (!docSnap.exists) return;
+
+        let currentTanks = docSnap.data().miniTanksCount || 0;
+        let val = amount * multiplier;
+        let newTanksCount = currentTanks + val;
+        if (newTanksCount < 0) newTanksCount = 0;
+
+        await playerRef.update({ miniTanksCount: newTanksCount });
+        showToast(`✅ Mini Tanks updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+      } catch (err) {
+        showToast("❌ Error updating tanks: " + err.message);
       }
     }
 
