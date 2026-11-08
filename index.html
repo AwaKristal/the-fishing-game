@@ -2,11 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>The Fishing Game</title>
-
-  <!-- Pega la línea del manifest aquí mismo -->
-  <link rel="manifest" href="manifest.json">
   
   <!-- Firebase v10.8.0 Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -39,6 +36,7 @@
       flex-direction: column;
       justify-content: space-between;
       overflow-x: hidden;
+      user-select: none;
     }
 
     header {
@@ -47,16 +45,45 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 20px;
+      padding: 12px 20px;
       z-index: 10;
+      gap: 10px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .version-tag {
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: bold;
       background: rgba(255,255,255,0.1);
-      padding: 5px 12px;
+      padding: 6px 12px;
       border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .download-app-btn {
+      background: #27ae60;
+      color: white;
+      border: 1px solid #fff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .download-app-btn:hover {
+      background: #2ecc71;
+      transform: translateY(-2px);
     }
 
     .main-container {
@@ -67,7 +94,7 @@
       flex-grow: 1;
       width: 100%;
       min-height: 100vh;
-      padding: 80px 15px 20px 15px;
+      padding: 70px 15px 20px 15px;
       gap: 15px;
     }
 
@@ -79,8 +106,8 @@
     }
 
     .fish-logo-img {
-      max-width: 500px;
-      width: 90%;
+      max-width: 480px;
+      width: 85%;
       height: auto;
       object-fit: contain;
       filter: drop-shadow(0 6px 18px rgba(0,0,0,0.95));
@@ -92,7 +119,7 @@
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     .img-btn {
@@ -109,7 +136,7 @@
     }
 
     .img-btn img {
-      width: 140px;
+      width: 130px;
       height: auto;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
@@ -138,21 +165,21 @@
     }
 
     .btn-news-img {
-      width: 130px !important;
+      width: 120px !important;
       height: auto !important;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
     .btn-index-img {
-      width: 110px !important;
+      width: 105px !important;
       height: auto !important;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
     .btn-market-img {
-      width: 110px !important;
+      width: 105px !important;
       height: auto !important;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
@@ -167,15 +194,15 @@
       padding: 5px 12px 5px 5px;
       border-radius: 30px;
       border: 2px solid #fff;
-      max-width: 200px;
+      max-width: 180px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .user-profile-badge img {
-      width: 35px;
-      height: 35px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       object-fit: cover;
     }
@@ -196,7 +223,7 @@
       position: absolute;
       top: 25%;
       left: 31%;
-      width: 75px;
+      width: 70px;
       height: auto;
       cursor: pointer;
       z-index: 105;
@@ -213,17 +240,17 @@
       top: 20px;
       left: 20px;
       display: flex;
-      gap: 15px;
+      gap: 12px;
       z-index: 105;
     }
 
     .hud-box {
       background: rgba(22, 33, 62, 0.85);
       border: 2px solid #fff;
-      padding: 8px 15px;
+      padding: 8px 14px;
       border-radius: 10px;
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .exit-game-btn {
@@ -257,6 +284,94 @@
       box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     }
     .cast-line-btn:hover { background: #27ae60; }
+
+    /* MINIJUEGO DE PESCA ESTILO FISCH */
+    #fishing-minigame-overlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 110;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .minigame-container {
+      background: rgba(22, 33, 62, 0.95);
+      border: 3px solid #3498db;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 280px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+    .minigame-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #3498db;
+      margin-bottom: 12px;
+    }
+
+    .track-bar {
+      position: relative;
+      width: 45px;
+      height: 260px;
+      background: #ffffff;
+      border: 3px solid #111;
+      border-radius: 22px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .green-zone {
+      position: absolute;
+      width: 100%;
+      height: 65px;
+      background: rgba(46, 204, 113, 0.85);
+      border-top: 2px solid #27ae60;
+      border-bottom: 2px solid #27ae60;
+      top: 100px;
+      left: 0;
+      transition: top 0.05s linear;
+    }
+
+    .catch-bar {
+      position: absolute;
+      width: 100%;
+      height: 22px;
+      background: #111111;
+      border: 2px solid #f1c40f;
+      border-radius: 6px;
+      bottom: 0px;
+      left: 0;
+      box-shadow: 0 0 8px rgba(0,0,0,0.8);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      background: #0f172a;
+      border-radius: 6px;
+      border: 1px solid #444;
+      overflow: hidden;
+    }
+    .progress-fill {
+      width: 20%;
+      height: 100%;
+      background: #2ecc71;
+      transition: width 0.1s linear, background 0.2s;
+    }
+
+    .minigame-hint {
+      font-size: 0.75rem;
+      color: #a0aec0;
+      margin-top: 8px;
+      text-align: center;
+    }
 
     .modal-overlay {
       display: none;
@@ -448,25 +563,33 @@
     }
 
     @media (max-width: 768px) {
-      .main-container { padding-top: 70px; }
-      .fish-logo-img { max-width: 260px; }
-      .center-menu { gap: 15px; margin-bottom: 15px; }
-      .img-btn img { width: 115px; }
-      .btn-news-img { width: 110px !important; }
-      .btn-index-img { width: 95px !important; }
-      .btn-market-img { width: 95px !important; }
-      .admin-trigger-btn { right: 15px; bottom: 85px; width: 45px; height: 45px; }
+      header { padding: 8px 12px; }
+      .version-tag { font-size: 0.8rem; padding: 4px 8px; }
+      .download-app-btn { font-size: 0.75rem; padding: 5px 10px; }
+      .main-container { padding-top: 65px; gap: 10px; }
+      .fish-logo-img { max-width: 250px; }
+      .center-menu { gap: 12px; margin-bottom: 10px; }
+      .img-btn img { width: 105px; }
+      .btn-news-img { width: 100px !important; }
+      .btn-index-img { width: 85px !important; }
+      .btn-market-img { width: 85px !important; }
+      .admin-trigger-btn { right: 12px; bottom: 75px; width: 42px; height: 42px; }
       .corner-bottom-left { bottom: 10px; left: 10px; }
       .corner-bottom-right { bottom: 10px; right: 10px; }
-      .modal-card { padding: 15px; max-height: 85vh; }
-      .backpack-on-map { top: 24%; left: 28%; width: 55px; }
+      .modal-card { padding: 14px; max-height: 88vh; }
+      .backpack-on-map { top: 22%; left: 26%; width: 50px; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="version-tag">v.1.0.0.0</div>
+    <div class="header-left">
+      <div class="version-tag">v.1.0.0.0</div>
+      <a href="https://github.com/AwaKristal/the-fishing-game/releases/tag/file" target="_blank" class="download-app-btn">
+        📲 Download App (Windows / Android)
+      </a>
+    </div>
   </header>
 
   <!-- ESQUINA INFERIOR IZQUIERDA: Account -->
@@ -504,7 +627,6 @@
 
   <!-- PANTALLA DE JUEGO (PLAY VIEW) -->
   <div id="game-screen">
-    <!-- MOCHILA VISIBLE CLICKEABLE AL LADO DE LA CAÑA -->
     <img src="https://i.postimg.cc/bNcMt94Y/backpack.png" alt="Backpack" class="backpack-on-map" onclick="openModal('modal-backpack')" title="Open Backpack">
 
     <div class="game-hud">
@@ -513,8 +635,25 @@
     </div>
 
     <button class="exit-game-btn" onclick="exitGame()">🚪 Exit</button>
+    <button id="cast-btn" class="cast-line-btn" onclick="castLine()">🎣 Cast Line!</button>
 
-    <button class="cast-line-btn" onclick="castLine()">🎣 Cast Line!</button>
+    <!-- INTERFAZ MINIJUEGO DE PESCA TIPO FISCH -->
+    <div id="fishing-minigame-overlay">
+      <div class="minigame-container">
+        <div class="minigame-title">🎣 CATCH THE FISH!</div>
+        
+        <div class="track-bar">
+          <div id="minigame-green-zone" class="green-zone"></div>
+          <div id="minigame-catch-bar" class="catch-bar"></div>
+        </div>
+
+        <div class="progress-track">
+          <div id="minigame-progress-fill" class="progress-fill"></div>
+        </div>
+
+        <div class="minigame-hint">HOLD click / tap to raise the bar into the green zone!</div>
+      </div>
+    </div>
   </div>
 
   <!-- ESQUINA INFERIOR DERECHA: Market, News y Index -->
@@ -530,7 +669,7 @@
     </button>
   </div>
 
-  <!-- BOTÓN ADMIN FLOTANTE SOLO IMAGEN -->
+  <!-- BOTÓN ADMIN FLOTANTE -->
   <button id="adminBtn" class="admin-trigger-btn" onclick="openModal('modal-admin')">
     <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
   </button>
@@ -546,7 +685,6 @@
         <button id="tab-market-sell-btn" class="tab-btn" onclick="switchMarketTab('sell')">💰 Sell My Fish</button>
       </div>
 
-      <!-- SECCIÓN 1: COMPRAR A OTROS JUGADORES (MARKET) -->
       <div id="market-buy-section">
         <p style="font-size:0.85rem; color:#a0aec0; margin-bottom:10px;">Buy fish offered by real players in the community market:</p>
         <div id="market-listings-container" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
@@ -554,7 +692,6 @@
         </div>
       </div>
 
-      <!-- SECCIÓN 2: VENDER MIS PECES (SELL / BOT SELL / MARKET SELL) -->
       <div id="market-sell-section" style="display: none;">
         <p style="font-size:0.85rem; color:#a0aec0; margin-bottom:10px;">Select a fish from your backpack to sell:</p>
         <div id="market-my-fishes-container" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
@@ -562,7 +699,6 @@
         </div>
       </div>
 
-      <!-- SECCIÓN 3: MIS OFERTAS ACTIVAS EN EL MERCADO (PARA CANCELAR) -->
       <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
       <h3 style="font-size: 1rem; color: #3498db; margin-bottom: 5px;">📋 My Active Market Listings (Cancel & Retrieve)</h3>
       <div id="market-my-active-listings" style="max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
@@ -698,10 +834,8 @@
       </div>
       <button type="button" class="modal-action-btn" style="margin-bottom: 10px;" onclick="updateProfileData()">Save Changes</button>
       
-      <!-- BOTÓN PARA VER MI ACUARIO -->
       <button type="button" class="modal-action-btn" style="background: #2980b9;" onclick="openMyAquarium()">🐠 See Aquarium</button>
 
-      <!-- BÚSQUEDA DE USUARIOS -->
       <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
       <h3>🔍 Search Player</h3>
       <form autocomplete="off" onsubmit="event.preventDefault(); handleUserSearch();">
@@ -731,40 +865,35 @@
         <p id="view-profile-bio" style="background: #0f172a; padding: 10px; border-radius: 8px; margin: 0; min-height: 50px; color: #fff; word-break: break-all;"></p>
       </div>
 
-      <!-- BOTÓN PARA VER EL ACUARIO DE ESTE JUGADOR AJENO -->
       <button type="button" class="modal-action-btn" style="background: #2980b9; margin-top: 5px;" onclick="openOtherAquarium()">🐠 See Aquarium</button>
     </div>
   </div>
 
-  <!-- MODAL ACUARIO (4 SLOTS ARRIBA, 4 SLOTS ABAJO, CON TANQUE POR SLOT) -->
+  <!-- MODAL ACUARIO -->
   <div id="modal-aquarium" class="modal-overlay">
     <div class="modal-card" style="max-width: 640px; padding: 15px; background: #0f172a; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
       <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 3px; font-size: 1.3rem;">🐠 Aquarium</h2>
       <p style="font-size: 0.8rem; color: #a0aec0; text-align: center; margin-top:0; margin-bottom: 10px;" id="aquarium-subtitle">Viewing aquarium...</p>
       
-      <!-- CONTENEDOR DEL ACUARIO CON LAS 2 REPISAS -->
       <div style="position: relative; width: 100%; height: 390px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: cover; background-position: center; border-radius: 10px; border: 2px solid #16213e; overflow: hidden; margin-bottom: 12px;">
         
-        <!-- REPISA SUPERIOR (4 SLOTS) -->
         <div style="position: absolute; top: 38px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
-          <div id="shelf-top-0" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
-          <div id="shelf-top-1" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
-          <div id="shelf-top-2" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
-          <div id="shelf-top-3" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
+          <div id="shelf-top-0" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
+          <div id="shelf-top-1" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
+          <div id="shelf-top-2" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
+          <div id="shelf-top-3" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
         </div>
 
-        <!-- REPISA INFERIOR (4 SLOTS) -->
         <div style="position: absolute; bottom: 25px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
-          <div id="shelf-bot-0" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
-          <div id="shelf-bot-1" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
-          <div id="shelf-bot-2" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
-          <div id="shelf-bot-3" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
+          <div id="shelf-bot-0" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
+          <div id="shelf-bot-1" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
+          <div id="shelf-bot-2" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
+          <div id="shelf-bot-3" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
         </div>
 
       </div>
 
-      <!-- CONTROLES O INFO DE CONFIGURACIÓN -->
       <div id="aquarium-owner-controls" style="display: none; background: #16213e; padding: 10px; border-radius: 8px; text-align: center;">
         <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #2ecc71;">💡 Each slot requires a Mini Tank! Buy tanks in Bob's Shop if you need more.</p>
       </div>
@@ -777,14 +906,12 @@
       <button class="modal-close" onclick="document.getElementById('modal-select-fish').style.display='none'">✖</button>
       <h3 style="margin-top:0;">🐟 Select a Fish for Tank</h3>
       <p style="font-size:0.85rem; color:#a0aec0;">Choose a fish from your inventory:</p>
-      <div id="select-fish-list" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
-        <!-- Lista de peces disponibles -->
-      </div>
+      <div id="select-fish-list" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;"></div>
       <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="removeFishFromShelf()">🗑️ Remove Tank / Fish</button>
     </div>
   </div>
 
-  <!-- MODAL INDEX DE PECES (LIBRO DE COLECCIÓN) -->
+  <!-- MODAL INDEX DE PECES -->
   <div id="modal-index" class="modal-overlay">
     <div class="modal-card" style="max-width: 420px; text-align: center;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -799,7 +926,6 @@
         <h3 id="index-fish-name" style="margin: 0 0 5px 0; font-size: 1.2rem; color: #3498db;">Fish Name</h3>
         <p id="index-fish-desc" style="font-size: 0.9rem; color: #cbd5e1; margin: 0 0 15px 0; padding: 0 10px; min-height: 40px;">Description goes here...</p>
         
-        <!-- CONTROLES DE NAVEGACIÓN (FLECHAS) -->
         <div style="display: flex; justify-content: space-between; width: 100%; position: absolute; top: 50%; transform: translateY(-50%); padding: 0 10px; pointer-events: none;">
           <button onclick="changeIndexFish(-1)" style="pointer-events: auto; background: rgba(22, 33, 62, 0.8); border: 1px solid #fff; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1rem;">◀</button>
           <button onclick="changeIndexFish(1)" style="pointer-events: auto; background: rgba(22, 33, 62, 0.8); border: 1px solid #fff; color: #fff; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1rem;">▶</button>
@@ -830,7 +956,7 @@
       <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>🛒 Bob's Fishing Shop</h2>
       
-      <img src="https://i.postimg.cc/NMtYbvzw/shop.png" alt="Bob Shop" style="width: 150px; height: auto; margin: 10px 0; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
+      <img src="https://i.postimg.cc/NMtYbvzw/shop.png" alt="Bob Shop" style="width: 140px; height: auto; margin: 10px 0; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
       <p style="font-size: 0.9rem; color: #a0aec0; margin-bottom: 15px;">"Welcome! Redeem your promo codes or buy upgrades!"</p>
 
       <div style="background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #0f3460; text-align: left;">
@@ -843,7 +969,6 @@
         </form>
       </div>
 
-      <!-- COMPRA DE TANQUE CHIQUITO -->
       <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
         <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
           <img src="https://i.postimg.cc/DZs0wKSx/tanque-mini.png" alt="Mini Tank" style="width: 40px; height: 40px; object-fit: contain;">
@@ -852,13 +977,6 @@
           </div>
         </div>
         <button id="buy-tank-btn" class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="buyMiniTank()">75 💰</button>
-      </div>
-      
-      <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-        <div style="text-align: left;">
-          <strong>🎣 Better Rod</strong><br><span style="font-size: 0.8rem; color: #a0aec0;">Catch rare fish easier</span>
-        </div>
-        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="showToast('🎣 Rod upgrade feature coming soon!')">100 💰</button>
       </div>
     </div>
   </div>
@@ -892,7 +1010,6 @@
       <p style="font-size:0.85rem; color:#a0aec0; margin-bottom:15px;">Unlock achievements as you progress in the game!</p>
       
       <div id="achievements-list" style="display: flex; flex-direction: column; gap: 10px;">
-        <!-- Logro 1 -->
         <div id="ach-catch-first" style="background: #0f172a; border: 1px solid #444; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
           <div style="font-size: 2rem;">🏆</div>
           <div>
@@ -1000,17 +1117,28 @@
     let currentIndexFish = 0;
     let selectedFishToMarket = null;
 
+    // MINIJUEGO VARIABLES
+    let isMouseDown = false;
+    let minigameLoop = null;
+    let catchBarY = 0;
+    let catchBarSpeed = 0;
+    let greenZoneY = 80;
+    let greenZoneDir = 1.2;
+    let captureProgress = 30;
+    let pendingCaughtFish = null;
+
+    // PECES COMUNES CON VALORES DE BOT SELL BALANCEADOS (MÁXIMO 25 MONEDAS)
     const ALLOWED_FISH_TYPES = [
       { 
         name: "Opah", 
-        value: 120, 
+        value: 25, 
         rarity: "Common",
         desc: "A large, colorful deep-water fish known for its distinct round body and warm-blooded nature.",
         img: "https://i.postimg.cc/sxhg04JM/opah.png" 
       },
       { 
         name: "Clownfish", 
-        value: 25, 
+        value: 20, 
         rarity: "Common",
         desc: "A small, vibrant orange fish with distinct white stripes, famous for living among sea anemones.",
         img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" 
@@ -1024,7 +1152,7 @@
       },
       { 
         name: "Tilapia", 
-        value: 40, 
+        value: 22, 
         rarity: "Common",
         desc: "A sturdy cichlid fish commonly found in fresh and brackish waters around warm regions.",
         img: "https://i.postimg.cc/zXTCP9pD/tilapia.png" 
@@ -1127,7 +1255,6 @@
       document.getElementById('index-counter').innerText = `${currentIndexFish + 1} / ${ALLOWED_FISH_TYPES.length}`;
     }
 
-    // --- SISTEMA DE LOGROS (ACHIEVEMENTS) ---
     async function checkAchievements(fishesCount) {
       const user = auth.currentUser;
       if (!user) return;
@@ -1179,9 +1306,7 @@
         console.error("Error loading achievements UI:", err);
       }
     }
-    // --- FIN LOGROS ---
 
-    // --- SISTEMA DE MERCADO Y VENTA (CON CORRECCIÓN DE BUG DE PECES EN USO) ---
     function openMarketModal() {
       const user = auth.currentUser;
       if (!user) {
@@ -1253,8 +1378,7 @@
         });
         container.innerHTML = html;
       } catch (err) {
-        console.error("Market load error:", err);
-        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading market. Check permissions.</p>';
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading market.</p>';
       }
     }
 
@@ -1269,7 +1393,7 @@
         if (doc.exists) {
           const fishes = doc.data().fishes || [];
           if (fishes.length === 0) {
-            container.innerHTML = '<p style="color:#a0aec0; text-align:center;">You have no fish to sell! Go fishing.</p>';
+            container.innerHTML = '<p style="color:#a0aec0; text-align:center;">You have no fish to sell!</p>';
             return;
           }
 
@@ -1331,7 +1455,6 @@
       }
     }
 
-    // CORRECCIÓN DE BUG 1: Validar que el pez no esté expuesto en el acuario antes de vender por Bot
     async function botSellFish(fishIndex, fishName, fishValue) {
       const user = auth.currentUser;
       if (!user) return;
@@ -1348,13 +1471,11 @@
           let tanks = doc.data().aquariumTanks || new Array(8).fill(null);
           if (fishes.length <= fishIndex) throw new Error("Fish not found");
 
-          // Validar si este pez exacto está siendo usado en el acuario
           let usedInAquariumCount = tanks.filter(t => t === fishName).length;
           if (usedInAquariumCount > 0) {
-            // Contamos cuántos de este mismo tipo preceden al índice actual
             let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
             if (precedingSameType < usedInAquariumCount) {
-              throw new Error(`You cannot sell ${fishName} because it is currently displayed in your Aquarium! Remove it from the aquarium first.`);
+              throw new Error(`You cannot sell ${fishName} because it is currently displayed in your Aquarium! Remove it first.`);
             }
           }
 
@@ -1384,7 +1505,6 @@
       document.getElementById('modal-market-price-prompt').style.display = 'flex';
     }
 
-    // CORRECCIÓN DE BUG 1: Validar que el pez no esté expuesto en el acuario antes de ponerlo en el Mercado
     async function confirmMarketSell() {
       const user = auth.currentUser;
       if (!user || !selectedFishToMarket) return;
@@ -1412,7 +1532,6 @@
           return;
         }
 
-        // Validar si está en uso en el acuario
         let usedInAquariumCount = tanks.filter(t => t === fishName).length;
         if (usedInAquariumCount > 0) {
           let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
@@ -1435,7 +1554,7 @@
 
         await playerRef.update({ fishes: fishes });
 
-        showToast(`✅ ${fishName} successfully listed on the Market for ${priceInput} 💰!`);
+        showToast(`✅ ${fishName} successfully listed on Market for ${priceInput} 💰!`);
         document.getElementById('modal-market-price-prompt').style.display = 'none';
         loadMyFishesForMarket();
         loadMyActiveListings();
@@ -1454,13 +1573,10 @@
 
         await db.runTransaction(async (transaction) => {
           const listingSnap = await transaction.get(listingRef);
-          if (!listingSnap.exists) throw new Error("Listing does not exist anymore.");
+          if (!listingSnap.exists) throw new Error("Listing does not exist.");
           
           const listingData = listingSnap.data();
           if (listingData.sellerUid !== user.uid) throw new Error("Not authorized.");
-
-          const playerSnap = await transaction.get(playerRef);
-          if (!playerSnap.exists) throw new Error("Player not found.");
 
           transaction.update(playerRef, {
             fishes: firebase.firestore.FieldValue.arrayUnion({ name: fishName, timestamp: new Date().toISOString() })
@@ -1469,11 +1585,11 @@
           transaction.delete(listingRef);
         });
 
-        showToast(`✅ Listing cancelled. ${fishName} returned to your backpack.`);
+        showToast(`✅ Listing cancelled. ${fishName} returned.`);
         loadMyActiveListings();
         loadMyFishesForMarket();
       } catch (err) {
-        showToast("❌ Error cancelling listing: " + err.message);
+        showToast("❌ Error cancelling: " + err.message);
       }
     }
 
@@ -1495,11 +1611,11 @@
           const sellerSnap = await transaction.get(sellerRef);
           const listingSnap = await transaction.get(listingRef);
 
-          if (!listingSnap.exists) throw new Error("This item was already sold or removed.");
-          if (!buyerSnap.exists) throw new Error("Buyer profile not found.");
+          if (!listingSnap.exists) throw new Error("Item already sold!");
+          if (!buyerSnap.exists) throw new Error("Buyer profile error.");
 
           const buyerCoins = buyerSnap.data().coins || 0;
-          if (buyerCoins < price) throw new Error("Not enough coins to buy this fish!");
+          if (buyerCoins < price) throw new Error("Not enough coins!");
 
           transaction.update(buyerRef, {
             coins: buyerCoins - price,
@@ -1507,23 +1623,21 @@
           });
 
           if (sellerSnap.exists) {
-            const sellerCoins = sellerSnap.data().coins || 0;
             transaction.update(sellerRef, {
-              coins: sellerCoins + price
+              coins: (sellerSnap.data().coins || 0) + price
             });
           }
 
           transaction.delete(listingRef);
         });
 
-        showToast(`🎉 Successfully purchased ${fishName} for ${price} 💰!`);
+        showToast(`🎉 Purchased ${fishName} for ${price} 💰!`);
         loadMarketListings();
         updateGameHUD();
       } catch (err) {
         showToast("❌ Purchase error: " + err.message);
       }
     }
-    // --- FIN MERCADO ---
 
     async function openMyAquarium() {
       const user = auth.currentUser;
@@ -1560,7 +1674,7 @@
       const ownerControls = document.getElementById('aquarium-owner-controls');
       
       if (isViewingMyAquarium) {
-        subtitle.innerText = "Each slot requires 1 Mini Tank from your inventory to display a fish!";
+        subtitle.innerText = "Each slot requires 1 Mini Tank from your inventory!";
         ownerControls.style.display = 'block';
       } else {
         subtitle.innerText = `Viewing ${username}'s displayed fish`;
@@ -1587,14 +1701,13 @@
         const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName) || ALLOWED_FISH_TYPES[0];
         slotEl.innerHTML = `
           <div style="position: relative; width: 100%; height: 100%; background-image: url('https://i.postimg.cc/DZs0wKSx/tanque-mini.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
-            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 62px; height: auto; object-fit: contain; pointer-events: none;">
+            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 48px; height: auto; object-fit: contain; pointer-events: none;">
           </div>
         `;
         startFishAnimation(shelfIndex);
       }
     }
 
-    // CORRECCIÓN DE BUG 2: Validar inventario de Mini Tanques correctamente antes de abrir el modal del slot
     function handleShelfClick(shelfIndex) {
       if (!isViewingMyAquarium) return;
       selectedShelfIndex = shelfIndex;
@@ -1609,13 +1722,11 @@
           const fishes = data.fishes || [];
           const tanks = data.aquariumTanks || new Array(8).fill(null);
 
-          // Si el slot ya tiene tanque asignado, abrimos selección directo
           if (tanks[selectedShelfIndex]) {
             openSelectFishModal(fishes);
             return;
           }
 
-          // Si está vacío, validamos que tenga al menos 1 tanque en inventario
           if (tanksCount <= 0) {
             showToast("⚠️ You need a Mini Tank in your inventory! Buy one in Bob's Shop.");
             return;
@@ -1629,7 +1740,7 @@
     function openSelectFishModal(fishes) {
       const listEl = document.getElementById('select-fish-list');
       if (!fishes || fishes.length === 0) {
-        listEl.innerHTML = '<p style="color:#a0aec0; text-align:center; margin:10px 0;">You have no fish in your inventory! Go fishing first.</p>';
+        listEl.innerHTML = '<p style="color:#a0aec0; text-align:center; margin:10px 0;">You have no fish in your inventory!</p>';
       } else {
         let html = '';
         fishes.forEach((f) => {
@@ -1649,7 +1760,6 @@
       document.getElementById('modal-select-fish').style.display = 'flex';
     }
 
-    // CORRECCIÓN DE BUG 2: Validar que existan suficientes ejemplares si se quiere duplicar el pez en el acuario y descontar el tanque exacto
     async function assignFishToShelf(fishName) {
       const user = auth.currentUser;
       if (!user) return;
@@ -1663,17 +1773,14 @@
           let fishes = data.fishes || [];
           let tanksCount = data.miniTanksCount || 0;
 
-          // Contar cuántos peces de este tipo tiene en total el jugador en su mochila
           let totalInInventory = fishes.filter(f => f.name === fishName).length;
-          // Contar cuántos de este mismo tipo ya están mostrados en otras repisas del acuario
           let alreadyOnDisplay = tanks.filter((t, idx) => t === fishName && idx !== selectedShelfIndex).length;
 
           if (alreadyOnDisplay >= totalInInventory) {
-            showToast(`⚠️ You only have ${totalInInventory} ${fishName}(s) in your backpack and ${alreadyOnDisplay} already in your aquarium. You need another one to place it twice!`);
+            showToast(`⚠️ You only have ${totalInInventory} ${fishName}(s) in your backpack and ${alreadyOnDisplay} already in your aquarium!`);
             return;
           }
 
-          // Si el slot estaba vacío, consumimos 1 tanque del inventario
           if (!tanks[selectedShelfIndex]) {
             if (tanksCount <= 0) {
               showToast("⚠️ Not enough Mini Tanks in inventory!");
@@ -1689,16 +1796,15 @@
             miniTanksCount: tanksCount
           });
           
-          showToast(`✅ ${fishName} placed in tank! (Mini Tank consumed)`);
+          showToast(`✅ ${fishName} placed in tank!`);
           document.getElementById('modal-select-fish').style.display = 'none';
           renderAquarium(data.username || "My", fishes, tanks);
         }
       } catch (err) {
-        showToast("❌ Error updating tank: " + err.message);
+        showToast("❌ Error: " + err.message);
       }
     }
 
-    // CORRECCIÓN DE BUG 2: Devolver el tanque al inventario al vaciar la repisa
     async function removeFishFromShelf() {
       const user = auth.currentUser;
       if (!user) return;
@@ -1734,15 +1840,15 @@
       const fishImg = document.querySelector(`.swimming-fish-${shelfIndex}`);
       if (!fishImg) return;
 
-      let posX = 32;
-      let posY = 50;
-      let speedX = (Math.random() > 0.5 ? 1 : -1) * 0.6;
-      let speedY = (Math.random() > 0.5 ? 1 : -1) * 0.3;
+      let posX = 35;
+      let posY = 45;
+      let speedX = (Math.random() > 0.5 ? 1 : -1) * 0.5;
+      let speedY = (Math.random() > 0.5 ? 1 : -1) * 0.25;
 
-      const minX = 8;
-      const maxX = 68;
-      const minY = 20;
-      const maxY = 72;
+      const minX = 22;
+      const maxX = 60;
+      const minY = 30;
+      const maxY = 65;
 
       const interval = setInterval(() => {
         posX += speedX;
@@ -1795,6 +1901,7 @@
     }
 
     function exitGame() {
+      stopMinigame(false);
       document.getElementById('game-screen').style.display = 'none';
       showToast("🏠 Returned to main menu.");
     }
@@ -1818,28 +1925,119 @@
       const user = auth.currentUser;
       if (!user) return;
 
-      showToast("🎣 Casting your line... Waiting for a bite...");
-      
-      setTimeout(async () => {
-        const caught = ALLOWED_FISH_TYPES[Math.floor(Math.random() * ALLOWED_FISH_TYPES.length)];
+      const castBtn = document.getElementById('cast-btn');
+      castBtn.disabled = true;
+      castBtn.innerText = "⏳ Waiting for bite...";
+      showToast("🎣 Line cast! Waiting...");
 
+      setTimeout(() => {
+        castBtn.disabled = false;
+        castBtn.innerText = "🎣 Cast Line!";
+        pendingCaughtFish = ALLOWED_FISH_TYPES[Math.floor(Math.random() * ALLOWED_FISH_TYPES.length)];
+        startFishingMinigame();
+      }, 2000 + Math.random() * 1500);
+    }
+
+    function startFishingMinigame() {
+      const overlay = document.getElementById('fishing-minigame-overlay');
+      overlay.style.display = 'flex';
+
+      catchBarY = 10;
+      catchBarSpeed = 0;
+      greenZoneY = 80;
+      greenZoneDir = 1.2;
+      captureProgress = 30;
+      isMouseDown = false;
+
+      window.onmousedown = () => { isMouseDown = true; };
+      window.onmouseup = () => { isMouseDown = false; };
+      window.ontouchstart = () => { isMouseDown = true; };
+      window.ontouchend = () => { isMouseDown = false; };
+
+      const greenZoneEl = document.getElementById('minigame-green-zone');
+      const catchBarEl = document.getElementById('minigame-catch-bar');
+      const progressFillEl = document.getElementById('minigame-progress-fill');
+
+      clearInterval(minigameLoop);
+      minigameLoop = setInterval(() => {
+        greenZoneY += greenZoneDir * 1.5;
+        if (greenZoneY <= 10) { greenZoneY = 10; greenZoneDir *= -1; }
+        if (greenZoneY >= 185) { greenZoneY = 185; greenZoneDir *= -1; }
+        greenZoneEl.style.top = greenZoneY + 'px';
+
+        if (isMouseDown) {
+          catchBarSpeed += 0.8;
+        } else {
+          catchBarSpeed -= 0.6;
+        }
+        
+        catchBarSpeed *= 0.92;
+        catchBarY += catchBarSpeed;
+
+        if (catchBarY <= 0) { catchBarY = 0; catchBarSpeed = 0; }
+        if (catchBarY >= 235) { catchBarY = 235; catchBarSpeed = 0; }
+
+        catchBarEl.style.bottom = catchBarY + 'px';
+
+        const barTop = 260 - catchBarY - 22;
+        const greenTop = greenZoneY;
+        const greenBottom = greenZoneY + 65;
+
+        const isOverlapping = (barTop + 22 >= greenTop && barTop <= greenBottom);
+
+        if (isOverlapping) {
+          captureProgress += 0.7;
+          greenZoneEl.style.background = 'rgba(46, 204, 113, 0.95)';
+        } else {
+          captureProgress -= 0.5;
+          greenZoneEl.style.background = 'rgba(231, 76, 60, 0.75)';
+        }
+
+        if (captureProgress > 100) captureProgress = 100;
+        if (captureProgress < 0) captureProgress = 0;
+
+        progressFillEl.style.width = captureProgress + '%';
+        progressFillEl.style.background = isOverlapping ? '#2ecc71' : '#e74c3c';
+
+        if (captureProgress >= 100) {
+          stopMinigame(true);
+        } else if (captureProgress <= 0) {
+          stopMinigame(false);
+        }
+      }, 30);
+    }
+
+    async function stopMinigame(success) {
+      clearInterval(minigameLoop);
+      document.getElementById('fishing-minigame-overlay').style.display = 'none';
+
+      window.onmousedown = null;
+      window.onmouseup = null;
+      window.ontouchstart = null;
+      window.ontouchend = null;
+
+      if (success && pendingCaughtFish) {
+        const user = auth.currentUser;
+        if (!user) return;
         try {
           const playerRef = db.collection('jugadores').doc(user.uid);
           const docSnap = await playerRef.get();
           const currentFishes = docSnap.data().fishes || [];
 
           await playerRef.update({
-            fishes: firebase.firestore.FieldValue.arrayUnion({ name: caught.name, timestamp: new Date().toISOString() })
+            fishes: firebase.firestore.FieldValue.arrayUnion({ name: pendingCaughtFish.name, timestamp: new Date().toISOString() })
           });
 
-          showToast(`🎉 You caught a ${caught.name}! Added to backpack.`);
+          showToast(`🎉 PERFECT CATCH! You caught a ${pendingCaughtFish.name}!`);
           updateGameHUD();
-
           checkAchievements(currentFishes.length + 1);
         } catch (err) {
           showToast("❌ Error saving catch: " + err.message);
         }
-      }, 2500);
+      } else if (!success && pendingCaughtFish) {
+        showToast("💥 The fish got away! Try again.");
+      }
+      pendingCaughtFish = null;
     }
 
     async function buyMiniTank() {
@@ -2051,7 +2249,7 @@
           showToast("✅ Your email is already verified!");
         } else {
           await cred.user.sendEmailVerification();
-          showToast("📧 Fresh verification email sent! Check your inbox.");
+          showToast("📧 Fresh verification email sent!");
         }
         closeAllModals();
       } catch (err) {
@@ -2070,7 +2268,7 @@
           statusEl.innerText = "✅ Email verified";
           statusEl.style.color = "#2ecc71";
         } else {
-          statusEl.innerText = "⚠️ Email not verified (Check inbox)";
+          statusEl.innerText = "⚠️ Email not verified";
           statusEl.style.color = "#e74c3c";
         }
 
@@ -2140,7 +2338,7 @@
       }
       try {
         await auth.sendPasswordResetEmail(email);
-        showToast("📬 Password reset link sent to your email.");
+        showToast("📬 Password reset link sent.");
         closeAllModals();
       } catch (err) {
         showToast("❌ Error: " + err.message);
