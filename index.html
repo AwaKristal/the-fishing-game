@@ -418,7 +418,7 @@
       gap: 5px;
     }
 
-    .form-group input, .form-group textarea {
+    .form-group input, .form-group textarea, .form-group select {
       padding: 10px;
       border-radius: 8px;
       border: 1px solid #444;
@@ -911,14 +911,23 @@
     </div>
   </div>
 
-  <!-- MODAL INDEX DE PECES -->
+  <!-- MODAL INDEX DE PECES CON FILTRO POR RAREZA -->
   <div id="modal-index" class="modal-overlay">
     <div class="modal-card" style="max-width: 420px; text-align: center;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>📖 Fish Index</h2>
-      <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 15px;">Discover all the fish species available in the game.</p>
+      <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 12px;">Discover all the fish species available in the game.</p>
       
-      <div style="background: #0f172a; border: 2px solid #0f3460; border-radius: 12px; padding: 20px; position: relative; min-height: 260px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <!-- SELECTOR DE RAREZA -->
+      <div class="form-group" style="margin-bottom: 12px; text-align: left;">
+        <label style="font-size: 0.8rem; color: #3498db; font-weight: bold;">Filter by Rarity:</label>
+        <select id="index-rarity-select" onchange="onRarityFilterChange()">
+          <option value="Common">Common</option>
+          <!-- Se pueden agregar más opciones aquí en el futuro (ej: Rare, Epic, Legendary) -->
+        </select>
+      </div>
+
+      <div style="background: #0f172a; border: 2px solid #0f3460; border-radius: 12px; padding: 20px; position: relative; min-height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
         <span id="index-rarity" style="position: absolute; top: 12px; right: 15px; background: #27ae60; color: #fff; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;">Common</span>
         
         <img id="index-fish-img" src="" alt="Fish" style="width: 110px; height: 110px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
@@ -1127,7 +1136,6 @@
     let captureProgress = 30;
     let pendingCaughtFish = null;
 
-    // PECES COMUNES CON VALORES DE BOT SELL BALANCEADOS (MÁXIMO 25 MONEDAS)
     const ALLOWED_FISH_TYPES = [
       { 
         name: "Opah", 
@@ -1231,28 +1239,56 @@
 
     function openIndexModal() {
       currentIndexFish = 0;
+      document.getElementById('index-rarity-select').value = "Common";
       renderIndexFish();
       document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
       document.getElementById('modal-index').style.display = 'flex';
     }
 
+    function onRarityFilterChange() {
+      currentIndexFish = 0;
+      renderIndexFish();
+    }
+
+    function getFilteredIndexFishes() {
+      const selectedRarity = document.getElementById('index-rarity-select').value;
+      return ALLOWED_FISH_TYPES.filter(f => f.rarity === selectedRarity);
+    }
+
     function changeIndexFish(direction) {
+      const filteredFishes = getFilteredIndexFishes();
+      if (filteredFishes.length === 0) return;
+
       currentIndexFish += direction;
       if (currentIndexFish < 0) {
-        currentIndexFish = ALLOWED_FISH_TYPES.length - 1;
-      } else if (currentIndexFish >= ALLOWED_FISH_TYPES.length) {
+        currentIndexFish = filteredFishes.length - 1;
+      } else if (currentIndexFish >= filteredFishes.length) {
         currentIndexFish = 0;
       }
       renderIndexFish();
     }
 
     function renderIndexFish() {
-      const fish = ALLOWED_FISH_TYPES[currentIndexFish];
+      const filteredFishes = getFilteredIndexFishes();
+      if (filteredFishes.length === 0) {
+        document.getElementById('index-fish-img').src = "";
+        document.getElementById('index-fish-name').innerText = "No fish found";
+        document.getElementById('index-fish-desc').innerText = "No fishes available for this rarity yet.";
+        document.getElementById('index-rarity').innerText = "-";
+        document.getElementById('index-counter').innerText = "0 / 0";
+        return;
+      }
+
+      if (currentIndexFish >= filteredFishes.length) {
+        currentIndexFish = 0;
+      }
+
+      const fish = filteredFishes[currentIndexFish];
       document.getElementById('index-fish-img').src = fish.img;
       document.getElementById('index-fish-name').innerText = fish.name;
       document.getElementById('index-fish-desc').innerText = fish.desc;
       document.getElementById('index-rarity').innerText = fish.rarity;
-      document.getElementById('index-counter').innerText = `${currentIndexFish + 1} / ${ALLOWED_FISH_TYPES.length}`;
+      document.getElementById('index-counter').innerText = `${currentIndexFish + 1} / ${filteredFishes.length}`;
     }
 
     async function checkAchievements(fishesCount) {
