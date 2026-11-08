@@ -1,793 +1,437 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Fishing Game</title>
-  
-  <!-- Firebase v10.8.0 Compat SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-  <!-- Google reCAPTCHA v2 API -->
-  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+  <!-- Firebase App (Core) SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <!-- Firebase Auth & Firestore SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <style>
-    :root {
-      --bg-color: #111425;
-      --panel-bg: #16213e;
-      --accent-color: #0f3460;
-      --text-color: #ffffff;
-      --btn-hover: #e94560;
-      --modal-bg: rgba(0, 0, 0, 0.8);
-    }
-
-    * { box-sizing: border-box; }
-
     body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
       margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow-x: hidden;
-    }
-
-    header {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       padding: 20px;
-      z-index: 10;
     }
-
-    .version-tag {
-      font-size: 1.1rem;
-      font-weight: bold;
-      background: rgba(255,255,255,0.1);
-      padding: 6px 14px;
+    .container {
+      max-width: 600px;
+      margin: 0 auto 20px auto;
+      background: #1e1e1e;
+      padding: 20px;
       border-radius: 8px;
     }
-
-    .admin-corner { display: none; }
-
-    .main-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-grow: 1;
-      height: 100vh;
-      gap: 15px;
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: #fff;
+      border-radius: 4px;
+      box-sizing: border-box;
     }
-
-    .title-box {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .fish-logo-img {
-      max-width: 580px;
-      width: 95%;
-      height: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.95));
-    }
-
-    .center-menu {
-      display: flex;
-      gap: 30px;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 70px;
-    }
-
-    .img-btn {
-      background: none;
+    button {
+      background: #00adb5;
       border: none;
       cursor: pointer;
-      padding: 0;
-      transition: transform 0.2s ease, filter 0.2s ease;
+      font-weight: bold;
     }
-
-    .img-btn:hover {
-      transform: scale(1.1);
-      filter: brightness(1.2);
+    button:hover {
+      background: #00818a;
     }
-
-    .img-btn img {
-      width: 160px;
-      height: auto;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+    button:disabled {
+      background: #444;
+      cursor: not-allowed;
     }
-
-    .corner-bottom-left {
-      position: absolute;
-      bottom: 25px;
-      left: 25px;
+    
+    /* Contenedor de Noticias (Carrusel) */
+    .news-card {
+      background: #2a2a2a;
+      border-radius: 6px;
+      padding: 15px;
+      border-left: 4px solid #00adb5;
+      margin-top: 10px;
+    }
+    .news-controls {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-      z-index: 10;
-    }
-
-    .corner-bottom-right {
-      position: absolute;
-      bottom: 25px;
-      right: 25px;
-      display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
-      z-index: 10;
+      margin-top: 10px;
+      gap: 10px;
+    }
+    .news-controls button {
+      width: auto;
+      padding: 8px 15px;
+    }
+    .news-counter {
+      font-weight: bold;
+      color: #00adb5;
     }
 
-    .btn-news-img {
-      width: 160px !important;
-      height: auto !important;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
-    }
-
-    .user-profile-badge {
+    /* Botón de Admin flotante */
+    .admin-trigger-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      background-color: #2c3e50;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      z-index: 9999;
       display: none;
       align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      background: var(--panel-bg);
-      padding: 6px 16px 6px 6px;
-      border-radius: 30px;
-      border: 2px solid #fff;
+      justify-content: center;
+      padding: 0;
     }
-
-    .user-profile-badge img {
-      width: 40px;
-      height: 40px;
+    .admin-trigger-btn img {
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       object-fit: cover;
     }
-
-    .modal-overlay {
+    /* Modal de Admin */
+    .admin-modal {
       display: none;
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: var(--modal-bg);
-      backdrop-filter: blur(5px);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-      overflow-y: auto;
-    }
-
-    .modal-card {
-      background: var(--panel-bg);
-      border: 2px solid #fff;
-      border-radius: 16px;
-      width: 100%;
-      max-width: 450px;
-      padding: 25px;
-      position: relative;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 15px; right: 15px;
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    .form-group input, .form-group textarea {
-      padding: 10px;
-      border-radius: 8px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #222;
       border: 1px solid #444;
-      background: #0f172a;
-      color: #fff;
-    }
-
-    .tab-container {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 8px;
-      background: #0f172a;
-      border: 1px solid #fff;
-      color: #fff;
+      padding: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.7);
+      z-index: 10000;
+      width: 90%;
+      max-width: 450px;
       border-radius: 8px;
-      cursor: pointer;
     }
-
-    .tab-btn.active {
-      background: var(--btn-hover);
-    }
-
-    .modal-action-btn {
-      background: var(--accent-color);
-      color: white;
-      border: 2px solid #fff;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .modal-action-btn:hover { background: var(--btn-hover); }
-
-    #toast-container {
-      position: fixed;
-      bottom: 20px; right: 20px;
-      z-index: 2000;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .toast {
-      background: var(--panel-bg);
-      color: #fff;
-      border: 2px solid var(--btn-hover);
-      padding: 12px 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      animation: fadeIn 0.3s forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 768px) {
-      body { overflow: auto; }
-      .fish-logo-img { max-width: 280px; }
-      .center-menu { margin-bottom: 20px; }
-      .corner-bottom-left, .corner-bottom-right {
-        position: relative;
-        bottom: auto; left: auto; right: auto;
-        width: 100%;
-        align-items: center;
-        margin-top: 10px;
-      }
-      .center-menu { flex-direction: column; width: 100%; }
-      .img-btn img { width: 130px; }
-      .btn-news-img { width: 130px !important; }
+    hr {
+      border: 0;
+      border-top: 1px solid #444;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div id="admin-panel-btn" class="admin-corner">
-      <button class="modal-action-btn" onclick="openModal('modal-admin')">⚙️ Admin Panel</button>
-    </div>
-    <div class="version-tag">v.1.0.0.0</div>
-  </header>
-
-  <!-- ESQUINA INFERIOR IZQUIERDA: Account -->
-  <div class="corner-bottom-left">
-    <div id="user-badge" class="user-profile-badge" onclick="openModal('modal-profile')">
-      <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar">
-      <span id="user-display-name">Username</span>
-    </div>
-    <div id="account-container">
-      <button class="img-btn" onclick="openModal('modal-account')">
-        <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account">
-      </button>
-    </div>
-    <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto;" onclick="logout()">🚪 Log out</button>
-  </div>
-
-  <!-- CENTRO -->
-  <main class="main-container">
-    <div class="title-box">
-      <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="The Fishing Game Logo" class="fish-logo-img">
+  <div class="container">
+    <h1>The Fishing Game</h1>
+    
+    <!-- Sección de Autenticación / Perfil -->
+    <div id="auth-section">
+      <h3>Acceso</h3>
+      <input type="email" id="userEmail" placeholder="Correo electrónico">
+      <input type="password" id="userPassword" placeholder="Contraseña">
+      <button onclick="loginUser()">Iniciar Sesión</button>
+      <button onclick="registerUser()">Registrarse</button>
+      <button onclick="sendPasswordReset()">Olvidé mi contraseña</button>
     </div>
 
-    <div class="center-menu">
-      <button class="img-btn" onclick="openModal('modal-shop')">
-        <img src="https://i.postimg.cc/2yGLxwj8/shop.png" alt="Shop">
-      </button>
-      <button class="img-btn" onclick="startGame()">
-        <img src="https://i.postimg.cc/d36Z9BQ7/play.png" alt="Play">
-      </button>
-      <button class="img-btn" onclick="openModal('modal-achievements')">
-        <img src="https://i.postimg.cc/rsjR9JyD/achievements.png" alt="Achievements">
-      </button>
+    <div id="profile-section" style="display:none;">
+      <h3>Perfil de Usuario</h3>
+      <p id="profile-info"></p>
+      <button onclick="resendVerificationEmail()">Reenviar Correo de Verificación</button>
+      <button onclick="logoutUser()">Cerrar Sesión</button>
     </div>
-  </main>
 
-  <!-- ESQUINA INFERIOR DERECHA -->
-  <div class="corner-bottom-right">
-    <button class="img-btn" onclick="openModal('modal-news')">
-      <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
-    </button>
-  </div>
+    <hr>
 
-  <!-- MODAL ACCOUNT / AUTH -->
-  <div id="modal-account" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <div class="tab-container">
-        <button id="tab-login-btn" class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
-        <button id="tab-register-btn" class="tab-btn" onclick="switchAuthTab('register')">Register</button>
-      </div>
-
-      <form id="form-login" onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="login-email" autocomplete="email" required>
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="login-password" autocomplete="current-password" required>
-        </div>
-        <div class="form-group">
-          <div id="recaptcha-login"></div>
-        </div>
-        <button type="submit" class="modal-action-btn">Sign In</button>
-        <p style="font-size:0.85rem; text-align:center; margin-top:10px; cursor:pointer; color:#3498db;" onclick="openModal('modal-forgot')">Forgot password?</p>
-        <p style="font-size:0.9rem; text-align:center; margin-top:10px; cursor:pointer; color:#2ecc71; font-weight:bold;" onclick="openModal('modal-resend-verification')">📧 Resend Verification Email</p>
-      </form>
-
-      <form id="form-register" onsubmit="handleRegister(event)" style="display:none;" autocomplete="on">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="reg-username" autocomplete="given-name" name="new-username" required maxlength="15">
-        </div>
-        <div class="form-group">
-          <label>Email Address</label>
-          <input type="email" id="reg-email" autocomplete="email" name="new-email" required>
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="reg-password" autocomplete="new-password" name="new-password" required minlength="6">
-        </div>
-        <div class="form-group">
-          <label>Bio / Description</label>
-          <textarea id="reg-bio" placeholder="Tell us something about you..." maxlength="150" style="resize:none; height:60px;"></textarea>
-        </div>
-        <div class="form-group">
-          <label>Profile Picture (Max 1MB)</label>
-          <input type="file" id="reg-avatar" accept="image/*">
-        </div>
-        <div class="form-group">
-          <div id="recaptcha-register"></div>
-        </div>
-        <button type="submit" class="modal-action-btn">Create Account</button>
-      </form>
+    <!-- Búsqueda de Usuarios -->
+    <div>
+      <h3>Buscar Jugador</h3>
+      <input type="text" id="searchUsernameInput" placeholder="Nombre de usuario exacto">
+      <button onclick="handleUserSearch()">Buscar</button>
+      <div id="searchResult" style="margin-top: 10px; background: #2a2a2a; padding: 10px; border-radius: 4px; display:none;"></div>
     </div>
   </div>
 
-  <!-- MODAL REENVIAR VERIFICACIÓN POR CORREO -->
-  <div id="modal-resend-verification" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>📧 Resend Verification Email</h2>
-      <p style="font-size:0.9rem; color:#a0aec0;">Enter your login credentials to send a fresh verification link to your email.</p>
+  <!-- Sección de Noticias (Con Navegación y Contador) -->
+  <div class="container">
+    <h2>Noticias del Juego</h2>
+    <div id="newsFeed">Cargando noticias...</div>
+    
+    <div class="news-controls" id="newsControls" style="display: none;">
+      <button id="prevNewsBtn" onclick="changeNews(-1)">◀ Anterior</button>
+      <span class="news-counter" id="newsCounter">0 / 0</span>
+      <button id="nextNewsBtn" onclick="changeNews(1)">Siguiente ▶</button>
+    </div>
+  </div>
+
+  <!-- Botón Admin (Esquina flotante) -->
+  <button id="adminBtn" class="admin-trigger-btn" onclick="openAdminPanel()">
+    <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
+  </button>
+
+  <!-- Modal del Panel de Administración -->
+  <div id="adminModal" class="admin-modal">
+    <h3>Panel de Administración</h3>
+    
+    <div>
+      <h4>Gestionar Usuario</h4>
+      <input type="text" id="adminTargetUid" placeholder="UID del Usuario">
       
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="resend-email" placeholder="Your account email" required>
+      <div style="display: flex; gap: 5px; margin-top: 5px;">
+        <button onclick="adminBanUser(true)" style="background: #d9534f;">Ban</button>
+        <button onclick="adminBanUser(false)" style="background: #5cb85c;">Unban</button>
+        <button onclick="adminTempBan()" style="background: #f0ad4e;">Temp Ban</button>
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="resend-password" placeholder="Your password" required>
-      </div>
-      <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="handleResendVerification()">Send Verification Email</button>
-    </div>
-  </div>
-
-  <!-- MODAL FORGOT PASSWORD -->
-  <div id="modal-forgot" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>📬 Recover Password</h2>
-      <p style="font-size:0.9rem; color:#a0aec0;">Enter your account email to receive a password reset link.</p>
       
-      <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="forgot-email" placeholder="Your account email" required>
-      </div>
-      <button type="button" class="modal-action-btn" onclick="handleForgotPassword()">Send Reset Link</button>
-    </div>
-  </div>
-
-  <!-- MODAL PROFILE -->
-  <div id="modal-profile" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>👤 Player Profile</h2>
-      <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
-        <img id="profile-modal-avatar" src="https://via.placeholder.com/60" alt="Avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid #fff;">
-        <div>
-          <h3 id="profile-modal-name" style="margin:0; font-size:1.2rem;">Username</h3>
-          <p id="verification-status" style="margin:3px 0; font-size:0.8rem; color:#e74c3c;">⚠️ Email not verified</p>
-          <p style="margin:5px 0 0 0; font-size:0.9rem; color:#a0aec0;">💰 Coins: <span id="profile-coins">0</span> | 🐟 Fish: <span id="profile-fish-count">0</span></p>
+      <div style="margin-top: 10px;">
+        <input type="number" id="adminCoinsAmount" placeholder="Cantidad de Coins">
+        <div style="display: flex; gap: 5px;">
+          <button onclick="adminModifyCoins(1)">Dar Coins</button>
+          <button onclick="adminModifyCoins(-1)" style="background: #d9534f;">Quitar Coins</button>
         </div>
       </div>
-
-      <div class="form-group">
-        <label>Bio / Description</label>
-        <textarea id="profile-edit-bio" placeholder="Write your new description..." maxlength="150" style="resize:none; height:60px;"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Change Profile Picture (Max 1MB)</label>
-        <input type="file" id="profile-edit-avatar" accept="image/*">
-      </div>
-      <button type="button" class="modal-action-btn" onclick="updateProfileData()">Save Changes</button>
-
-      <h3 style="margin-top:20px; font-size:1.1rem;">🐠 Public Aquarium</h3>
-      <div id="profile-aquarium" style="font-size:0.9rem; color:#a0aec0;">Your aquarium is empty.</div>
     </div>
-  </div>
 
-  <!-- OTROS MODALES -->
-  <div id="modal-news" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>📰 Game News</h2>
-      <div id="news-list">Loading news...</div>
+    <hr>
+
+    <div>
+      <h4>Publicar Noticia</h4>
+      <input type="text" id="newsTitle" placeholder="Título">
+      <textarea id="newsContent" placeholder="Contenido de la noticia" rows="3"></textarea>
+      <input type="file" id="newsImage" accept="image/*">
+      <button onclick="adminPostNews()">Publicar Noticia</button>
     </div>
+    
+    <br>
+    <button onclick="closeAdminPanel()" style="background: #555;">Cerrar Panel</button>
   </div>
-
-  <div id="modal-achievements" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>🏆 Achievements</h2>
-      <p>Unlock achievements as you catch rare fish!</p>
-    </div>
-  </div>
-
-  <div id="modal-shop" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>🛒 Fishing Shop</h2>
-      <p>Upgrade your rods, bait, and tanks here.</p>
-    </div>
-  </div>
-
-  <div id="toast-container"></div>
 
   <script>
-    const RECAPTCHA_SITE_KEY = "6Lex8BMuAAAAAPx6P5c7RwFUNi_9dpZPX0hw_Il9";
-    let recaptchaLoginId = null;
-    let recaptchaRegisterId = null;
-
-    function onloadCallback() {
-      try {
-        recaptchaLoginId = grecaptcha.render('recaptcha-login', { 'sitekey': RECAPTCHA_SITE_KEY });
-        recaptchaRegisterId = grecaptcha.render('recaptcha-register', { 'sitekey': RECAPTCHA_SITE_KEY });
-      } catch (e) {
-        console.error("reCAPTCHA render error:", e);
-      }
-    }
-
+    // Configuración de Firebase (Reemplaza con tus credenciales si faltan)
     const firebaseConfig = {
-      apiKey: "AIzaSyAqd4GXj6YKm_7c5TF5mIGPPbo1pk4mKig",
+      apiKey: "TU_API_KEY",
       authDomain: "the-fishing-game-digitalized.firebaseapp.com",
       projectId: "the-fishing-game-digitalized",
-      storageBucket: "the-fishing-game-digitalized.firebasestorage.app",
-      messagingSenderId: "543997573488",
-      appId: "1:543997573488:web:5f40d69af320e6d1f977b5",
-      measurementId: "G-54GSL312X2"
+      storageBucket: "the-fishing-game-digitalized.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId: "TU_APP_ID"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    let ADMIN_UID = "";
+    const ADMIN_UID = "09SjiwOt9fYdFbc1wQp17Ot467F2";
 
-    function showToast(message) {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.innerText = message;
-      container.appendChild(toast);
-      setTimeout(() => toast.remove(), 4000);
-    }
+    // Variables globales para el visor de noticias
+    let newsList = [];
+    let currentNewsIndex = 0;
 
-    function openModal(modalId) {
-      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
-      document.getElementById(modalId).style.display = 'flex';
-      if (modalId === 'modal-profile') {
-        loadProfileData();
-      }
-    }
-
-    function closeAllModals() {
-      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
-    }
-
-    function startGame() {
-      showToast("🎮 Entering the fishing grounds...");
-    }
-
-    function switchAuthTab(tab) {
-      if (tab === 'login') {
-        document.getElementById('form-login').style.display = 'block';
-        document.getElementById('form-register').style.display = 'none';
-        document.getElementById('tab-login-btn').classList.add('active');
-        document.getElementById('tab-register-btn').classList.remove('active');
-      } else {
-        document.getElementById('form-login').style.display = 'none';
-        document.getElementById('form-register').style.display = 'block';
-        document.getElementById('tab-register-btn').classList.add('active');
-        document.getElementById('tab-login-btn').classList.remove('active');
-      }
-    }
-
-    const comprimirImagen = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-          const img = new Image();
-          img.src = event.target.result;
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 100;
-            const MAX_HEIGHT = 100;
-            let width = img.width;
-            let height = img.height;
-
-            if (width > height) {
-              if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width;
-                width = MAX_WIDTH;
-              }
-            } else {
-              if (height > MAX_HEIGHT) {
-                width *= MAX_HEIGHT / height;
-                height = MAX_HEIGHT;
-              }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL('image/jpeg', 0.5));
-          };
-          img.onerror = (error) => reject(error);
-        };
-        reader.onerror = (error) => reject(error);
-      });
-    };
-
-    async function handleLogin(e) {
-      e.preventDefault();
-      const captcha = grecaptcha.getResponse(recaptchaLoginId);
-      if (!captcha) {
-        showToast("⚠️ Please complete the reCAPTCHA.");
-        return;
-      }
-
-      const email = document.getElementById('login-email').value;
-      const pass = document.getElementById('login-password').value;
-
-      try {
-        await auth.signInWithEmailAndPassword(email, pass);
-        showToast("🚀 Welcome back!");
-        closeAllModals();
-        grecaptcha.reset(recaptchaLoginId);
-      } catch (err) {
-        showToast("❌ Login error: " + err.message);
-      }
-    }
-
-    async function handleRegister(e) {
-      e.preventDefault();
-      const captcha = grecaptcha.getResponse(recaptchaRegisterId);
-      if (!captcha) {
-        showToast("⚠️ Please complete the reCAPTCHA.");
-        return;
-      }
-
-      const username = document.getElementById('reg-username').value;
-      const email = document.getElementById('reg-email').value;
-      const pass = document.getElementById('reg-password').value;
-      const bio = document.getElementById('reg-bio').value;
-      const fileInput = document.getElementById('reg-avatar').files[0];
-
-      try {
-        const userCred = await auth.createUserWithEmailAndPassword(email, pass);
-        const user = userCred.user;
-
-        let photoURL = "";
-        if (fileInput) {
-          photoURL = await comprimirImagen(fileInput);
-        }
-
-        await user.sendEmailVerification();
-        await user.updateProfile({ displayName: username });
-
-        await db.collection('jugadores').doc(user.uid).set({
-          username: username,
-          email: email,
-          bio: bio,
-          photoURL: photoURL,
-          coins: 0,
-          fishes: [],
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        showToast("📧 Account created! Verification email sent.");
-        closeAllModals();
-        grecaptcha.reset(recaptchaRegisterId);
-      } catch (err) {
-        showToast("❌ Registration error: " + err.message);
-      }
-    }
-
-    async function handleResendVerification() {
-      const email = document.getElementById('resend-email').value;
-      const pass = document.getElementById('resend-password').value;
-      if (!email || !pass) {
-        showToast("⚠️ Enter your email and password.");
-        return;
-      }
-
-      try {
-        const cred = await auth.signInWithEmailAndPassword(email, pass);
-        if (cred.user.emailVerified) {
-          showToast("✅ Your email is already verified!");
-        } else {
-          await cred.user.sendEmailVerification();
-          showToast("📧 Fresh verification email sent! Check your inbox.");
-        }
-        closeAllModals();
-      } catch (err) {
-        showToast("❌ Error: " + err.message);
-      }
-    }
-
-    async function loadProfileData() {
-      const user = auth.currentUser;
-      if (!user) return;
-      
-      try {
-        // Actualizar estado de verificación en vivo
-        await user.reload();
-        const statusEl = document.getElementById('verification-status');
-        if (user.emailVerified) {
-          statusEl.innerText = "✅ Email verified";
-          statusEl.style.color = "#2ecc71";
-        } else {
-          statusEl.innerText = "⚠️ Email not verified (Check inbox)";
-          statusEl.style.color = "#e74c3c";
-        }
-
-        const doc = await db.collection('jugadores').doc(user.uid).get();
-        if (doc.exists) {
-          const data = doc.data();
-          document.getElementById('profile-modal-name').innerText = data.username || "Player";
-          document.getElementById('profile-edit-bio').value = data.bio || "";
-          document.getElementById('profile-coins').innerText = data.coins || 0;
-          document.getElementById('profile-fish-count').innerText = (data.fishes || []).length;
-          if (data.photoURL) {
-            document.getElementById('profile-modal-avatar').src = data.photoURL;
-          }
-        }
-      } catch (err) {
-        console.error("Error loading profile:", err);
-      }
-    }
-
-    async function updateProfileData() {
-      const user = auth.currentUser;
-      if (!user) {
-        showToast("⚠️ You must be logged in.");
-        return;
-      }
-
-      const newBio = document.getElementById('profile-edit-bio').value;
-      const fileInput = document.getElementById('profile-edit-avatar').files[0];
-
-      try {
-        showToast("⏳ Saving profile changes...");
-        let photoURL = "";
-
-        const docRef = db.collection('jugadores').doc(user.uid);
-        const docSnap = await docRef.get();
-        if (docSnap.exists) {
-          photoURL = docSnap.data().photoURL || "";
-        }
-
-        if (fileInput) {
-          photoURL = await comprimirImagen(fileInput);
-          document.getElementById('user-avatar').src = photoURL;
-          document.getElementById('profile-modal-avatar').src = photoURL;
-        }
-
-        await docRef.update({
-          bio: newBio,
-          photoURL: photoURL
-        });
-
-        showToast("✅ Profile updated successfully!");
-        closeAllModals();
-      } catch (err) {
-        showToast("❌ Error updating profile: " + err.message);
-      }
-    }
-
-    async function handleForgotPassword() {
-      const email = document.getElementById('forgot-email').value;
-      if (!email) {
-        showToast("⚠️ Enter your email address.");
-        return;
-      }
-      try {
-        await auth.sendPasswordResetEmail(email);
-        showToast("📬 Password reset link sent to your email.");
-        closeAllModals();
-      } catch (err) {
-        showToast("❌ Error: " + err.message);
-      }
-    }
-
-    auth.onAuthStateChanged(async user => {
+    // Estado de sesión
+    auth.onAuthStateChanged(user => {
+      const adminBtn = document.getElementById('adminBtn');
       if (user) {
-        document.getElementById('account-container').style.display = 'none';
-        document.getElementById('btn-logout').style.display = 'inline-flex';
-        document.getElementById('user-badge').style.display = 'flex';
-        
-        try {
-          const doc = await db.collection('jugadores').doc(user.uid).get();
-          if (doc.exists) {
-            const data = doc.data();
-            document.getElementById('user-display-name').innerText = data.username || "Player";
-            if (data.photoURL) {
-              document.getElementById('user-avatar').src = data.photoURL;
-            }
-          }
-        } catch(e) {
-          document.getElementById('user-display-name').innerText = user.displayName || "Player";
-        }
+        document.getElementById('auth-section').style.display = 'none';
+        document.getElementById('profile-section').style.display = 'block';
+        document.getElementById('profile-info').innerHTML = `Email: ${user.email} <br> Verificado: ${user.emailVerified ? 'Sí' : 'No'}`;
 
-        if (ADMIN_UID && user.uid === ADMIN_UID) {
-          document.querySelector('.admin-corner').style.display = 'block';
+        if (user.uid === ADMIN_UID) {
+          adminBtn.style.display = 'flex';
+        } else {
+          adminBtn.style.display = 'none';
         }
       } else {
-        document.getElementById('account-container').style.display = 'flex';
-        document.getElementById('btn-logout').style.display = 'none';
-        document.getElementById('user-badge').style.display = 'none';
-        document.querySelector('.admin-corner').style.display = 'none';
+        document.getElementById('auth-section').style.display = 'block';
+        document.getElementById('profile-section').style.display = 'none';
+        adminBtn.style.display = 'none';
       }
     });
 
-    function logout() {
-      auth.signOut();
-      showToast("Logged out successfully.");
+    async function registerUser() {
+      const email = document.getElementById('userEmail').value;
+      const password = document.getElementById('userPassword').value;
+      try {
+        const cred = await auth.createUserWithEmailAndPassword(email, password);
+        await cred.user.sendEmailVerification();
+        await db.collection('users').doc(cred.user.uid).set({
+          email: email,
+          username: email.split('@')[0],
+          coins: 100,
+          isBanned: false,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert('¡Registro exitoso! Revisa tu correo para verificar tu cuenta.');
+      } catch (error) {
+        alert('Error en registro: ' + error.message);
+      }
+    }
+
+    async function loginUser() {
+      const email = document.getElementById('userEmail').value;
+      const password = document.getElementById('userPassword').value;
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (error) {
+        alert('Error al iniciar sesión: ' + error.message);
+      }
+    }
+
+    async function logoutUser() {
+      await auth.signOut();
+    }
+
+    async function resendVerificationEmail() {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await user.sendEmailVerification();
+          alert('¡Correo de verificación reenviado!');
+        } catch (error) {
+          alert('Error al reenviar: ' + error.message);
+        }
+      }
+    }
+
+    async function sendPasswordReset() {
+      const email = document.getElementById('userEmail').value;
+      if (!email) return alert('Ingresa tu correo para restablecer la contraseña.');
+      try {
+        await auth.sendPasswordResetEmail(email);
+        alert('Correo de restablecimiento enviado.');
+      } catch (error) {
+        alert('Error: ' + error.message);
+      }
+    }
+
+    // Búsqueda de usuarios
+    async function handleUserSearch() {
+      const searchTerm = document.getElementById('searchUsernameInput').value.trim();
+      const resultDiv = document.getElementById('searchResult');
+      if (!searchTerm) return;
+
+      const snapshot = await db.collection('users').where('username', '==', searchTerm).get();
+      if (snapshot.empty) {
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = 'No se encontró ningún usuario.';
+        return;
+      }
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `<strong>Usuario:</strong> ${data.username}<br><strong>Coins:</strong> ${data.coins || 0}`;
+      });
+    }
+
+    // --- Sistema de Noticias con Botones y Contador ---
+    function listenToNews() {
+      db.collection('news')
+        .orderBy('createdAt', 'desc')
+        .onSnapshot(snapshot => {
+          newsList = [];
+          snapshot.forEach(doc => {
+            newsList.push(doc.data());
+          });
+
+          if (newsList.length === 0) {
+            document.getElementById('newsFeed').innerHTML = '<p>No hay noticias publicadas.</p>';
+            document.getElementById('newsControls').style.display = 'none';
+            return;
+          }
+
+          document.getElementById('newsControls').style.display = 'flex';
+          currentNewsIndex = 0;
+          renderCurrentNews();
+        });
+    }
+
+    function renderCurrentNews() {
+      const newsFeed = document.getElementById('newsFeed');
+      const newsCounter = document.getElementById('newsCounter');
+      const prevBtn = document.getElementById('prevNewsBtn');
+      const nextBtn = document.getElementById('nextNewsBtn');
+
+      const news = newsList[currentNewsIndex];
+      const date = news.createdAt ? news.createdAt.toDate().toLocaleDateString() : '';
+
+      newsFeed.innerHTML = `
+        <div class="news-card">
+          <h3 style="margin-top:0;">${news.title}</h3>
+          <small style="color: #aaa;">${date}</small>
+          <p style="white-space: pre-line;">${news.content}</p>
+          ${news.imageUrl ? `<img src="${news.imageUrl}" style="max-width: 100%; border-radius: 4px; margin-top: 10px;">` : ''}
+        </div>
+      `;
+
+      // Actualizar contador (ejemplo: 1 / 4)
+      newsCounter.textContent = `${currentNewsIndex + 1} / ${newsList.length}`;
+
+      // Activar / Desactivar botones según los límites
+      prevBtn.disabled = (currentNewsIndex === 0);
+      nextBtn.disabled = (currentNewsIndex === newsList.length - 1);
+    }
+
+    function changeNews(direction) {
+      currentNewsIndex += direction;
+      renderCurrentNews();
+    }
+
+    listenToNews();
+
+    // --- Panel de Admin ---
+    function openAdminPanel() { document.getElementById('adminModal').style.display = 'block'; }
+    function closeAdminPanel() { document.getElementById('adminModal').style.display = 'none'; }
+
+    async function adminBanUser(isBanned) {
+      const targetUid = document.getElementById('adminTargetUid').value.trim();
+      if (!targetUid) return alert('Ingresa un UID');
+      await db.collection('users').doc(targetUid).update({ isBanned });
+      alert(`Usuario ${isBanned ? 'baneado' : 'desbaneado'} correctamente.`);
+    }
+
+    async function adminTempBan() {
+      const targetUid = document.getElementById('adminTargetUid').value.trim();
+      const hours = prompt("¿Cuántas horas de ban temporal?");
+      if (!targetUid || !hours) return;
+      const unbanDate = new Date(Date.now() + hours * 3600000);
+      await db.collection('users').doc(targetUid).update({ tempBanUntil: unbanDate });
+      alert(`Ban temporal aplicado hasta: ${unbanDate.toLocaleString()}`);
+    }
+
+    async function adminModifyCoins(multiplier) {
+      const targetUid = document.getElementById('adminTargetUid').value.trim();
+      const amount = parseInt(document.getElementById('adminCoinsAmount').value);
+      if (!targetUid || isNaN(amount)) return alert('Ingresa UID y cantidad válidos');
+      const val = amount * multiplier;
+      await db.collection('users').doc(targetUid).update({
+        coins: firebase.firestore.FieldValue.increment(val)
+      });
+      alert(`Monedas actualizadas (${val > 0 ? '+' : ''}${val})`);
+    }
+
+    async function adminPostNews() {
+      const title = document.getElementById('newsTitle').value.trim();
+      const content = document.getElementById('newsContent').value.trim();
+      const imageFile = document.getElementById('newsImage').files[0];
+
+      if (!title || !content) return alert('Título y contenido requeridos');
+
+      let imageBase64 = null;
+      if (imageFile) {
+        if (imageFile.size > 1048576) return alert('La imagen excede el límite máximo de 1MB.');
+        imageBase64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(imageFile);
+        });
+      }
+
+      await db.collection('news').add({
+        title, content, imageUrl: imageBase64,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert('Noticia publicada exitosamente');
+      closeAdminPanel();
     }
   </script>
 </body>
