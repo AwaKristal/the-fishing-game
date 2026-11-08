@@ -267,7 +267,7 @@
       border: 2px solid #fff;
       border-radius: 16px;
       width: 100%;
-      max-width: 580px;
+      max-width: 620px;
       padding: 20px;
       position: relative;
       box-shadow: 0 10px 25px rgba(0,0,0,0.6);
@@ -672,28 +672,30 @@
     </div>
   </div>
 
-  <!-- MODAL ACUARIO (TANQUES MÁS GRANDES Y BAJADOS EN LAS REPISAS) -->
+  <!-- MODAL ACUARIO (4 SLOTS ARRIBA, 4 SLOTS ABAJO, TANQUES Y PECES LIGERAMENTE MÁS GRANDES) -->
   <div id="modal-aquarium" class="modal-overlay">
-    <div class="modal-card" style="max-width: 600px; padding: 15px; background: #0f172a; border: 2px solid #3498db;">
+    <div class="modal-card" style="max-width: 640px; padding: 15px; background: #0f172a; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
       <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 3px; font-size: 1.3rem;">🐠 Aquarium</h2>
       <p style="font-size: 0.8rem; color: #a0aec0; text-align: center; margin-top:0; margin-bottom: 10px;" id="aquarium-subtitle">Viewing aquarium...</p>
       
-      <!-- CONTENEDOR DEL ACUARIO GRANDE CON LAS 2 REPISAS -->
-      <div style="position: relative; width: 100%; height: 380px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: cover; background-position: center; border-radius: 10px; border: 2px solid #16213e; overflow: hidden; margin-bottom: 12px;">
+      <!-- CONTENEDOR DEL ACUARIO CON LAS 2 REPISAS -->
+      <div style="position: relative; width: 100%; height: 390px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: cover; background-position: center; border-radius: 10px; border: 2px solid #16213e; overflow: hidden; margin-bottom: 12px;">
         
         <!-- REPISA SUPERIOR (4 SLOTS) -->
-        <div style="position: absolute; top: 48px; left: 12px; right: 12px; display: flex; justify-content: space-around; pointer-events: none;">
-          <div id="shelf-top-0" style="width: 120px; height: 110px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(0)" title="Click to manage tank 1"></div>
-          <div id="shelf-top-1" style="width: 120px; height: 110px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(1)" title="Click to manage tank 2"></div>
-          <div id="shelf-top-2" style="width: 120px; height: 110px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(2)" title="Click to manage tank 3"></div>
-          <div id="shelf-top-3" style="width: 120px; height: 110px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(3)" title="Click to manage tank 4"></div>
+        <div style="position: absolute; top: 38px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
+          <div id="shelf-top-0" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(0)" title="Click to manage tank 1"></div>
+          <div id="shelf-top-1" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(1)" title="Click to manage tank 2"></div>
+          <div id="shelf-top-2" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(2)" title="Click to manage tank 3"></div>
+          <div id="shelf-top-3" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(3)" title="Click to manage tank 4"></div>
         </div>
 
-        <!-- REPISA INFERIOR (2 SLOTS) -->
-        <div style="position: absolute; bottom: 32px; left: 35px; right: 35px; display: flex; justify-content: space-between; pointer-events: none;">
-          <div id="shelf-bot-0" style="width: 140px; height: 125px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(4)" title="Click to manage tank 5"></div>
-          <div id="shelf-bot-1" style="width: 140px; height: 125px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(5)" title="Click to manage tank 6"></div>
+        <!-- REPISA INFERIOR (4 SLOTS) -->
+        <div style="position: absolute; bottom: 25px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
+          <div id="shelf-bot-0" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(4)" title="Click to manage tank 5"></div>
+          <div id="shelf-bot-1" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(5)" title="Click to manage tank 6"></div>
+          <div id="shelf-bot-2" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(6)" title="Click to manage tank 7"></div>
+          <div id="shelf-bot-3" style="width: 125px; height: 115px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(7)" title="Click to manage tank 8"></div>
         </div>
 
       </div>
@@ -1055,7 +1057,7 @@
           const data = doc.data();
           isViewingMyAquarium = true;
           viewingTargetUid = user.uid;
-          renderAquarium(data.username || "My", data.fishes || [], data.aquariumTanks || new Array(6).fill(null));
+          renderAquarium(data.username || "My", data.fishes || [], data.aquariumTanks || new Array(8).fill(null));
         }
       } catch (err) {
         showToast("❌ Error loading aquarium.");
@@ -1077,18 +1079,18 @@
       const ownerControls = document.getElementById('aquarium-owner-controls');
       
       if (isViewingMyAquarium) {
-        subtitle.innerText = "Manage your mini tanks and fish displays (4 top slots, 2 bottom slots)";
+        subtitle.innerText = "Manage your mini tanks and fish displays (4 top slots, 4 bottom slots)";
         ownerControls.style.display = 'block';
       } else {
         subtitle.innerText = `Viewing ${username}'s displayed fish`;
         ownerControls.style.display = 'none';
       }
 
-      const safeTanks = tanks && Array.isArray(tanks) ? tanks : new Array(6).fill(null);
+      const safeTanks = tanks && Array.isArray(tanks) ? tanks : new Array(8).fill(null);
       for (let i = 0; i < 4; i++) {
         renderShelfSlot(`top-${i}`, safeTanks[i], i);
       }
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 4; i++) {
         renderShelfSlot(`bot-${i}`, safeTanks[i + 4], i + 4);
       }
     }
@@ -1104,7 +1106,7 @@
         const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName) || ALLOWED_FISH_TYPES[0];
         slotEl.innerHTML = `
           <div style="position: relative; width: 100%; height: 100%; background-image: url('https://i.postimg.cc/DZs0wKSx/tanque-mini.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
-            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 55px; height: auto; object-fit: contain; pointer-events: none;">
+            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 62px; height: auto; object-fit: contain; pointer-events: none;">
           </div>
         `;
         startFishAnimation(shelfIndex);
@@ -1165,7 +1167,7 @@
         const docRef = db.collection('jugadores').doc(user.uid);
         const doc = await docRef.get();
         if (doc.exists) {
-          let tanks = doc.data().aquariumTanks || new Array(6).fill(null);
+          let tanks = doc.data().aquariumTanks || new Array(8).fill(null);
           tanks[selectedShelfIndex] = fishName;
           await docRef.update({ aquariumTanks: tanks });
           
@@ -1186,7 +1188,7 @@
         const docRef = db.collection('jugadores').doc(user.uid);
         const doc = await docRef.get();
         if (doc.exists) {
-          let tanks = doc.data().aquariumTanks || new Array(6).fill(null);
+          let tanks = doc.data().aquariumTanks || new Array(8).fill(null);
           tanks[selectedShelfIndex] = null;
           await docRef.update({ aquariumTanks: tanks });
           
@@ -1203,15 +1205,15 @@
       const fishImg = document.querySelector(`.swimming-fish-${shelfIndex}`);
       if (!fishImg) return;
 
-      let posX = 30;
-      let posY = 45;
+      let posX = 32;
+      let posY = 50;
       let speedX = (Math.random() > 0.5 ? 1 : -1) * 0.6;
       let speedY = (Math.random() > 0.5 ? 1 : -1) * 0.3;
 
       const minX = 8;
-      const maxX = 65;
+      const maxX = 68;
       const minY = 20;
-      const maxY = 65;
+      const maxY = 72;
 
       const interval = setInterval(() => {
         posX += speedX;
@@ -1483,7 +1485,7 @@
           coins: 0,
           fishes: [],
           miniTanks: 0,
-          aquariumTanks: new Array(6).fill(null),
+          aquariumTanks: new Array(8).fill(null),
           redeemedCodes: [],
           isBanned: false,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1674,7 +1676,7 @@
         const data = doc.data();
         const avatar = data.photoURL || 'https://via.placeholder.com/40';
         const fishesJson = JSON.stringify(data.fishes || []).replace(/"/g, '&quot;');
-        const tanksJson = JSON.stringify(data.aquariumTanks || new Array(6).fill(null)).replace(/"/g, '&quot;');
+        const tanksJson = JSON.stringify(data.aquariumTanks || new Array(8).fill(null)).replace(/"/g, '&quot;');
         html += `
           <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'No bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}', '${doc.id}', ${fishesJson}, ${tanksJson})">
             <div style="display:flex; align-items:center; gap:10px;">
