@@ -265,22 +265,18 @@
       color: #3498db;
     }
 
-    /* Botón de Admin flotante con imagen exacta */
+    /* Botón de Admin flotante solo imagen limpia */
     .admin-trigger-btn {
       position: fixed;
       bottom: 25px;
       right: 180px;
       width: 55px;
       height: 55px;
-      border-radius: 50%;
       border: none;
       cursor: pointer;
       background: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
       z-index: 9999;
       display: none;
-      align-items: center;
-      justify-content: center;
       padding: 0;
       transition: transform 0.2s ease, filter 0.2s ease;
     }
@@ -291,9 +287,22 @@
     .admin-trigger-btn img {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+    }
+
+    /* Estilo para los resultados de búsqueda clickeables */
+    .search-player-item {
+      background: #16213e;
+      border: 1px solid #444;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .search-player-item:hover {
+      background: #0f3460;
     }
 
     #toast-container {
@@ -384,7 +393,7 @@
     </button>
   </div>
 
-  <!-- BOTÓN ADMIN FLOTANTE CORREGIDO CON IMAGEN -->
+  <!-- BOTÓN ADMIN FLOTANTE SOLO IMAGEN -->
   <button id="adminBtn" class="admin-trigger-btn" onclick="openModal('modal-admin')">
     <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
   </button>
@@ -502,18 +511,37 @@
       </div>
       <button type="button" class="modal-action-btn" onclick="updateProfileData()">Save Changes</button>
 
-      <!-- BÚSQUEDA DE USUARIOS INTEGRADA -->
+      <!-- BÚSQUEDA DE USUARIOS CON PERFIL CLICKEABLE -->
       <hr style="border:0; border-top:1px solid #444; margin:20px 0;">
       <h3>🔍 Search Player</h3>
       <div class="form-group">
-        <input type="text" id="searchUsernameInput" placeholder="Exact username...">
+        <input type="text" id="searchUsernameInput" placeholder="Enter username...">
       </div>
       <button type="button" class="modal-action-btn" onclick="handleUserSearch()">Search User</button>
-      <div id="searchResult" style="margin-top: 10px; background: #0f172a; padding: 10px; border-radius: 8px; display:none; font-size: 0.9rem;"></div>
+      <div id="searchResult" style="margin-top: 10px; display:none;"></div>
     </div>
   </div>
 
-  <!-- MODAL NEWS (CON CARRUSEL, CONTADOR Y BOTÓN DE BORRAR PARA ADMIN) -->
+  <!-- MODAL VER OTRO PERFIL AJENO -->
+  <div id="modal-view-profile" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="openModal('modal-profile')">✖</button>
+      <h2>👤 Player Info</h2>
+      <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+        <img id="view-profile-avatar" src="https://via.placeholder.com/60" alt="Avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid #fff;">
+        <div>
+          <h3 id="view-profile-name" style="margin:0; font-size:1.2rem;">Username</h3>
+          <p style="margin:5px 0 0 0; font-size:0.9rem; color:#a0aec0;">💰 Coins: <span id="view-profile-coins">0</span> | 🐟 Fish: <span id="view-profile-fish-count">0</span></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Bio / Description</label>
+        <p id="view-profile-bio" style="background: #0f172a; padding: 10px; border-radius: 8px; margin: 0; min-height: 50px; color: #fff; word-break: break-all;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL NEWS -->
   <div id="modal-news" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -528,15 +556,15 @@
     </div>
   </div>
 
-  <!-- MODAL ADMIN PANEL -->
+  <!-- MODAL ADMIN PANEL (USA USERNAME EN VEZ DE UID) -->
   <div id="modal-admin" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>⚙️ Admin Control Panel</h2>
       
       <div class="form-group">
-        <label>Target User UID</label>
-        <input type="text" id="adminTargetUid" placeholder="Paste user UID here...">
+        <label>Target Username</label>
+        <input type="text" id="adminTargetUsername" placeholder="Exact username...">
       </div>
 
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
@@ -880,6 +908,7 @@
       }
     }
 
+    // Búsqueda de usuarios con tarjetas clickeables para ver info completa
     async function handleUserSearch() {
       const searchTerm = document.getElementById('searchUsernameInput').value.trim();
       const resultDiv = document.getElementById('searchResult');
@@ -891,15 +920,38 @@
       const snapshot = await db.collection('jugadores').where('username', '==', searchTerm).get();
       if (snapshot.empty) {
         resultDiv.style.display = 'block';
-        resultDiv.innerHTML = '❌ No player found with that exact username.';
+        resultDiv.innerHTML = '<p style="color:#e74c3c; font-size:0.9rem;">❌ No player found with that exact username.</p>';
         return;
       }
 
+      let html = '';
       snapshot.forEach(doc => {
         const data = doc.data();
-        resultDiv.style.display = 'block';
-        resultDiv.innerHTML = `<strong>👤 ${data.username}</strong><br>💰 Coins: ${data.coins || 0}<br>📝 Bio: ${data.bio || 'None'}`;
+        const avatar = data.photoURL || 'https://via.placeholder.com/40';
+        html += `
+          <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'No bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}')">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <img src="${avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+              <div>
+                <strong>👤 ${data.username}</strong><br>
+                <span style="font-size:0.8rem; color:#a0aec0;">Click to view full profile</span>
+              </div>
+            </div>
+          </div>
+        `;
       });
+
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = html;
+    }
+
+    function viewOtherProfile(username, bio, coins, fishCount, avatar) {
+      document.getElementById('view-profile-name').innerText = username;
+      document.getElementById('view-profile-bio').innerText = bio;
+      document.getElementById('view-profile-coins').innerText = coins;
+      document.getElementById('view-profile-fish-count').innerText = fishCount;
+      document.getElementById('view-profile-avatar').src = avatar;
+      openModal('modal-view-profile');
     }
 
     // --- Sistema de Noticias con Carrusel, Contador y Borrado Admin ---
@@ -974,49 +1026,72 @@
 
     listenToNews();
 
-    // --- Panel de Admin ---
+    // --- Panel de Admin usando Username en vez de UID ---
+    async function getUidByUsername(username) {
+      const snapshot = await db.collection('jugadores').where('username', '==', username).get();
+      if (snapshot.empty) return null;
+      let uid = null;
+      snapshot.forEach(doc => { uid = doc.id; });
+      return uid;
+    }
+
     async function adminBanUser(isBanned) {
-      const targetUid = document.getElementById('adminTargetUid').value.trim();
-      if (!targetUid) {
-        showToast("⚠️ Enter a target UID.");
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      if (!username) {
+        showToast("⚠️ Enter a target username.");
         return;
       }
       try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
         await db.collection('jugadores').doc(targetUid).update({ isBanned: isBanned });
-        showToast(`✅ User successfully ${isBanned ? 'banned' : 'unbanned'}.`);
+        showToast(`✅ User ${username} successfully ${isBanned ? 'banned' : 'unbanned'}.`);
       } catch (err) {
         showToast("❌ Error updating ban status: " + err.message);
       }
     }
 
     async function adminTempBan() {
-      const targetUid = document.getElementById('adminTargetUid').value.trim();
+      const username = document.getElementById('adminTargetUsername').value.trim();
       const hours = prompt("How many hours for temporary ban?");
-      if (!targetUid || !hours) return;
+      if (!username || !hours) return;
       
       try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
         const unbanDate = new Date(Date.now() + hours * 3600000);
         await db.collection('jugadores').doc(targetUid).update({ tempBanUntil: unbanDate });
-        showToast(`✅ Temp ban applied until: ${unbanDate.toLocaleString()}`);
+        showToast(`✅ Temp ban applied to ${username} until: ${unbanDate.toLocaleString()}`);
       } catch (err) {
         showToast("❌ Error: " + err.message);
       }
     }
 
     async function adminModifyCoins(multiplier) {
-      const targetUid = document.getElementById('adminTargetUid').value.trim();
+      const username = document.getElementById('adminTargetUsername').value.trim();
       const amount = parseInt(document.getElementById('adminCoinsAmount').value);
-      if (!targetUid || isNaN(amount)) {
-        showToast("⚠️ Enter a valid UID and coin amount.");
+      if (!username || isNaN(amount)) {
+        showToast("⚠️ Enter a valid username and coin amount.");
         return;
       }
 
       try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
         const val = amount * multiplier;
         await db.collection('jugadores').doc(targetUid).update({
           coins: firebase.firestore.FieldValue.increment(val)
         });
-        showToast(`✅ Coins updated (${val > 0 ? '+' : ''}${val})`);
+        showToast(`✅ Coins updated for ${username} (${val > 0 ? '+' : ''}${val})`);
       } catch (err) {
         showToast("❌ Error updating coins: " + err.message);
       }
