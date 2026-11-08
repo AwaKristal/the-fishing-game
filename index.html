@@ -249,6 +249,7 @@
       padding: 15px;
       border-left: 4px solid var(--btn-hover);
       margin-top: 10px;
+      position: relative;
     }
     .news-controls {
       display: flex;
@@ -508,7 +509,7 @@
     </div>
   </div>
 
-  <!-- MODAL NEWS (CON CARRUSEL Y CONTADOR) -->
+  <!-- MODAL NEWS (CON CARRUSEL, CONTADOR Y BOTÓN DE BORRAR PARA ADMIN) -->
   <div id="modal-news" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -615,7 +616,6 @@
 
     const ADMIN_UID = "09SjiwOt9fYdFbc1wQp17Ot467F2";
 
-    // Variables globales para el visor de noticias
     let newsList = [];
     let currentNewsIndex = 0;
 
@@ -876,7 +876,6 @@
       }
     }
 
-    // Búsqueda de usuarios
     async function handleUserSearch() {
       const searchTerm = document.getElementById('searchUsernameInput').value.trim();
       const resultDiv = document.getElementById('searchResult');
@@ -899,14 +898,14 @@
       });
     }
 
-    // --- Sistema de Noticias con Carrusel y Contador ---
+    // --- Sistema de Noticias con Carrusel, Contador y Borrado Admin ---
     function listenToNews() {
       db.collection('news')
         .orderBy('createdAt', 'desc')
         .onSnapshot(snapshot => {
           newsList = [];
           snapshot.forEach(doc => {
-            newsList.push(doc.data());
+            newsList.push({ id: doc.id, ...doc.data() });
           });
 
           const newsFeed = document.getElementById('newsFeed');
@@ -919,7 +918,9 @@
           }
 
           controls.style.display = 'flex';
-          currentNewsIndex = 0;
+          if (currentNewsIndex >= newsList.length) {
+            currentNewsIndex = newsList.length - 1;
+          }
           renderCurrentNews();
         });
     }
@@ -932,6 +933,9 @@
 
       const news = newsList[currentNewsIndex];
       const date = news.createdAt ? news.createdAt.toDate().toLocaleDateString() : '';
+      
+      const currentUser = auth.currentUser;
+      const isAdmin = currentUser && currentUser.uid === ADMIN_UID;
 
       newsFeed.innerHTML = `
         <div class="news-card">
@@ -939,6 +943,8 @@
           <small style="color: #a0aec0;">${date}</small>
           <p style="white-space: pre-line; margin-top:10px;">${news.content}</p>
           ${news.imageUrl ? `<img src="${news.imageUrl}" style="max-width: 100%; border-radius: 4px; margin-top: 10px;">` : ''}
+          
+          ${isAdmin ? `<button type="button" class="modal-action-btn" style="background:#e74c3c; margin-top:15px;" onclick="deleteNews('${news.id}')">🗑️ Delete News</button>` : ''}
         </div>
       `;
 
@@ -950,6 +956,16 @@
     function changeNews(direction) {
       currentNewsIndex += direction;
       renderCurrentNews();
+    }
+
+    async function deleteNews(newsId) {
+      if (!confirm("Are you sure you want to delete this news item?")) return;
+      try {
+        await db.collection('news').doc(newsId).delete();
+        showToast("✅ News deleted successfully.");
+      } catch (err) {
+        showToast("❌ Error deleting news: " + err.message);
+      }
     }
 
     listenToNews();
@@ -1072,6 +1088,11 @@
         document.getElementById('btn-logout').style.display = 'none';
         document.getElementById('user-badge').style.display = 'none';
         adminBtn.style.display = 'none';
+      }
+      
+      // Actualizar la vista de las noticias por si cambia el estado de admin
+      if (document.getElementById('modal-news').style.display === 'flex') {
+        renderCurrentNews();
       }
     });
 
