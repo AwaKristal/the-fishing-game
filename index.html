@@ -511,11 +511,11 @@
       </div>
       <button type="button" class="modal-action-btn" onclick="updateProfileData()">Save Changes</button>
 
-      <!-- BÚSQUEDA DE USUARIOS CON PERFIL CLICKEABLE -->
+      <!-- BÚSQUEDA DE USUARIOS CON PERFIL CLICKEABLE (SIN AUTOCOMPLETAR CORREO) -->
       <hr style="border:0; border-top:1px solid #444; margin:20px 0;">
       <h3>🔍 Search Player</h3>
       <div class="form-group">
-        <input type="text" id="searchUsernameInput" placeholder="Enter username...">
+        <input type="text" id="searchUsernameInput" name="search-player" autocomplete="off" placeholder="Enter username...">
       </div>
       <button type="button" class="modal-action-btn" onclick="handleUserSearch()">Search User</button>
       <div id="searchResult" style="margin-top: 10px; display:none;"></div>
@@ -541,7 +541,7 @@
     </div>
   </div>
 
-  <!-- MODAL NEWS -->
+  <!-- MODAL NEWS (CON FECHA DE PUBLICACIÓN) -->
   <div id="modal-news" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -556,7 +556,7 @@
     </div>
   </div>
 
-  <!-- MODAL ADMIN PANEL (USA USERNAME EN VEZ DE UID) -->
+  <!-- MODAL ADMIN PANEL -->
   <div id="modal-admin" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -564,7 +564,7 @@
       
       <div class="form-group">
         <label>Target Username</label>
-        <input type="text" id="adminTargetUsername" placeholder="Exact username...">
+        <input type="text" id="adminTargetUsername" name="admin-target-user" autocomplete="off" placeholder="Exact username...">
       </div>
 
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
@@ -908,7 +908,6 @@
       }
     }
 
-    // Búsqueda de usuarios con tarjetas clickeables para ver info completa
     async function handleUserSearch() {
       const searchTerm = document.getElementById('searchUsernameInput').value.trim();
       const resultDiv = document.getElementById('searchResult');
@@ -954,7 +953,7 @@
       openModal('modal-view-profile');
     }
 
-    // --- Sistema de Noticias con Carrusel, Contador y Borrado Admin ---
+    // --- Sistema de Noticias con Fecha legible formateada ---
     function listenToNews() {
       db.collection('news')
         .orderBy('createdAt', 'desc')
@@ -988,15 +987,21 @@
       const nextBtn = document.getElementById('nextNewsBtn');
 
       const news = newsList[currentNewsIndex];
-      const date = news.createdAt ? news.createdAt.toDate().toLocaleDateString() : '';
+      
+      // Mostrar la fecha formateada si existe createdAt
+      let formattedDate = "Justo ahora";
+      if (news.createdAt) {
+        const dateObj = news.createdAt.toDate();
+        formattedDate = dateObj.toLocaleDateString() + " " + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
       
       const currentUser = auth.currentUser;
       const isAdmin = currentUser && currentUser.uid === ADMIN_UID;
 
       newsFeed.innerHTML = `
         <div class="news-card">
-          <h3 style="margin-top:0;">${news.title}</h3>
-          <small style="color: #a0aec0;">${date}</small>
+          <h3 style="margin:0 0 5px 0;">${news.title}</h3>
+          <small style="color: #3498db; font-weight: bold;">📅 ${formattedDate}</small>
           <p style="white-space: pre-line; margin-top:10px;">${news.content}</p>
           ${news.imageUrl ? `<img src="${news.imageUrl}" style="max-width: 100%; border-radius: 4px; margin-top: 10px;">` : ''}
           
@@ -1026,7 +1031,7 @@
 
     listenToNews();
 
-    // --- Panel de Admin usando Username en vez de UID ---
+    // --- Panel de Admin usando Username ---
     async function getUidByUsername(username) {
       const snapshot = await db.collection('jugadores').where('username', '==', username).get();
       if (snapshot.empty) return null;
