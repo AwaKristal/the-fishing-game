@@ -162,7 +162,7 @@
       object-fit: cover;
     }
 
-    /* PANTALLA DE JUEGO (PLAY VIEW) CON EL MAPA COMPLETO */
+    /* PANTALLA DE JUEGO (PLAY VIEW) */
     #game-screen {
       display: none;
       position: fixed;
@@ -174,7 +174,6 @@
       z-index: 100;
     }
 
-    /* MOCHILA VISIBLE POSICIONADA AL LADO DE LA CAÑA */
     .backpack-on-map {
       position: absolute;
       top: 25%;
@@ -276,6 +275,7 @@
       color: #fff;
       font-size: 1.4rem;
       cursor: pointer;
+      z-index: 10;
     }
 
     .form-group {
@@ -660,18 +660,46 @@
     </div>
   </div>
 
-  <!-- MODAL ACUARIO (MUESTRA LOS PECES DEL JUGADOR ACTUAL O AJENO) -->
+  <!-- MODAL ACUARIO (UI TIPO VENTANA CON 2 TANQUES CHICOS EN LAS REPISAS) -->
   <div id="modal-aquarium" class="modal-overlay">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width: 520px; padding: 15px; background: #0f172a; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
-      <h2 id="aquarium-title">🐠 Aquarium</h2>
-      <p style="font-size: 0.9rem; color: #a0aec0;" id="aquarium-subtitle">Viewing aquarium...</p>
+      <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 5px; font-size: 1.3rem;">🐠 Aquarium</h2>
+      <p style="font-size: 0.8rem; color: #a0aec0; text-align: center; margin-top:0;" id="aquarium-subtitle">Viewing aquarium...</p>
       
-      <div style="background: #0f172a; padding: 15px; border-radius: 12px; border: 1px solid #0f3460; min-height: 180px;">
-        <div id="aquarium-fish-grid" style="display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto;">
-          <!-- Lista o visual de peces -->
+      <!-- CONTENEDOR DEL ACUARIO GRANDE CON LAS REPISAS -->
+      <div style="position: relative; width: 100%; height: 320px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: cover; background-position: center; border-radius: 10px; border: 2px solid #16213e; overflow: hidden; margin-bottom: 12px;">
+        
+        <!-- REPISA IZQUIERDA -->
+        <div id="shelf-left-slot" style="position: absolute; top: 110px; left: 62px; width: 135px; height: 110px; display: flex; justify-content: center; align-items: center; cursor: pointer;" onclick="handleShelfClick(0)" title="Click to assign/change fish">
+          <span id="shelf-left-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; pointer-events: none;">+ Tanque 1</span>
         </div>
+
+        <!-- REPISA DERECHA -->
+        <div id="shelf-right-slot" style="position: absolute; top: 110px; right: 62px; width: 135px; height: 110px; display: flex; justify-content: center; align-items: center; cursor: pointer;" onclick="handleShelfClick(1)" title="Click to assign/change fish">
+          <span id="shelf-right-label" style="font-size: 0.7rem; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; pointer-events: none;">+ Tanque 2</span>
+        </div>
+
       </div>
+
+      <!-- CONTROLES O INFO DE CONFIGURACIÓN -->
+      <div id="aquarium-owner-controls" style="display: none; background: #16213e; padding: 10px; border-radius: 8px; text-align: center;">
+        <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #2ecc71;">💡 Click on any shelf tank to place or change a fish!</p>
+        <span style="font-size: 0.75rem; color: #a0aec0;">(Requires owning the Mini Tank and having the fish in your inventory)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SELECCIONAR PEZ PARA LA REPISA -->
+  <div id="modal-select-fish" class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-card" style="max-width: 350px;">
+      <button class="modal-close" onclick="document.getElementById('modal-select-fish').style.display='none'">✖</button>
+      <h3 style="margin-top:0;">🐟 Select a Fish for Tank</h3>
+      <p style="font-size:0.85rem; color:#a0aec0;">Choose a fish from your inventory:</p>
+      <div id="select-fish-list" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+        <!-- Lista de peces disponibles -->
+      </div>
+      <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="removeFishFromShelf()">🗑️ Remove Fish from Tank</button>
     </div>
   </div>
 
@@ -708,6 +736,17 @@
           <button type="submit" class="modal-action-btn" style="background:#27ae60;">Claim Code</button>
         </form>
       </div>
+
+      <!-- COMPRA DE TANQUE CHIQUITO -->
+      <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
+          <img src="https://i.postimg.cc/DZs0wKSx/tanque-mini.png" alt="Mini Tank" style="width: 40px; height: 40px; object-fit: contain;">
+          <div>
+            <strong>🐠 Mini Tank</strong><br><span style="font-size: 0.8rem; color: #a0aec0;">Display a fish in your aquarium</span>
+          </div>
+        </div>
+        <button id="buy-tank-btn" class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="buyMiniTank()">75 💰</button>
+      </div>
       
       <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
         <div style="text-align: left;">
@@ -718,16 +757,16 @@
     </div>
   </div>
 
-  <!-- MODAL BACKPACK (SIN WORM BAIT) -->
+  <!-- MODAL BACKPACK -->
   <div id="modal-backpack" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>🎒 Player Backpack</h2>
-      <p style="font-size: 0.9rem; color: #a0aec0;">Your equipped gear and caught fish:</p>
+      <p style="font-size: 0.9rem; color: #a0aec0;">Your items and caught fish:</p>
       
       <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
-        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #3498db;">🎣 Equipped Gear</h3>
-        <p style="margin: 3px 0; font-size: 0.85rem;">Standard Fishing Rod</p>
+        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #3498db;">🎒 Items Owned</h3>
+        <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tanks: 0</p>
       </div>
 
       <div style="background: #0f172a; padding: 12px; border-radius: 8px;">
@@ -832,7 +871,21 @@
     let recaptchaLoginId = null;
     let recaptchaRegisterId = null;
     let viewingTargetFishes = [];
+    let viewingTargetTanks = [];
     let viewingTargetUsername = "";
+    let viewingTargetUid = "";
+    let isViewingMyAquarium = false;
+    let selectedShelfIndex = 0;
+    let activeFishAnimations = [];
+
+    // Lista exclusiva de los 5 peces solicitados con sus imágenes exactas
+    const ALLOWED_FISH_TYPES = [
+      { name: "Opah", value: 120, img: "https://i.postimg.cc/sxhg04JM/opah.png" },
+      { name: "Clownfish", value: 25, img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" },
+      { name: "Guppy", value: 10, img: "https://i.postimg.cc/VkcRfY5g/guppy.png" },
+      { name: "Tilapia", value: 40, img: "https://i.postimg.cc/zXTCP9pD/tilapia.png" },
+      { name: "Goldfish", value: 15, img: "https://i.postimg.cc/nLSBDZV3/goldfish.png" }
+    ];
 
     function onloadCallback() {
       try {
@@ -886,6 +939,7 @@
     }
 
     function closeAllModals() {
+      stopFishAnimations();
       document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
     }
 
@@ -901,7 +955,9 @@
         const doc = await db.collection('jugadores').doc(user.uid).get();
         if (doc.exists) {
           const data = doc.data();
-          renderAquarium(data.username || "My", data.fishes || []);
+          isViewingMyAquarium = true;
+          viewingTargetUid = user.uid;
+          renderAquarium(data.username || "My", data.fishes || [], data.aquariumTanks || [null, null]);
         }
       } catch (err) {
         showToast("❌ Error loading aquarium.");
@@ -909,34 +965,188 @@
     }
 
     function openOtherAquarium() {
-      renderAquarium(viewingTargetUsername, viewingTargetFishes);
+      isViewingMyAquarium = false;
+      renderAquarium(viewingTargetUsername, viewingTargetFishes, viewingTargetTanks);
     }
 
-    function renderAquarium(username, fishes) {
+    function renderAquarium(username, fishes, tanks) {
+      stopFishAnimations();
       document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
       document.getElementById('modal-aquarium').style.display = 'flex';
       document.getElementById('aquarium-title').innerText = `🐠 ${username}'s Aquarium`;
       
-      const grid = document.getElementById('aquarium-fish-grid');
       const subtitle = document.getElementById('aquarium-subtitle');
+      const ownerControls = document.getElementById('aquarium-owner-controls');
       
-      if (!fishes || fishes.length === 0) {
-        subtitle.innerText = "This aquarium is currently empty.";
-        grid.innerHTML = '<p style="text-align:center; color:#a0aec0; margin:20px 0;">No fish in this aquarium yet.</p>';
-        return;
+      if (isViewingMyAquarium) {
+        subtitle.innerText = "Manage your mini tanks and fish displays";
+        ownerControls.style.display = 'block';
+      } else {
+        subtitle.innerText = `Viewing ${username}'s displayed fish`;
+        ownerControls.style.display = 'none';
       }
 
-      subtitle.innerText = `Total fish swimming: ${fishes.length}`;
-      let html = '';
-      fishes.forEach(f => {
-        html += `
-          <div style="background: #16213e; padding: 8px 12px; border-radius: 6px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center;">
-            <span>🐟 <strong>${f.name}</strong></span>
-            <span style="font-size: 0.75rem; color: #a0aec0;">${new Date(f.timestamp).toLocaleDateString()}</span>
+      // Renderizar tanques en repisas
+      renderShelfSlot(0, tanks && tanks[0] ? tanks[0] : null);
+      renderShelfSlot(1, tanks && tanks[1] ? tanks[1] : null);
+    }
+
+    function renderShelfSlot(shelfIndex, fishName) {
+      const slotId = shelfIndex === 0 ? 'shelf-left-slot' : 'shelf-right-slot';
+      const slotEl = document.getElementById(slotId);
+      
+      if (!fishName) {
+        slotEl.innerHTML = `<span style="font-size: 0.7rem; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; pointer-events: none;">${isViewingMyAquarium ? '+ Tanque (Vacío)' : 'Vacío'}</span>`;
+        slotEl.style.backgroundImage = 'none';
+      } else {
+        const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName) || ALLOWED_FISH_TYPES[0];
+        slotEl.innerHTML = `
+          <div style="position: relative; width: 100%; height: 100%; background-image: url('https://i.postimg.cc/DZs0wKSx/tanque-mini.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
+            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 32px; height: auto; object-fit: contain; pointer-events: none;">
           </div>
         `;
+        // Iniciar animación de movimiento dentro del tanque sin salir de él
+        startFishAnimation(shelfIndex);
+      }
+    }
+
+    function handleShelfClick(shelfIndex) {
+      if (!isViewingMyAquarium) return;
+      selectedShelfIndex = shelfIndex;
+      
+      // Cargar peces del usuario actual para seleccionar
+      const user = auth.currentUser;
+      if (!user) return;
+
+      db.collection('jugadores').doc(user.uid).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          const tanksCount = data.miniTanks || 0;
+          const fishes = data.fishes || [];
+
+          if (tanksCount <= shelfIndex) {
+            showToast("⚠️ You need to buy more Mini Tanks from Bob's Shop to use this shelf slot!");
+            return;
+          }
+
+          openSelectFishModal(fishes);
+        }
       });
-      grid.innerHTML = html;
+    }
+
+    function openSelectFishModal(fishes) {
+      const listEl = document.getElementById('select-fish-list');
+      if (!fishes || fishes.length === 0) {
+        listEl.innerHTML = '<p style="color:#a0aec0; text-align:center; margin:10px 0;">You have no fish in your inventory! Go fishing first.</p>';
+      } else {
+        let html = '';
+        fishes.forEach((f, idx) => {
+          const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === f.name) || ALLOWED_FISH_TYPES[0];
+          html += `
+            <div style="background: #16213e; padding: 8px; border-radius: 6px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="assignFishToShelf('${f.name}')">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <img src="${fishObj.img}" style="width: 25px; height: 25px; object-fit: contain;">
+                <span><strong>${f.name}</strong></span>
+              </div>
+              <span style="font-size:0.75rem; color:#2ecc71;">Select</span>
+            </div>
+          `;
+        });
+        listEl.innerHTML = html;
+      }
+      document.getElementById('modal-select-fish').style.display = 'flex';
+    }
+
+    async function assignFishToShelf(fishName) {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const docRef = db.collection('jugadores').doc(user.uid);
+        const doc = await docRef.get();
+        if (doc.exists) {
+          let tanks = doc.data().aquariumTanks || [null, null];
+          tanks[selectedShelfIndex] = fishName;
+          await docRef.update({ aquariumTanks: tanks });
+          
+          showToast(`✅ ${fishName} placed in the tank!`);
+          document.getElementById('modal-select-fish').style.display = 'none';
+          renderAquarium(doc.data().username, doc.data().fishes || [], tanks);
+        }
+      } catch (err) {
+        showToast("❌ Error updating tank: " + err.message);
+      }
+    }
+
+    async function removeFishFromShelf() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const docRef = db.collection('jugadores').doc(user.uid);
+        const doc = await docRef.get();
+        if (doc.exists) {
+          let tanks = doc.data().aquariumTanks || [null, null];
+          tanks[selectedShelfIndex] = null;
+          await docRef.update({ aquariumTanks: tanks });
+          
+          showToast("🗑️ Fish removed from tank.");
+          document.getElementById('modal-select-fish').style.display = 'none';
+          renderAquarium(doc.data().username, doc.data().fishes || [], tanks);
+        }
+      } catch (err) {
+        showToast("❌ Error: " + err.message);
+      }
+    }
+
+    function startFishAnimation(shelfIndex) {
+      const fishImg = document.querySelector(`.swimming-fish-${shelfIndex}`);
+      if (!fishImg) return;
+
+      // Límites internos del mini tanque en píxeles para que no salga
+      let posX = 40;
+      let posY = 40;
+      let speedX = (Math.random() > 0.5 ? 1 : -1) * 0.6;
+      let speedY = (Math.random() > 0.5 ? 1 : -1) * 0.4;
+
+      const minX = 15;
+      const maxX = 90;
+      const minY = 20;
+      const maxY = 70;
+
+      const interval = setInterval(() => {
+        posX += speedX;
+        posY += speedY;
+
+        // Invertir dirección horizontal y voltear imagen ("invertir" para que gire)
+        if (posX <= minX) {
+          posX = minX;
+          speedX *= -1;
+          fishImg.style.transform = 'scaleX(1)'; // Mirando a la derecha
+        } else if (posX >= maxX) {
+          posX = maxX;
+          speedX *= -1;
+          fishImg.style.transform = 'scaleX(-1)'; // Invertido mirando a la izquierda
+        }
+
+        if (posY <= minY) {
+          posY = minY;
+          speedY *= -1;
+        } else if (posY >= maxY) {
+          posY = maxY;
+          speedY *= -1;
+        }
+
+        fishImg.style.left = posX + 'px';
+        fishImg.style.top = posY + 'px';
+      }, 50);
+
+      activeFishAnimations.push(interval);
+    }
+
+    function stopFishAnimations() {
+      activeFishAnimations.forEach(interval => clearInterval(interval));
+      activeFishAnimations = [];
     }
 
     function closeAquariumModal() {
@@ -975,6 +1185,7 @@
       }
     }
 
+    // Pescar solo entre los 5 peces autorizados
     async function castLine() {
       const user = auth.currentUser;
       if (!user) return;
@@ -982,13 +1193,7 @@
       showToast("🎣 Casting your line... Waiting for a bite...");
       
       setTimeout(async () => {
-        const fishTypes = [
-          { name: "Blue Little Fish", value: 10 },
-          { name: "Red Small Fish", value: 15 },
-          { name: "Golden Rare Fish", value: 50 },
-          { name: "Giant Bass", value: 100 }
-        ];
-        const caught = fishTypes[Math.floor(Math.random() * fishTypes.length)];
+        const caught = ALLOWED_FISH_TYPES[Math.floor(Math.random() * ALLOWED_FISH_TYPES.length)];
 
         try {
           const playerRef = db.collection('jugadores').doc(user.uid);
@@ -1005,16 +1210,50 @@
       }, 2500);
     }
 
+    // Comprar tanque chiquito en la tienda
+    async function buyMiniTank() {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("⚠️ You must be logged in.");
+        return;
+      }
+
+      const cost = 75;
+      try {
+        const playerRef = db.collection('jugadores').doc(user.uid);
+        const doc = await playerRef.get();
+        if (doc.exists) {
+          const coins = doc.data().coins || 0;
+          if (coins < cost) {
+            showToast("❌ Not enough coins! You need 75 💰.");
+            return;
+          }
+
+          await playerRef.update({
+            coins: coins - cost,
+            miniTanks: firebase.firestore.FieldValue.increment(1)
+          });
+
+          showToast("🎉 Success! You bought a Mini Tank!");
+          loadBackpackData();
+        }
+      } catch (err) {
+        showToast("❌ Error buying tank: " + err.message);
+      }
+    }
+
     async function loadBackpackData() {
       const user = auth.currentUser;
       if (!user) return;
       const listContainer = document.getElementById('backpack-fish-list');
-      listContainer.innerHTML = "Loading catches...";
+      listContainer.innerHTML = "Loading items...";
 
       try {
         const doc = await db.collection('jugadores').doc(user.uid).get();
         if (doc.exists) {
           const data = doc.data();
+          document.getElementById('backpack-tanks-count').innerText = `Mini Tanks: ${data.miniTanks || 0}`;
+          
           const fishes = data.fishes || [];
           if (fishes.length === 0) {
             listContainer.innerHTML = "No fish caught yet. Go fishing!";
@@ -1022,7 +1261,13 @@
           }
           let html = '';
           fishes.forEach(f => {
-            html += `<p style="margin: 3px 0;">🐟 ${f.name}</p>`;
+            const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === f.name) || ALLOWED_FISH_TYPES[0];
+            html += `
+              <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0;">
+                <img src="${fishObj.img}" style="width: 20px; height: 20px; object-fit: contain;">
+                <span>🐟 ${f.name}</span>
+              </div>
+            `;
           });
           listContainer.innerHTML = html;
         }
@@ -1141,6 +1386,8 @@
           photoURL: photoURL,
           coins: 0,
           fishes: [],
+          miniTanks: 0,
+          aquariumTanks: [null, null],
           redeemedCodes: [],
           isBanned: false,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1331,8 +1578,9 @@
         const data = doc.data();
         const avatar = data.photoURL || 'https://via.placeholder.com/40';
         const fishesJson = JSON.stringify(data.fishes || []).replace(/"/g, '&quot;');
+        const tanksJson = JSON.stringify(data.aquariumTanks || [null, null]).replace(/"/g, '&quot;');
         html += `
-          <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'No bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}', ${fishesJson})">
+          <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'No bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}', '${doc.id}', ${fishesJson}, ${tanksJson})">
             <div style="display:flex; align-items:center; gap:10px;">
               <img src="${avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
               <div>
@@ -1348,9 +1596,12 @@
       resultDiv.innerHTML = html;
     }
 
-    function viewOtherProfile(username, bio, coins, fishCount, avatar, fishes) {
+    function viewOtherProfile(username, bio, coins, fishCount, avatar, uid, fishes, tanks) {
       viewingTargetUsername = username;
+      viewingTargetUid = uid;
       viewingTargetFishes = fishes;
+      viewingTargetTanks = tanks;
+      
       document.getElementById('view-profile-name').innerText = username;
       document.getElementById('view-profile-bio').innerText = bio;
       document.getElementById('view-profile-coins').innerText = coins;
