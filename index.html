@@ -75,7 +75,6 @@
       justify-content: center;
     }
 
-    /* Logo grande */
     .fish-logo-img {
       max-width: 580px;
       width: 95%;
@@ -84,7 +83,6 @@
       filter: drop-shadow(0 6px 18px rgba(0,0,0,0.95));
     }
 
-    /* Menú central elevado */
     .center-menu {
       display: flex;
       gap: 30px;
@@ -291,7 +289,7 @@
     <div id="admin-panel-btn" class="admin-corner">
       <button class="modal-action-btn" onclick="openModal('modal-admin')">⚙️ Admin Panel</button>
     </div>
-    <div class="version-tag">v.1.0.0.0 (awakristal.github.io)</div>
+    <div class="version-tag">v.1.0.0.0</div>
   </header>
 
   <!-- ESQUINA INFERIOR IZQUIERDA: Account -->
@@ -308,7 +306,7 @@
     <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto;" onclick="logout()">🚪 Log out</button>
   </div>
 
-  <!-- CENTRO: Logo grande y botones elevados -->
+  <!-- CENTRO -->
   <main class="main-container">
     <div class="title-box">
       <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="The Fishing Game Logo" class="fish-logo-img">
@@ -327,7 +325,7 @@
     </div>
   </main>
 
-  <!-- ESQUINA INFERIOR DERECHA: News grande -->
+  <!-- ESQUINA INFERIOR DERECHA -->
   <div class="corner-bottom-right">
     <button class="img-btn" onclick="openModal('modal-news')">
       <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
@@ -357,10 +355,9 @@
         </div>
         <button type="submit" class="modal-action-btn">Sign In</button>
         <p style="font-size:0.85rem; text-align:center; margin-top:10px; cursor:pointer; color:#3498db;" onclick="handleForgotPassword()">Forgot password?</p>
-        <p style="font-size:0.85rem; text-align:center; margin-top:5px; cursor:pointer; color:#2ecc71;" onclick="handleResendVerification()">Resend verification link</p>
+        <p style="font-size:0.85rem; text-align:center; margin-top:5px; cursor:pointer; color:#2ecc71;" onclick="openModal('modal-verify-code')">Enter Verification Code</p>
       </form>
 
-      <!-- Formulario de Registro con Autofill separado -->
       <form id="form-register" onsubmit="handleRegister(event)" style="display:none;" autocomplete="on">
         <div class="form-group">
           <label>Username</label>
@@ -387,6 +384,27 @@
         </div>
         <button type="submit" class="modal-action-btn">Create Account</button>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL PARA INGRESAR CÓDIGO DE VERIFICACIÓN DE 6 DÍGITOS -->
+  <div id="modal-verify-code" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>🔑 Verify Account</h2>
+      <p style="font-size:0.9rem; color:#a0aec0;">Enter your email to receive or input your 6-digit verification code.</p>
+      
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="verify-email" placeholder="Your account email" required>
+      </div>
+      <button type="button" class="modal-action-btn" style="margin-bottom:15px; background:#27ae60;" onclick="sendSixDigitCode()">Send 6-Digit Code</button>
+
+      <div class="form-group">
+        <label>6-Digit Code</label>
+        <input type="text" id="verify-code-input" placeholder="123456" maxlength="6" style="text-align:center; font-size:1.5rem; letter-spacing:5px;">
+      </div>
+      <button type="button" class="modal-action-btn" onclick="verifySixDigitCode()">Confirm Code</button>
     </div>
   </div>
 
@@ -472,6 +490,7 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
     let ADMIN_UID = "";
 
@@ -514,44 +533,12 @@
       }
     }
 
-    // Compime y reduce cualquier imagen grande automáticamente a menos de 20KB en Base64
-    const comprimirImagen = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-          const img = new Image();
-          img.src = event.target.result;
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 150;
-            const MAX_HEIGHT = 150;
-            let width = img.width;
-            let height = img.height;
-
-            if (width > height) {
-              if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width;
-                width = MAX_WIDTH;
-              }
-            } else {
-              if (height > MAX_HEIGHT) {
-                width *= MAX_HEIGHT / height;
-                height = MAX_HEIGHT;
-              }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL('image/jpeg', 0.7)); // Comprimido a JPEG calidad 70%
-          };
-          img.onerror = (error) => reject(error);
-        };
-        reader.onerror = (error) => reject(error);
-      });
-    };
+    // Sube la imagen a Firebase Storage para evitar saturar el perfil o Firestore
+    async function subirImagenAStorage(file, uid) {
+      const storageRef = storage.ref(`avatars/${uid}`);
+      await storageRef.put(file);
+      return await storageRef.getDownloadURL();
+    }
 
     async function handleLogin(e) {
       e.preventDefault();
@@ -565,7 +552,16 @@
       const pass = document.getElementById('login-password').value;
 
       try {
-        await auth.signInWithEmailAndPassword(email, pass);
+        const userCred = await auth.signInWithEmailAndPassword(email, pass);
+        // Validar si está verificado mediante código
+        const doc = await db.collection('jugadores').doc(userCred.user.uid).get();
+        if (doc.exists && doc.data().verificado === false) {
+          showToast("⚠️ Your account is not verified. Please enter your 6-digit code.");
+          openModal('modal-verify-code');
+          document.getElementById('verify-email').value = email;
+          return;
+        }
+
         showToast("🚀 Welcome back!");
         closeAllModals();
         grecaptcha.reset(recaptchaLoginId);
@@ -588,17 +584,22 @@
       const bio = document.getElementById('reg-bio').value;
       const fileInput = document.getElementById('reg-avatar').files[0];
 
+      if (fileInput && fileInput.size > 1024 * 1024) {
+        showToast("⚠️ Profile picture must not exceed 1 MB.");
+        return;
+      }
+
       try {
         const userCred = await auth.createUserWithEmailAndPassword(email, pass);
         const user = userCred.user;
 
-        await user.sendEmailVerification();
-        showToast("📧 Verification link sent! Check your inbox.");
-
         let photoURL = "";
         if (fileInput) {
-          photoURL = await comprimirImagen(fileInput);
+          photoURL = await subirImagenAStorage(fileInput, user.uid);
         }
+
+        // Generar código de 6 dígitos
+        const codigo6Digitos = Math.floor(100000 + Math.random() * 900000).toString();
 
         await user.updateProfile({ displayName: username, photoURL });
         await db.collection('jugadores').doc(user.uid).set({
@@ -607,13 +608,85 @@
           bio: bio,
           coins: 0,
           fishes: [],
+          verificado: false,
+          codigoVerificacion: codigo6Digitos,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        closeAllModals();
+        // Mostrar simulación del código en consola / toast para pruebas inmediatas
+        console.log("TU CÓDIGO DE VERIFICACIÓN DE 6 DÍGITOS ES: ", codigo6Digitos);
+        showToast("🔢 6-digit code generated! (Check console or enter code)");
+        
+        document.getElementById('verify-email').value = email;
+        openModal('modal-verify-code');
         grecaptcha.reset(recaptchaRegisterId);
       } catch (err) {
         showToast("❌ Registration error: " + err.message);
+      }
+    }
+
+    // Enviar / Reenviar código de 6 dígitos si se perdió
+    async function sendSixDigitCode() {
+      const email = document.getElementById('verify-email').value;
+      if (!email) {
+        showToast("⚠️ Please enter your email address.");
+        return;
+      }
+
+      try {
+        const query = await db.collection('jugadores').where('email', '==', email).get();
+        if (query.empty) {
+          showToast("❌ No account found with this email.");
+          return;
+        }
+
+        const docId = query.docs[0].id;
+        const nuevoCodigo = Math.floor(100000 + Math.random() * 900000).toString();
+
+        await db.collection('jugadores').doc(docId).update({
+          codigoVerificacion: nuevoCodigo
+        });
+
+        console.log("NUEVO CÓDIGO DE VERIFICACIÓN: ", nuevoCodigo);
+        showToast("📧 A new 6-digit code has been generated! (Check console)");
+      } catch (err) {
+        showToast("❌ Error: " + err.message);
+      }
+    }
+
+    // Verificar el código ingresado de 6 dígitos
+    async function verifySixDigitCode() {
+      const email = document.getElementById('verify-email').value;
+      const ingresado = document.getElementById('verify-code-input').value;
+
+      if (!email || !ingresado) {
+        showToast("⚠️ Fill in both email and code.");
+        return;
+      }
+
+      try {
+        const query = await db.collection('jugadores').where('email', '==', email).get();
+        if (query.empty) {
+          showToast("❌ Account not found.");
+          return;
+        }
+
+        const userDoc = query.docs[0];
+        const data = userDoc.data();
+
+        if (data.codigoVerificacion === ingresado.trim()) {
+          await db.collection('jugadores').doc(userDoc.id).update({
+            verificado: true,
+            codigoVerificacion: null
+          });
+          showToast("✅ Account verified successfully! You can now log in.");
+          closeAllModals();
+          openModal('modal-account');
+        } else {
+          showToast("❌ Invalid 6-digit code.");
+        }
+      } catch (err) {
+        showToast("❌ Error: " + err.message);
       }
     }
 
@@ -647,12 +720,17 @@
       const newBio = document.getElementById('profile-edit-bio').value;
       const fileInput = document.getElementById('profile-edit-avatar').files[0];
 
+      if (fileInput && fileInput.size > 1024 * 1024) {
+        showToast("⚠️ Profile picture must not exceed 1 MB.");
+        return;
+      }
+
       try {
         showToast("⏳ Saving profile changes...");
         let photoURL = user.photoURL;
 
         if (fileInput) {
-          photoURL = await comprimirImagen(fileInput);
+          photoURL = await subirImagenAStorage(fileInput, user.uid);
           await user.updateProfile({ photoURL });
           document.getElementById('user-avatar').src = photoURL;
           document.getElementById('profile-modal-avatar').src = photoURL;
@@ -678,23 +756,6 @@
       try {
         await auth.sendPasswordResetEmail(email);
         showToast("📬 Password reset link sent to your email.");
-      } catch (err) {
-        showToast("❌ Error: " + err.message);
-      }
-    }
-
-    async function handleResendVerification() {
-      const email = document.getElementById('login-email').value;
-      const pass = document.getElementById('login-password').value;
-      if (!email || !pass) {
-        showToast("⚠️ Enter your email and password above to generate a fresh verification link.");
-        return;
-      }
-      try {
-        const cred = await auth.signInWithEmailAndPassword(email, pass);
-        await cred.user.sendEmailVerification();
-        showToast("📧 A fresh verification link has been sent to your email!");
-        auth.signOut();
       } catch (err) {
         showToast("❌ Error: " + err.message);
       }
