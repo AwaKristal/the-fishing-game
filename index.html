@@ -56,8 +56,6 @@
       border-radius: 8px;
     }
 
-    .admin-corner { display: none; }
-
     .main-container {
       display: flex;
       flex-direction: column;
@@ -267,7 +265,7 @@
       color: #3498db;
     }
 
-    /* Botón de Admin flotante exclusivo */
+    /* Botón de Admin flotante con imagen exacta */
     .admin-trigger-btn {
       position: fixed;
       bottom: 25px;
@@ -275,21 +273,27 @@
       width: 55px;
       height: 55px;
       border-radius: 50%;
-      border: 2px solid #fff;
+      border: none;
       cursor: pointer;
-      background-color: #2c3e50;
+      background: none;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
       z-index: 9999;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 0;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .admin-trigger-btn:hover {
+      transform: scale(1.1);
+      filter: brightness(1.2);
     }
     .admin-trigger-btn img {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      object-fit: cover;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
     #toast-container {
@@ -380,7 +384,7 @@
     </button>
   </div>
 
-  <!-- BOTÓN ADMIN FLOTANTE (Solo para tu UID) -->
+  <!-- BOTÓN ADMIN FLOTANTE CORREGIDO CON IMAGEN -->
   <button id="adminBtn" class="admin-trigger-btn" onclick="openModal('modal-admin')">
     <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
   </button>
@@ -1090,7 +1094,6 @@
         adminBtn.style.display = 'none';
       }
       
-      // Actualizar la vista de las noticias por si cambia el estado de admin
       if (document.getElementById('modal-news').style.display === 'flex') {
         renderCurrentNews();
       }
