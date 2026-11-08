@@ -429,6 +429,7 @@
         <img id="profile-modal-avatar" src="https://via.placeholder.com/60" alt="Avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid #fff;">
         <div>
           <h3 id="profile-modal-name" style="margin:0; font-size:1.2rem;">Username</h3>
+          <p id="verification-status" style="margin:3px 0; font-size:0.8rem; color:#e74c3c;">⚠️ Email not verified</p>
           <p style="margin:5px 0 0 0; font-size:0.9rem; color:#a0aec0;">💰 Coins: <span id="profile-coins">0</span> | 🐟 Fish: <span id="profile-fish-count">0</span></p>
         </div>
       </div>
@@ -594,15 +595,7 @@
       const pass = document.getElementById('login-password').value;
 
       try {
-        const userCred = await auth.signInWithEmailAndPassword(email, pass);
-        
-        // Comprobación de que el correo esté verificado mediante el enlace de Firebase
-        if (!userCred.user.emailVerified) {
-          showToast("⚠️ Please verify your email address first. Check your inbox.");
-          auth.signOut();
-          return;
-        }
-
+        await auth.signInWithEmailAndPassword(email, pass);
         showToast("🚀 Welcome back!");
         closeAllModals();
         grecaptcha.reset(recaptchaLoginId);
@@ -634,9 +627,7 @@
           photoURL = await comprimirImagen(fileInput);
         }
 
-        // Envío del correo de verificación oficial de Firebase
         await user.sendEmailVerification();
-
         await user.updateProfile({ displayName: username });
 
         await db.collection('jugadores').doc(user.uid).set({
@@ -649,8 +640,7 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        showToast("📧 Verification email sent! Please check your inbox.");
-        auth.signOut();
+        showToast("📧 Account created! Verification email sent.");
         closeAllModals();
         grecaptcha.reset(recaptchaRegisterId);
       } catch (err) {
@@ -674,7 +664,6 @@
           await cred.user.sendEmailVerification();
           showToast("📧 Fresh verification email sent! Check your inbox.");
         }
-        auth.signOut();
         closeAllModals();
       } catch (err) {
         showToast("❌ Error: " + err.message);
@@ -686,6 +675,17 @@
       if (!user) return;
       
       try {
+        // Actualizar estado de verificación en vivo
+        await user.reload();
+        const statusEl = document.getElementById('verification-status');
+        if (user.emailVerified) {
+          statusEl.innerText = "✅ Email verified";
+          statusEl.style.color = "#2ecc71";
+        } else {
+          statusEl.innerText = "⚠️ Email not verified (Check inbox)";
+          statusEl.style.color = "#e74c3c";
+        }
+
         const doc = await db.collection('jugadores').doc(user.uid).get();
         if (doc.exists) {
           const data = doc.data();
