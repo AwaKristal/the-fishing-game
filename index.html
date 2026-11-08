@@ -160,26 +160,26 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       z-index: 99;
     }
 
     .btn-news-img {
-      width: 120px !important;
+      width: 110px !important;
       height: auto !important;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
     .btn-index-img {
-      width: 105px !important;
+      width: 95px !important;
       height: auto !important;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
     .btn-market-img {
-      width: 105px !important;
+      width: 95px !important;
       height: auto !important;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
@@ -207,13 +207,13 @@
       object-fit: cover;
     }
 
-    /* PANTALLA DE JUEGO (PLAY VIEW) */
+    /* PANTALLA DE JUEGO (PLAY VIEW) CON MAPA NUEVO map2.png */
     #game-screen {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background-image: url('https://i.postimg.cc/j2mRHnV4/map.png');
+      background-image: url('https://i.postimg.cc/3N1KpnjJ/map2.png');
       background-size: cover;
       background-position: center;
       z-index: 100;
@@ -221,9 +221,10 @@
 
     .backpack-on-map {
       position: absolute;
-      top: 25%;
-      left: 31%;
-      width: 70px;
+      bottom: 95px;
+      left: 50%;
+      transform: translateX(110px);
+      width: 60px;
       height: auto;
       cursor: pointer;
       z-index: 105;
@@ -231,7 +232,7 @@
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
     }
     .backpack-on-map:hover {
-      transform: scale(1.15);
+      transform: translateX(110px) scale(1.15);
       filter: brightness(1.2) drop-shadow(0 6px 12px rgba(0,0,0,0.8));
     }
 
@@ -489,9 +490,9 @@
     .admin-trigger-btn {
       position: fixed;
       bottom: 20px;
-      right: 140px;
-      width: 50px;
-      height: 50px;
+      right: 130px;
+      width: 45px;
+      height: 45px;
       border: none;
       cursor: pointer;
       background: none;
@@ -570,14 +571,15 @@
       .fish-logo-img { max-width: 250px; }
       .center-menu { gap: 12px; margin-bottom: 10px; }
       .img-btn img { width: 105px; }
-      .btn-news-img { width: 100px !important; }
-      .btn-index-img { width: 85px !important; }
-      .btn-market-img { width: 85px !important; }
-      .admin-trigger-btn { right: 12px; bottom: 75px; width: 42px; height: 42px; }
+      .btn-news-img { width: 85px !important; }
+      .btn-index-img { width: 75px !important; }
+      .btn-market-img { width: 75px !important; }
+      .admin-trigger-btn { right: 10px; bottom: 70px; width: 38px; height: 38px; }
       .corner-bottom-left { bottom: 10px; left: 10px; }
-      .corner-bottom-right { bottom: 10px; right: 10px; }
+      .corner-bottom-right { bottom: 10px; right: 10px; gap: 5px; }
       .modal-card { padding: 14px; max-height: 88vh; }
-      .backpack-on-map { top: 22%; left: 26%; width: 50px; }
+      .backpack-on-map { bottom: 80px; transform: translateX(80px); width: 45px; }
+      .backpack-on-map:hover { transform: translateX(80px) scale(1.15); }
     }
   </style>
 </head>
@@ -587,7 +589,7 @@
     <div class="header-left">
       <div class="version-tag">v.1.0.0.0</div>
       <a href="https://github.com/AwaKristal/the-fishing-game/releases/tag/file" target="_blank" class="download-app-btn">
-        📲 Download App (Windows / Android)
+        📲 Download
       </a>
     </div>
   </header>
@@ -694,8 +696,8 @@
 
       <div id="market-sell-section" style="display: none;">
         <p style="font-size:0.85rem; color:#a0aec0; margin-bottom:10px;">Select a fish from your backpack to sell:</p>
-        <div id="market-my-fishes-container" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-          <p style="color:#a0aec0; text-align:center;">Loading your fishes...</p>
+        <div id="market-my-fishes-container" style="max-height: 280px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px;">
+          <p style="color:#a0aec0; text-align:center; grid-column: 1/-1;">Loading your fishes...</p>
         </div>
       </div>
 
@@ -869,27 +871,34 @@
     </div>
   </div>
 
-  <!-- MODAL ACUARIO -->
+  <!-- MODAL ACUARIO CON MÚLTIPLES CUARTOS -->
   <div id="modal-aquarium" class="modal-overlay">
-    <div class="modal-card" style="max-width: 640px; padding: 15px; background: #0f172a; border: 2px solid #3498db;">
+    <div class="modal-card" style="max-width: 680px; padding: 15px; background: #0f172a; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
       <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 3px; font-size: 1.3rem;">🐠 Aquarium</h2>
       <p style="font-size: 0.8rem; color: #a0aec0; text-align: center; margin-top:0; margin-bottom: 10px;" id="aquarium-subtitle">Viewing aquarium...</p>
       
+      <!-- NAVEGADOR DE CUARTOS DE ACUARIO -->
+      <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 10px;">
+        <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(-1)">◀ Prev Room</button>
+        <span id="aquarium-room-indicator" style="font-weight: bold; font-size: 0.95rem; color: #f1c40f;">Room 1</span>
+        <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(1)">Next Room ▶</button>
+      </div>
+
       <div style="position: relative; width: 100%; height: 390px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: cover; background-position: center; border-radius: 10px; border: 2px solid #16213e; overflow: hidden; margin-bottom: 12px;">
         
-        <div style="position: absolute; top: 38px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
-          <div id="shelf-top-0" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
-          <div id="shelf-top-1" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
-          <div id="shelf-top-2" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
-          <div id="shelf-top-3" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
+        <div style="position: absolute; top: 18px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
+          <div id="shelf-top-0" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
+          <div id="shelf-top-1" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
+          <div id="shelf-top-2" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
+          <div id="shelf-top-3" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
         </div>
 
-        <div style="position: absolute; bottom: 25px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
-          <div id="shelf-bot-0" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
-          <div id="shelf-bot-1" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
-          <div id="shelf-bot-2" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
-          <div id="shelf-bot-3" style="width: 130px; height: 120px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
+        <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
+          <div id="shelf-bot-0" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
+          <div id="shelf-bot-1" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
+          <div id="shelf-bot-2" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
+          <div id="shelf-bot-3" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
         </div>
 
       </div>
@@ -923,7 +932,6 @@
         <label style="font-size: 0.8rem; color: #3498db; font-weight: bold;">Filter by Rarity:</label>
         <select id="index-rarity-select" onchange="onRarityFilterChange()">
           <option value="Common">Common</option>
-          <!-- Se pueden agregar más opciones aquí en el futuro (ej: Rare, Epic, Legendary) -->
         </select>
       </div>
 
@@ -987,6 +995,16 @@
         </div>
         <button id="buy-tank-btn" class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="buyMiniTank()">75 💰</button>
       </div>
+
+      <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
+          <div style="font-size: 30px;">🏛️</div>
+          <div>
+            <strong>🏰 Extra Aquarium Room</strong><br><span style="font-size: 0.8rem; color: #a0aec0;">Unlock a brand new aquarium room with 8 slots</span>
+          </div>
+        </div>
+        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #3498db;" onclick="buyAquariumRoom()">1000 💰</button>
+      </div>
     </div>
   </div>
 
@@ -1000,11 +1018,12 @@
       <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
         <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #3498db;">🎒 Items Owned</h3>
         <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tanks in Inventory: 0</p>
+        <p id="backpack-rooms-count" style="margin: 3px 0; font-size: 0.85rem;">Aquarium Rooms Owned: 1</p>
       </div>
 
       <div style="background: #0f172a; padding: 12px; border-radius: 8px;">
         <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #2ecc71;">🐟 Caught Fishes</h3>
-        <div id="backpack-fish-list" style="max-height: 140px; overflow-y: auto; font-size: 0.85rem; color: #a0aec0;">
+        <div id="backpack-fish-list" style="max-height: 180px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; font-size: 0.85rem; color: #a0aec0; padding-top: 5px;">
           No fish caught yet. Go fishing!
         </div>
       </div>
@@ -1028,6 +1047,16 @@
           </div>
           <div id="ach-catch-first-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
         </div>
+
+        <div id="ach-glu-glu" style="background: #0f172a; border: 1px solid #444; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
+          <div style="font-size: 2rem;">🏆</div>
+          <div>
+            <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #3498db;">Glu glu tank</h4>
+            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #fff; font-weight: bold;">amazing!</p>
+            <span style="font-size: 0.75rem; color: #a0aec0;">buy a fish tank.</span>
+          </div>
+          <div id="ach-glu-glu-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1041,7 +1070,7 @@
       <form autocomplete="off" onsubmit="return false;">
         <div class="form-group">
           <label>Target Username</label>
-          <input type="text" id="adminTargetUsername" autocomplete="off" name="admin_target_unique_field" placeholder="Exact username...">
+          <input type="text" id="adminTargetUsername" autocomplete="off" name="admin_target_unique_field" placeholder="Exact username..." oninput="loadTargetUserInventoryForAdmin()">
         </div>
       </form>
 
@@ -1058,6 +1087,20 @@
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
         <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyCoins(1)">Give Coins</button>
         <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyCoins(-1)">Remove Coins</button>
+      </div>
+
+      <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
+      <h3>🐟 Add Fish to User</h3>
+      <div class="form-group">
+        <label>Fish Name (e.g. Goldfish)</label>
+        <input type="text" id="adminAddFishName" placeholder="Fish name...">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#27ae60; margin-bottom: 15px;" onclick="adminAddFishToUser()">Add Fish</button>
+
+      <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
+      <h3>🗑️ Remove Fish from User Inventory</h3>
+      <div id="admin-target-fishes-list" style="max-height: 140px; overflow-y: auto; background: #0f172a; padding: 8px; border-radius: 8px; margin-bottom: 15px;">
+        <p style="font-size:0.8rem; color:#a0aec0; text-align:center; margin:10px 0;">Select a target username above to view fishes...</p>
       </div>
 
       <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
@@ -1110,6 +1153,20 @@
     </div>
   </div>
 
+  <!-- MODAL REMOVER CANTIDAD DE PECES EN ADMIN -->
+  <div id="modal-admin-remove-fish" class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-card" style="max-width: 300px;">
+      <button class="modal-close" onclick="document.getElementById('modal-admin-remove-fish').style.display='none'">✖</button>
+      <h3>🗑️ Remove Fish Quantity</h3>
+      <p style="font-size:0.85rem; color:#a0aec0;" id="admin-remove-fish-name-label">Fish: Goldfish</p>
+      <div class="form-group">
+        <label>Quantity to remove</label>
+        <input type="number" id="admin-remove-fish-qty-input" min="1" value="1" placeholder="Quantity">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="confirmAdminRemoveFish()">Delete</button>
+    </div>
+  </div>
+
   <div id="toast-container"></div>
 
   <script>
@@ -1122,9 +1179,12 @@
     let viewingTargetUid = "";
     let isViewingMyAquarium = false;
     let selectedShelfIndex = 0;
+    let currentAquariumRoomIndex = 0;
+    let totalAquariumRoomsOwned = 1;
     let activeFishAnimations = [];
     let currentIndexFish = 0;
     let selectedFishToMarket = null;
+    let adminSelectedFishToRemove = "";
 
     // MINIJUEGO VARIABLES
     let isMouseDown = false;
@@ -1291,7 +1351,7 @@
       document.getElementById('index-counter').innerText = `${currentIndexFish + 1} / ${filteredFishes.length}`;
     }
 
-    async function checkAchievements(fishesCount) {
+    async function checkAchievements(fishesCount, tankBought = false) {
       const user = auth.currentUser;
       if (!user) return;
 
@@ -1301,11 +1361,22 @@
         if (doc.exists) {
           const data = doc.data();
           let achievements = data.achievements || {};
+          let updated = false;
 
           if (fishesCount > 0 && !achievements.catchFirst) {
             achievements.catchFirst = true;
-            await docRef.update({ achievements: achievements });
+            updated = true;
             showToast("🏆 Achievement Unlocked: Catch! (That was easy.)");
+          }
+
+          if (tankBought && !achievements.gluGluTank) {
+            achievements.gluGluTank = true;
+            updated = true;
+            showToast("🏆 Achievement Unlocked: Glu glu tank! (amazing!)");
+          }
+
+          if (updated) {
+            await docRef.update({ achievements: achievements });
           }
         }
       } catch (err) {
@@ -1323,19 +1394,34 @@
           const data = doc.data();
           const achievements = data.achievements || {};
 
-          const achItem = document.getElementById('ach-catch-first');
-          const achStatus = document.getElementById('ach-catch-first-status');
+          const achItem1 = document.getElementById('ach-catch-first');
+          const achStatus1 = document.getElementById('ach-catch-first-status');
 
           if (achievements.catchFirst) {
-            achItem.style.opacity = '1';
-            achItem.style.borderColor = '#2ecc71';
-            achStatus.innerHTML = '✅ Completed';
-            achStatus.style.color = '#2ecc71';
+            achItem1.style.opacity = '1';
+            achItem1.style.borderColor = '#2ecc71';
+            achStatus1.innerHTML = '✅ Completed';
+            achStatus1.style.color = '#2ecc71';
           } else {
-            achItem.style.opacity = '0.5';
-            achItem.style.borderColor = '#444';
-            achStatus.innerHTML = '🔒 Locked';
-            achStatus.style.color = '#e74c3c';
+            achItem1.style.opacity = '0.5';
+            achItem1.style.borderColor = '#444';
+            achStatus1.innerHTML = '🔒 Locked';
+            achStatus1.style.color = '#e74c3c';
+          }
+
+          const achItem2 = document.getElementById('ach-glu-glu');
+          const achStatus2 = document.getElementById('ach-glu-glu-status');
+
+          if (achievements.gluGluTank) {
+            achItem2.style.opacity = '1';
+            achItem2.style.borderColor = '#2ecc71';
+            achStatus2.innerHTML = '✅ Completed';
+            achStatus2.style.color = '#2ecc71';
+          } else {
+            achItem2.style.opacity = '0.5';
+            achItem2.style.borderColor = '#444';
+            achStatus2.innerHTML = '🔒 Locked';
+            achStatus2.style.color = '#e74c3c';
           }
         }
       } catch (err) {
@@ -1422,32 +1508,37 @@
       const user = auth.currentUser;
       if (!user) return;
       const container = document.getElementById('market-my-fishes-container');
-      container.innerHTML = '<p style="color:#a0aec0; text-align:center;">Loading your fishes...</p>';
+      container.innerHTML = '<p style="color:#a0aec0; text-align:center; grid-column: 1/-1;">Loading your fishes...</p>';
 
       try {
         const doc = await db.collection('jugadores').doc(user.uid).get();
         if (doc.exists) {
           const fishes = doc.data().fishes || [];
           if (fishes.length === 0) {
-            container.innerHTML = '<p style="color:#a0aec0; text-align:center;">You have no fish to sell!</p>';
+            container.innerHTML = '<p style="color:#a0aec0; text-align:center; grid-column: 1/-1;">You have no fish to sell!</p>';
             return;
           }
 
+          // Agrupar peces por nombre para calcular cantidades y conservar referencias de índice si es necesario
+          let fishCounts = {};
+          fishes.forEach((f, idx) => {
+            if (!fishCounts[f.name]) {
+              fishCounts[f.name] = { count: 0, firstIndex: idx, name: f.name };
+            }
+            fishCounts[f.name].count++;
+          });
+
           let html = '';
-          fishes.forEach((f, index) => {
-            const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === f.name) || ALLOWED_FISH_TYPES[0];
+          Object.values(fishCounts).forEach((group) => {
+            const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === group.name) || ALLOWED_FISH_TYPES[0];
             html += `
-              <div style="background: #16213e; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <img src="${fishObj.img}" style="width: 35px; height: 35px; object-fit: contain;">
-                  <div>
-                    <strong>🐟 ${f.name}</strong><br>
-                    <span style="font-size:0.75rem; color:#2ecc71;">System Value: ${fishObj.value} 💰</span>
-                  </div>
-                </div>
-                <div style="display: flex; gap: 6px;">
-                  <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 6px 10px; font-size: 0.75rem;" onclick="botSellFish(${index}, '${f.name}', ${fishObj.value})">Bot Sell</button>
-                  <button type="button" class="modal-action-btn" style="background:#2980b9; padding: 6px 10px; font-size: 0.75rem;" onclick="promptMarketSell(${index}, '${f.name}')">Market Sell</button>
+              <div style="background: #16213e; border: 1px solid #444; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; position: relative;">
+                <span style="position: absolute; top: 6px; right: 8px; background: #3498db; color: white; font-size: 0.75rem; font-weight: bold; padding: 1px 6px; border-radius: 10px;">x${group.count}</span>
+                <img src="${fishObj.img}" style="width: 50px; height: 50px; object-fit: contain; margin: 8px 0;">
+                <span style="font-size: 0.85rem; font-weight: bold; text-align: center; margin-bottom: 8px; color: #fff;">${group.name}</span>
+                <div style="display: flex; gap: 4px; width: 100%;">
+                  <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 4px; font-size: 0.7rem; flex:1;" onclick="botSellFish(${group.firstIndex}, '${group.name}', ${fishObj.value})">Bot Sell</button>
+                  <button type="button" class="modal-action-btn" style="background:#2980b9; padding: 4px; font-size: 0.7rem; flex:1;" onclick="promptMarketSell(${group.firstIndex}, '${group.name}')">Market</button>
                 </div>
               </div>
             `;
@@ -1455,7 +1546,7 @@
           container.innerHTML = html;
         }
       } catch (err) {
-        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading inventory.</p>';
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center; grid-column: 1/-1;">Error loading inventory.</p>';
       }
     }
 
@@ -1504,15 +1595,21 @@
           if (!doc.exists) throw new Error("Player not found");
           
           let fishes = doc.data().fishes || [];
-          let tanks = doc.data().aquariumTanks || new Array(8).fill(null);
+          let tanksMap = doc.data().aquariumTanksMap || {};
           if (fishes.length <= fishIndex) throw new Error("Fish not found");
 
-          let usedInAquariumCount = tanks.filter(t => t === fishName).length;
-          if (usedInAquariumCount > 0) {
-            let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
-            if (precedingSameType < usedInAquariumCount) {
-              throw new Error(`You cannot sell ${fishName} because it is currently displayed in your Aquarium! Remove it first.`);
+          let totalDisplayed = 0;
+          Object.values(tanksMap).forEach(roomTanks => {
+            if (Array.isArray(roomTanks)) {
+              totalDisplayed += roomTanks.filter(t => t === fishName).length;
             }
+          });
+
+          let totalOwned = fishes.filter(f => f.name === fishName).length;
+          let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
+
+          if (totalOwned - precedingSameType <= totalDisplayed) {
+            throw new Error(`You cannot sell ${fishName} because displayed fishes in your Aquarium rooms are protected! Remove them first.`);
           }
 
           fishes.splice(fishIndex, 1);
@@ -1558,7 +1655,7 @@
 
         const playerData = playerSnap.data();
         let fishes = playerData.fishes || [];
-        let tanks = playerData.aquariumTanks || new Array(8).fill(null);
+        let tanksMap = playerData.aquariumTanksMap || {};
         const fishIndex = selectedFishToMarket.index;
         const fishName = selectedFishToMarket.name;
 
@@ -1568,14 +1665,19 @@
           return;
         }
 
-        let usedInAquariumCount = tanks.filter(t => t === fishName).length;
-        if (usedInAquariumCount > 0) {
-          let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
-          if (precedingSameType < usedInAquariumCount) {
-            showToast(`⚠️ You cannot list ${fishName} on the market because it is currently displayed in your Aquarium!`);
-            document.getElementById('modal-market-price-prompt').style.display = 'none';
-            return;
+        let totalDisplayed = 0;
+        Object.values(tanksMap).forEach(roomTanks => {
+          if (Array.isArray(roomTanks)) {
+            totalDisplayed += roomTanks.filter(t => t === fishName).length;
           }
+        });
+        let totalOwned = fishes.filter(f => f.name === fishName).length;
+        let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
+
+        if (totalOwned - precedingSameType <= totalDisplayed) {
+          showToast(`⚠️ You cannot list ${fishName} on the market because displayed fishes in your Aquarium are protected!`);
+          document.getElementById('modal-market-price-prompt').style.display = 'none';
+          return;
         }
 
         fishes.splice(fishIndex, 1);
@@ -1684,11 +1786,11 @@
           const data = doc.data();
           isViewingMyAquarium = true;
           viewingTargetUid = user.uid;
-          let tanks = data.aquariumTanks;
-          if (!Array.isArray(tanks) || tanks.length !== 8) {
-            tanks = new Array(8).fill(null);
-          }
-          renderAquarium(data.username || "My", data.fishes || [], tanks);
+          totalAquariumRoomsOwned = data.aquariumRoomsOwned || 1;
+          currentAquariumRoomIndex = 0;
+          
+          let tanksMap = data.aquariumTanksMap || {};
+          renderAquarium(data.username || "My", data.fishes || [], tanksMap);
         }
       } catch (err) {
         showToast("❌ Error loading aquarium.");
@@ -1697,15 +1799,43 @@
 
     function openOtherAquarium() {
       isViewingMyAquarium = false;
-      renderAquarium(viewingTargetUsername, viewingTargetFishes, viewingTargetTanks);
+      let tanksMap = viewingTargetTanksMap || {};
+      renderAquarium(viewingTargetUsername, viewingTargetFishes, tanksMap);
     }
 
-    function renderAquarium(username, fishes, tanks) {
+    let viewingTargetTanksMap = {};
+
+    function changeAquariumRoom(direction) {
+      const maxRooms = isViewingMyAquarium ? totalAquariumRoomsOwned : Object.keys(viewingTargetTanksMap).length || 1;
+      currentAquariumRoomIndex += direction;
+      if (currentAquariumRoomIndex < 0) {
+        currentAquariumRoomIndex = maxRooms - 1;
+      } else if (currentAquariumRoomIndex >= maxRooms) {
+        currentAquariumRoomIndex = 0;
+      }
+
+      const user = auth.currentUser;
+      if (isViewingMyAquarium && user) {
+        db.collection('jugadores').doc(user.uid).get().then(doc => {
+          if (doc.exists) {
+            const data = doc.data();
+            renderAquarium(data.username || "My", data.fishes || [], data.aquariumTanksMap || {});
+          }
+        });
+      } else {
+        renderAquarium(viewingTargetUsername, viewingTargetFishes, viewingTargetTanksMap);
+      }
+    }
+
+    function renderAquarium(username, fishes, tanksMap) {
       stopFishAnimations();
       document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
       document.getElementById('modal-aquarium').style.display = 'flex';
       document.getElementById('aquarium-title').innerText = `🐠 ${username}'s Aquarium`;
       
+      const maxRooms = isViewingMyAquarium ? totalAquariumRoomsOwned : (Object.keys(tanksMap).length > 0 ? Object.keys(tanksMap).length : 1);
+      document.getElementById('aquarium-room-indicator').innerText = `Room ${currentAquariumRoomIndex + 1} / ${maxRooms}`;
+
       const subtitle = document.getElementById('aquarium-subtitle');
       const ownerControls = document.getElementById('aquarium-owner-controls');
       
@@ -1717,7 +1847,9 @@
         ownerControls.style.display = 'none';
       }
 
-      const safeTanks = (tanks && Array.isArray(tanks) && tanks.length === 8) ? tanks : new Array(8).fill(null);
+      const roomKey = `room_${currentAquariumRoomIndex}`;
+      const safeTanks = (tanksMap && tanksMap[roomKey] && Array.isArray(tanksMap[roomKey]) && tanksMap[roomKey].length === 8) ? tanksMap[roomKey] : new Array(8).fill(null);
+      
       for (let i = 0; i < 4; i++) {
         renderShelfSlot(`top-${i}`, safeTanks[i], i);
       }
@@ -1737,7 +1869,7 @@
         const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName) || ALLOWED_FISH_TYPES[0];
         slotEl.innerHTML = `
           <div style="position: relative; width: 100%; height: 100%; background-image: url('https://i.postimg.cc/DZs0wKSx/tanque-mini.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
-            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 48px; height: auto; object-fit: contain; pointer-events: none;">
+            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 44px; height: auto; object-fit: contain; pointer-events: none;">
           </div>
         `;
         startFishAnimation(shelfIndex);
@@ -1756,7 +1888,9 @@
           const data = doc.data();
           const tanksCount = data.miniTanksCount || 0;
           const fishes = data.fishes || [];
-          const tanks = data.aquariumTanks || new Array(8).fill(null);
+          let tanksMap = data.aquariumTanksMap || {};
+          const roomKey = `room_${currentAquariumRoomIndex}`;
+          let tanks = tanksMap[roomKey] || new Array(8).fill(null);
 
           if (tanks[selectedShelfIndex]) {
             openSelectFishModal(fishes);
@@ -1805,15 +1939,23 @@
         const doc = await docRef.get();
         if (doc.exists) {
           const data = doc.data();
-          let tanks = data.aquariumTanks || new Array(8).fill(null);
+          let tanksMap = data.aquariumTanksMap || {};
+          const roomKey = `room_${currentAquariumRoomIndex}`;
+          let tanks = tanksMap[roomKey] || new Array(8).fill(null);
           let fishes = data.fishes || [];
           let tanksCount = data.miniTanksCount || 0;
 
           let totalInInventory = fishes.filter(f => f.name === fishName).length;
-          let alreadyOnDisplay = tanks.filter((t, idx) => t === fishName && idx !== selectedShelfIndex).length;
+          
+          let totalDisplayedAcrossAllRooms = 0;
+          Object.entries(tanksMap).forEach(([rKey, rTanks]) => {
+            if (Array.isArray(rTanks)) {
+              totalDisplayedAcrossAllRooms += rTanks.filter((t, idx) => t === fishName && !(rKey === roomKey && idx === selectedShelfIndex)).length;
+            }
+          });
 
-          if (alreadyOnDisplay >= totalInInventory) {
-            showToast(`⚠️ You only have ${totalInInventory} ${fishName}(s) in your backpack and ${alreadyOnDisplay} already in your aquarium!`);
+          if (totalDisplayedAcrossAllRooms + 1 > totalInInventory) {
+            showToast(`⚠️ You only have ${totalInInventory} ${fishName}(s) in your backpack and ${totalDisplayedAcrossAllRooms} already displayed elsewhere!`);
             return;
           }
 
@@ -1826,15 +1968,16 @@
           }
 
           tanks[selectedShelfIndex] = fishName;
+          tanksMap[roomKey] = tanks;
           
           await docRef.update({ 
-            aquariumTanks: tanks,
+            aquariumTanksMap: tanksMap,
             miniTanksCount: tanksCount
           });
           
           showToast(`✅ ${fishName} placed in tank!`);
           document.getElementById('modal-select-fish').style.display = 'none';
-          renderAquarium(data.username || "My", fishes, tanks);
+          renderAquarium(data.username || "My", fishes, tanksMap);
         }
       } catch (err) {
         showToast("❌ Error: " + err.message);
@@ -1850,14 +1993,17 @@
         const doc = await docRef.get();
         if (doc.exists) {
           const data = doc.data();
-          let tanks = data.aquariumTanks || new Array(8).fill(null);
+          let tanksMap = data.aquariumTanksMap || {};
+          const roomKey = `room_${currentAquariumRoomIndex}`;
+          let tanks = tanksMap[roomKey] || new Array(8).fill(null);
 
           if (tanks[selectedShelfIndex]) {
             let tanksCount = (data.miniTanksCount || 0) + 1;
             tanks[selectedShelfIndex] = null;
+            tanksMap[roomKey] = tanks;
 
             await docRef.update({ 
-              aquariumTanks: tanks,
+              aquariumTanksMap: tanksMap,
               miniTanksCount: tanksCount
             });
 
@@ -1865,7 +2011,7 @@
           }
 
           document.getElementById('modal-select-fish').style.display = 'none';
-          renderAquarium(data.username || "My", data.fishes || [], tanks);
+          renderAquarium(data.username || "My", data.fishes || [], tanksMap);
         }
       } catch (err) {
         showToast("❌ Error: " + err.message);
@@ -1876,40 +2022,49 @@
       const fishImg = document.querySelector(`.swimming-fish-${shelfIndex}`);
       if (!fishImg) return;
 
-      let posX = 35;
-      let posY = 45;
-      let speedX = (Math.random() > 0.5 ? 1 : -1) * 0.5;
-      let speedY = (Math.random() > 0.5 ? 1 : -1) * 0.25;
+      let posX = 40;
+      let posY = 50;
+      let speedX = (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random() * 0.5);
+      let speedY = (Math.random() > 0.5 ? 1 : -1) * (0.15 + Math.random() * 0.3);
 
-      const minX = 22;
-      const maxX = 60;
-      const minY = 30;
-      const maxY = 65;
+      const minX = 10;
+      const maxX = 75;
+      const minY = 15;
+      const maxY = 85;
+
+      let moveTimer = 0;
 
       const interval = setInterval(() => {
+        moveTimer++;
+        if (moveTimer > 40 + Math.random() * 50) {
+          moveTimer = 0;
+          speedX = (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.8);
+          speedY = (Math.random() > 0.5 ? 1 : -1) * (0.1 + Math.random() * 0.4);
+        }
+
         posX += speedX;
         posY += speedY;
 
         if (posX <= minX) {
           posX = minX;
-          speedX *= -1;
+          speedX = Math.abs(speedX);
           fishImg.style.transform = 'scaleX(1)';
         } else if (posX >= maxX) {
           posX = maxX;
-          speedX *= -1;
+          speedX = -Math.abs(speedX);
           fishImg.style.transform = 'scaleX(-1)';
         }
 
         if (posY <= minY) {
           posY = minY;
-          speedY *= -1;
+          speedY = Math.abs(speedY);
         } else if (posY >= maxY) {
           posY = maxY;
-          speedY *= -1;
+          speedY = -Math.abs(speedY);
         }
 
-        fishImg.style.left = posX + 'px';
-        fishImg.style.top = posY + 'px';
+        fishImg.style.left = posX + '%';
+        fishImg.style.top = posY + '%';
       }, 50);
 
       activeFishAnimations.push(interval);
@@ -2104,9 +2259,45 @@
 
           showToast("🎉 Success! Mini Tank bought and added to your backpack!");
           loadBackpackData();
+          checkAchievements((data.fishes || []).length, true);
         }
       } catch (err) {
         showToast("❌ Error buying tank: " + err.message);
+      }
+    }
+
+    async function buyAquariumRoom() {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("⚠️ You must be logged in.");
+        return;
+      }
+
+      const cost = 1000;
+      try {
+        const playerRef = db.collection('jugadores').doc(user.uid);
+        const doc = await playerRef.get();
+        if (doc.exists) {
+          const data = doc.data();
+          const coins = data.coins || 0;
+          const currentRooms = data.aquariumRoomsOwned || 1;
+
+          if (coins < cost) {
+            showToast("❌ Not enough coins! You need 1000 💰 for a new aquarium room.");
+            return;
+          }
+
+          await playerRef.update({
+            coins: coins - cost,
+            aquariumRoomsOwned: currentRooms + 1
+          });
+
+          showToast("🏰 Success! New aquarium room purchased!");
+          loadBackpackData();
+          updateGameHUD();
+        }
+      } catch (err) {
+        showToast("❌ Error buying room: " + err.message);
       }
     }
 
@@ -2121,20 +2312,32 @@
         if (doc.exists) {
           const data = doc.data();
           const tanksCount = data.miniTanksCount || 0;
+          const roomsCount = data.aquariumRoomsOwned || 1;
           document.getElementById('backpack-tanks-count').innerText = `Mini Tanks in Inventory: ${tanksCount}`;
+          document.getElementById('backpack-rooms-count').innerText = `Aquarium Rooms Owned: ${roomsCount}`;
           
           const fishes = data.fishes || [];
           if (fishes.length === 0) {
             listContainer.innerHTML = "No fish caught yet. Go fishing!";
             return;
           }
-          let html = '';
+
+          let fishCounts = {};
           fishes.forEach(f => {
-            const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === f.name) || ALLOWED_FISH_TYPES[0];
+            if (!fishCounts[f.name]) {
+              fishCounts[f.name] = 0;
+            }
+            fishCounts[f.name]++;
+          });
+
+          let html = '';
+          Object.entries(fishCounts).forEach(([fishName, count]) => {
+            const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === fishName) || ALLOWED_FISH_TYPES[0];
             html += `
-              <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0;">
-                <img src="${fishObj.img}" style="width: 20px; height: 20px; object-fit: contain;">
-                <span>🐟 ${f.name}</span>
+              <div style="background: #16213e; border: 1px solid #444; border-radius: 10px; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
+                <span style="position: absolute; top: 4px; right: 6px; background: #3498db; color: white; font-size: 0.7rem; font-weight: bold; padding: 1px 5px; border-radius: 8px;">x${count}</span>
+                <img src="${fishObj.img}" style="width: 42px; height: 42px; object-fit: contain; margin: 4px 0;">
+                <span style="font-size: 0.8rem; font-weight: bold; text-align: center; color: #fff;">${fishName}</span>
               </div>
             `;
           });
@@ -2256,8 +2459,9 @@
           coins: 0,
           fishes: [],
           miniTanksCount: 0,
-          aquariumTanks: new Array(8).fill(null),
-          achievements: { catchFirst: false },
+          aquariumRoomsOwned: 1,
+          aquariumTanksMap: { room_0: new Array(8).fill(null) },
+          achievements: { catchFirst: false, gluGluTank: false },
           redeemedCodes: [],
           isBanned: false,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -2448,9 +2652,9 @@
         const data = doc.data();
         const avatar = data.photoURL || 'https://via.placeholder.com/40';
         const fishesJson = JSON.stringify(data.fishes || []).replace(/"/g, '&quot;');
-        const tanksJson = JSON.stringify(data.aquariumTanks || new Array(8).fill(null)).replace(/"/g, '&quot;');
+        const tanksMapJson = JSON.stringify(data.aquariumTanksMap || { room_0: new Array(8).fill(null) }).replace(/"/g, '&quot;');
         html += `
-          <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'No bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}', '${doc.id}', ${fishesJson}, ${tanksJson})">
+          <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'No bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}', '${doc.id}', ${fishesJson}, ${tanksMapJson})">
             <div style="display:flex; align-items:center; gap:10px;">
               <img src="${avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
               <div>
@@ -2466,11 +2670,12 @@
       resultDiv.innerHTML = html;
     }
 
-    function viewOtherProfile(username, bio, coins, fishCount, avatar, uid, fishes, tanks) {
+    function viewOtherProfile(username, bio, coins, fishCount, avatar, uid, fishes, tanksMap) {
       viewingTargetUsername = username;
       viewingTargetUid = uid;
       viewingTargetFishes = fishes;
-      viewingTargetTanks = tanks;
+      viewingTargetTanksMap = tanksMap;
+      currentAquariumRoomIndex = 0;
       
       document.getElementById('view-profile-name').innerText = username;
       document.getElementById('view-profile-bio').innerText = bio;
@@ -2560,6 +2765,126 @@
       let uid = null;
       snapshot.forEach(doc => { uid = doc.id; });
       return uid;
+    }
+
+    async function loadTargetUserInventoryForAdmin() {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      const listContainer = document.getElementById('admin-target-fishes-list');
+      if (!username) {
+        listContainer.innerHTML = '<p style="font-size:0.8rem; color:#a0aec0; text-align:center; margin:10px 0;">Select a target username above to view fishes...</p>';
+        return;
+      }
+
+      try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          listContainer.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">User not found.</p>';
+          return;
+        }
+
+        const doc = await db.collection('jugadores').doc(targetUid).get();
+        if (doc.exists) {
+          const fishes = doc.data().fishes || [];
+          if (fishes.length === 0) {
+            listContainer.innerHTML = '<p style="font-size:0.8rem; color:#a0aec0; text-align:center; margin:10px 0;">User has no fishes.</p>';
+            return;
+          }
+
+          let fishCounts = {};
+          fishes.forEach(f => {
+            if (!fishCounts[f.name]) fishCounts[f.name] = 0;
+            fishCounts[f.name]++;
+          });
+
+          let html = '';
+          Object.entries(fishCounts).forEach(([fishName, count]) => {
+            html += `
+              <div style="display: flex; justify-content: space-between; align-items: center; background: #16213e; padding: 6px 10px; border-radius: 6px; margin-bottom: 5px;">
+                <span style="font-size: 0.85rem;"><strong>${fishName}</strong> (x${count})</span>
+                <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 3px 8px; font-size: 0.75rem; width: auto;" onclick="promptAdminRemoveFish('${fishName}')">Delete</button>
+              </div>
+            `;
+          });
+          listContainer.innerHTML = html;
+        }
+      } catch (err) {
+        listContainer.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">Error loading inventory.</p>';
+      }
+    }
+
+    function promptAdminRemoveFish(fishName) {
+      adminSelectedFishToRemove = fishName;
+      document.getElementById('admin-remove-fish-name-label').innerText = `Fish: ${fishName}`;
+      document.getElementById('admin-remove-fish-qty-input').value = 1;
+      document.getElementById('modal-admin-remove-fish').style.display = 'flex';
+    }
+
+    async function confirmAdminRemoveFish() {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      const qtyToRemove = parseInt(document.getElementById('admin-remove-fish-qty-input').value);
+      if (!username || isNaN(qtyToRemove) || qtyToRemove <= 0) {
+        showToast("⚠️ Enter a valid quantity.");
+        return;
+      }
+
+      try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
+
+        const playerRef = db.collection('jugadores').doc(targetUid);
+        const docSnap = await playerRef.get();
+        if (!docSnap.exists) return;
+
+        let fishes = docSnap.data().fishes || [];
+        let removedCount = 0;
+
+        for (let i = fishes.length - 1; i >= 0 && removedCount < qtyToRemove; i--) {
+          if (fishes[i].name === adminSelectedFishToRemove) {
+            fishes.splice(i, 1);
+            removedCount++;
+          }
+        }
+
+        await playerRef.update({ fishes: fishes });
+        showToast(`✅ Successfully removed ${removedCount} ${adminSelectedFishToRemove}(s) from ${username}.`);
+        document.getElementById('modal-admin-remove-fish').style.display = 'none';
+        loadTargetUserInventoryForAdmin();
+      } catch (err) {
+        showToast("❌ Error removing fish: " + err.message);
+      }
+    }
+
+    async function adminAddFishToUser() {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      const fishNameInput = document.getElementById('adminAddFishName').value.trim();
+      if (!username || !fishNameInput) {
+        showToast("⚠️ Enter a target username and fish name.");
+        return;
+      }
+
+      const matchFish = ALLOWED_FISH_TYPES.find(f => f.name.toLowerCase() === fishNameInput.toLowerCase());
+      const exactFishName = matchFish ? matchFish.name : fishNameInput;
+
+      try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
+
+        await db.collection('jugadores').doc(targetUid).update({
+          fishes: firebase.firestore.FieldValue.arrayUnion({ name: exactFishName, timestamp: new Date().toISOString() })
+        });
+
+        showToast(`✅ Added ${exactFishName} to ${username}!`);
+        document.getElementById('adminAddFishName').value = "";
+        loadTargetUserInventoryForAdmin();
+      } catch (err) {
+        showToast("❌ Error adding fish: " + err.message);
+      }
     }
 
     async function adminBanUser(isBanned) {
