@@ -921,7 +921,6 @@
     let activeFishAnimations = [];
     let currentIndexFish = 0;
 
-    // Lista exclusiva de los 5 peces autorizados con rareza Common y su descripción
     const ALLOWED_FISH_TYPES = [
       { 
         name: "Opah", 
@@ -1020,7 +1019,6 @@
       openModal('modal-profile');
     }
 
-    // Funciones del Index de Peces
     function openIndexModal() {
       currentIndexFish = 0;
       renderIndexFish();
@@ -1056,7 +1054,11 @@
           const data = doc.data();
           isViewingMyAquarium = true;
           viewingTargetUid = user.uid;
-          renderAquarium(data.username || "My", data.fishes || [], data.aquariumTanks || new Array(8).fill(null));
+          let tanks = data.aquariumTanks;
+          if (!Array.isArray(tanks) || tanks.length !== 8) {
+            tanks = new Array(8).fill(null);
+          }
+          renderAquarium(data.username || "My", data.fishes || [], tanks);
         }
       } catch (err) {
         showToast("❌ Error loading aquarium.");
@@ -1085,7 +1087,7 @@
         ownerControls.style.display = 'none';
       }
 
-      const safeTanks = tanks && Array.isArray(tanks) ? tanks : new Array(8).fill(null);
+      const safeTanks = (tanks && Array.isArray(tanks) && tanks.length === 8) ? tanks : new Array(8).fill(null);
       for (let i = 0; i < 4; i++) {
         renderShelfSlot(`top-${i}`, safeTanks[i], i);
       }
@@ -1166,13 +1168,18 @@
         const docRef = db.collection('jugadores').doc(user.uid);
         const doc = await docRef.get();
         if (doc.exists) {
-          let tanks = doc.data().aquariumTanks || new Array(8).fill(null);
+          const data = doc.data();
+          let tanks = data.aquariumTanks;
+          if (!Array.isArray(tanks) || tanks.length !== 8) {
+            tanks = new Array(8).fill(null);
+          }
           tanks[selectedShelfIndex] = fishName;
+          
           await docRef.update({ aquariumTanks: tanks });
           
           showToast(`✅ ${fishName} placed in the tank!`);
           document.getElementById('modal-select-fish').style.display = 'none';
-          renderAquarium(doc.data().username, doc.data().fishes || [], tanks);
+          renderAquarium(data.username || "My", data.fishes || [], tanks);
         }
       } catch (err) {
         showToast("❌ Error updating tank: " + err.message);
@@ -1187,13 +1194,18 @@
         const docRef = db.collection('jugadores').doc(user.uid);
         const doc = await docRef.get();
         if (doc.exists) {
-          let tanks = doc.data().aquariumTanks || new Array(8).fill(null);
+          const data = doc.data();
+          let tanks = data.aquariumTanks;
+          if (!Array.isArray(tanks) || tanks.length !== 8) {
+            tanks = new Array(8).fill(null);
+          }
           tanks[selectedShelfIndex] = null;
+          
           await docRef.update({ aquariumTanks: tanks });
           
           showToast("🗑️ Fish removed from tank.");
           document.getElementById('modal-select-fish').style.display = 'none';
-          renderAquarium(doc.data().username, doc.data().fishes || [], tanks);
+          renderAquarium(data.username || "My", data.fishes || [], tanks);
         }
       } catch (err) {
         showToast("❌ Error: " + err.message);
