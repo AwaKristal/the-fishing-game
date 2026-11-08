@@ -174,21 +174,21 @@
       z-index: 100;
     }
 
-    /* BOTÓN INVISIBLE DE LA MOCHILA UBICADO EXACTAMENTE AL LADO DE LA CAÑA */
-    .invisible-backpack-btn {
+    /* MOCHILA VISIBLE POSICIONADA AL LADO DE LA CAÑA */
+    .backpack-on-map {
       position: absolute;
-      top: 36%;
+      top: 25%;
       left: 31%;
-      width: 55px;
-      height: 55px;
-      background: transparent;
-      border: none;
+      width: 75px;
+      height: auto;
       cursor: pointer;
       z-index: 105;
-      border-radius: 50%;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
     }
-    .invisible-backpack-btn:hover {
-      background: rgba(255, 255, 255, 0.15); /* Sutil indicador visual al pasar el mouse opcional */
+    .backpack-on-map:hover {
+      transform: scale(1.15);
+      filter: brightness(1.2) drop-shadow(0 6px 12px rgba(0,0,0,0.8));
     }
 
     .game-hud {
@@ -439,7 +439,7 @@
       .corner-bottom-left { bottom: 10px; left: 10px; }
       .corner-bottom-right { bottom: 10px; right: 10px; }
       .modal-card { padding: 15px; max-height: 80vh; }
-      .invisible-backpack-btn { top: 34%; left: 28%; width: 45px; height: 45px; }
+      .backpack-on-map { top: 24%; left: 28%; width: 55px; }
     }
   </style>
 </head>
@@ -484,8 +484,8 @@
 
   <!-- PANTALLA DE JUEGO (PLAY VIEW) -->
   <div id="game-screen">
-    <!-- BOTÓN INVISIBLE DE LA MOCHILA AL LADO DE LA CAÑA -->
-    <button class="invisible-backpack-btn" onclick="openModal('modal-backpack')" title="Open Backpack"></button>
+    <!-- IMAGEN VISIBLE DE LA MOCHILA C LICKABLE AL LADO DE LA CAÑA -->
+    <img src="https://i.postimg.cc/bNcMt94Y/backpack.png" alt="Backpack" class="backpack-on-map" onclick="openModal('modal-backpack')" title="Open Backpack">
 
     <div class="game-hud">
       <div class="hud-box" id="hud-coins">💰 0</div>
@@ -704,7 +704,7 @@
     </div>
   </div>
 
-  <!-- MODAL BACKPACK (MOCHILA: BAITS, RODS Y PECES) -->
+  <!-- MODAL BACKPACK -->
   <div id="modal-backpack" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -874,7 +874,6 @@
       document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
     }
 
-    // Funciones de control de Pantalla de Juego (Play)
     function startGame() {
       const user = auth.currentUser;
       if (!user) {
