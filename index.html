@@ -451,7 +451,7 @@
 
   <!-- ESQUINA INFERIOR IZQUIERDA: Account -->
   <div class="corner-bottom-left">
-    <div id="user-badge" class="user-profile-badge" onclick="openModal('modal-profile')">
+    <div id="user-badge" class="user-profile-badge" onclick="openMyProfileModal()">
       <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar">
       <span id="user-display-name">Username</span>
     </div>
@@ -484,7 +484,7 @@
 
   <!-- PANTALLA DE JUEGO (PLAY VIEW) -->
   <div id="game-screen">
-    <!-- IMAGEN VISIBLE DE LA MOCHILA C LICKABLE AL LADO DE LA CAÑA -->
+    <!-- MOCHILA VISIBLE CLICKEABLE AL LADO DE LA CAÑA -->
     <img src="https://i.postimg.cc/bNcMt94Y/backpack.png" alt="Backpack" class="backpack-on-map" onclick="openModal('modal-backpack')" title="Open Backpack">
 
     <div class="game-hud">
@@ -598,7 +598,7 @@
     </div>
   </div>
 
-  <!-- MODAL PROFILE -->
+  <!-- MODAL PROFILE (MI PERFIL) -->
   <div id="modal-profile" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -620,7 +620,10 @@
         <label>Change Profile Picture (Max 1MB)</label>
         <input type="file" id="profile-edit-avatar" accept="image/*">
       </div>
-      <button type="button" class="modal-action-btn" onclick="updateProfileData()">Save Changes</button>
+      <button type="button" class="modal-action-btn" style="margin-bottom: 10px;" onclick="updateProfileData()">Save Changes</button>
+      
+      <!-- BOTÓN PARA VER MI ACUARIO -->
+      <button type="button" class="modal-action-btn" style="background: #2980b9;" onclick="openMyAquarium()">🐠 See Aquarium</button>
 
       <!-- BÚSQUEDA DE USUARIOS -->
       <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
@@ -650,6 +653,24 @@
       <div class="form-group">
         <label>Bio / Description</label>
         <p id="view-profile-bio" style="background: #0f172a; padding: 10px; border-radius: 8px; margin: 0; min-height: 50px; color: #fff; word-break: break-all;"></p>
+      </div>
+
+      <!-- BOTÓN PARA VER EL ACUARIO DE ESTE JUGADOR AJENO -->
+      <button type="button" class="modal-action-btn" style="background: #2980b9; margin-top: 5px;" onclick="openOtherAquarium()">🐠 See Aquarium</button>
+    </div>
+  </div>
+
+  <!-- MODAL ACUARIO (MUESTRA LOS PECES DEL JUGADOR ACTUAL O AJENO) -->
+  <div id="modal-aquarium" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAquariumModal()">✖</button>
+      <h2 id="aquarium-title">🐠 Aquarium</h2>
+      <p style="font-size: 0.9rem; color: #a0aec0;" id="aquarium-subtitle">Viewing aquarium...</p>
+      
+      <div style="background: #0f172a; padding: 15px; border-radius: 12px; border: 1px solid #0f3460; min-height: 180px;">
+        <div id="aquarium-fish-grid" style="display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto;">
+          <!-- Lista o visual de peces -->
+        </div>
       </div>
     </div>
   </div>
@@ -694,17 +715,10 @@
         </div>
         <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="showToast('🎣 Rod upgrade feature coming soon!')">100 💰</button>
       </div>
-
-      <div style="background: #0f172a; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-        <div style="text-align: left;">
-          <strong>🪱 Special Bait</strong><br><span style="font-size: 0.8rem; color: #a0aec0;">Attract bigger catches</span>
-        </div>
-        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="showToast('🪱 Bait store feature coming soon!')">50 💰</button>
-      </div>
     </div>
   </div>
 
-  <!-- MODAL BACKPACK -->
+  <!-- MODAL BACKPACK (SIN WORM BAIT) -->
   <div id="modal-backpack" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -712,9 +726,8 @@
       <p style="font-size: 0.9rem; color: #a0aec0;">Your equipped gear and caught fish:</p>
       
       <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
-        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #3498db;">🎣 Equipped Rods & Baits</h3>
+        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #3498db;">🎣 Equipped Gear</h3>
         <p style="margin: 3px 0; font-size: 0.85rem;">Standard Fishing Rod</p>
-        <p style="margin: 3px 0; font-size: 0.85rem;">Standard Worm Bait (x5)</p>
       </div>
 
       <div style="background: #0f172a; padding: 12px; border-radius: 8px;">
@@ -818,6 +831,8 @@
     const RECAPTCHA_SITE_KEY = "6Lex8BMuAAAAAPx6P5c7RwFUNi_9dpZPX0hw_Il9";
     let recaptchaLoginId = null;
     let recaptchaRegisterId = null;
+    let viewingTargetFishes = [];
+    let viewingTargetUsername = "";
 
     function onloadCallback() {
       try {
@@ -872,6 +887,60 @@
 
     function closeAllModals() {
       document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+    }
+
+    function openMyProfileModal() {
+      openModal('modal-profile');
+    }
+
+    // Funciones del Acuario
+    async function openMyAquarium() {
+      const user = auth.currentUser;
+      if (!user) return;
+      try {
+        const doc = await db.collection('jugadores').doc(user.uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          renderAquarium(data.username || "My", data.fishes || []);
+        }
+      } catch (err) {
+        showToast("❌ Error loading aquarium.");
+      }
+    }
+
+    function openOtherAquarium() {
+      renderAquarium(viewingTargetUsername, viewingTargetFishes);
+    }
+
+    function renderAquarium(username, fishes) {
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.getElementById('modal-aquarium').style.display = 'flex';
+      document.getElementById('aquarium-title').innerText = `🐠 ${username}'s Aquarium`;
+      
+      const grid = document.getElementById('aquarium-fish-grid');
+      const subtitle = document.getElementById('aquarium-subtitle');
+      
+      if (!fishes || fishes.length === 0) {
+        subtitle.innerText = "This aquarium is currently empty.";
+        grid.innerHTML = '<p style="text-align:center; color:#a0aec0; margin:20px 0;">No fish in this aquarium yet.</p>';
+        return;
+      }
+
+      subtitle.innerText = `Total fish swimming: ${fishes.length}`;
+      let html = '';
+      fishes.forEach(f => {
+        html += `
+          <div style="background: #16213e; padding: 8px 12px; border-radius: 6px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center;">
+            <span>🐟 <strong>${f.name}</strong></span>
+            <span style="font-size: 0.75rem; color: #a0aec0;">${new Date(f.timestamp).toLocaleDateString()}</span>
+          </div>
+        `;
+      });
+      grid.innerHTML = html;
+    }
+
+    function closeAquariumModal() {
+      closeAllModals();
     }
 
     function startGame() {
@@ -1261,8 +1330,9 @@
       snapshot.forEach(doc => {
         const data = doc.data();
         const avatar = data.photoURL || 'https://via.placeholder.com/40';
+        const fishesJson = JSON.stringify(data.fishes || []).replace(/"/g, '&quot;');
         html += `
-          <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'No bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}')">
+          <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'No bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}', ${fishesJson})">
             <div style="display:flex; align-items:center; gap:10px;">
               <img src="${avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
               <div>
@@ -1278,7 +1348,9 @@
       resultDiv.innerHTML = html;
     }
 
-    function viewOtherProfile(username, bio, coins, fishCount, avatar) {
+    function viewOtherProfile(username, bio, coins, fishCount, avatar, fishes) {
+      viewingTargetUsername = username;
+      viewingTargetFishes = fishes;
       document.getElementById('view-profile-name').innerText = username;
       document.getElementById('view-profile-bio').innerText = bio;
       document.getElementById('view-profile-coins').innerText = coins;
