@@ -596,9 +596,9 @@
       try {
         const userCred = await auth.signInWithEmailAndPassword(email, pass);
         
-        // Validar si su correo está verificado nativamente por Firebase
+        // Comprobación de que el correo esté verificado mediante el enlace de Firebase
         if (!userCred.user.emailVerified) {
-          showToast("⚠️ Please verify your email address before logging in. Check your inbox.");
+          showToast("⚠️ Please verify your email address first. Check your inbox.");
           auth.signOut();
           return;
         }
@@ -634,7 +634,7 @@
           photoURL = await comprimirImagen(fileInput);
         }
 
-        // Enviar correo de verificación nativo de Firebase
+        // Envío del correo de verificación oficial de Firebase
         await user.sendEmailVerification();
 
         await user.updateProfile({ displayName: username });
@@ -649,7 +649,7 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        showToast("📧 Verification email sent! Check your inbox.");
+        showToast("📧 Verification email sent! Please check your inbox.");
         auth.signOut();
         closeAllModals();
         grecaptcha.reset(recaptchaRegisterId);
