@@ -20,7 +20,7 @@
       --accent-color: #0f3460;
       --text-color: #ffffff;
       --btn-hover: #e94560;
-      --modal-bg: rgba(0, 0, 0, 0.8);
+      --modal-bg: rgba(0, 0, 0, 0.85);
     }
 
     * { box-sizing: border-box; }
@@ -44,15 +44,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px;
+      padding: 15px 20px;
       z-index: 10;
     }
 
     .version-tag {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: bold;
       background: rgba(255,255,255,0.1);
-      padding: 6px 14px;
+      padding: 5px 12px;
       border-radius: 8px;
     }
 
@@ -62,7 +62,9 @@
       align-items: center;
       justify-content: center;
       flex-grow: 1;
-      height: 100vh;
+      width: 100%;
+      min-height: 100vh;
+      padding: 80px 15px 20px 15px;
       gap: 15px;
     }
 
@@ -70,11 +72,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
     }
 
     .fish-logo-img {
-      max-width: 580px;
-      width: 95%;
+      max-width: 500px;
+      width: 90%;
       height: auto;
       object-fit: contain;
       filter: drop-shadow(0 6px 18px rgba(0,0,0,0.95));
@@ -82,10 +85,11 @@
 
     .center-menu {
       display: flex;
-      gap: 30px;
+      gap: 20px;
       align-items: center;
       justify-content: center;
-      margin-bottom: 70px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
     }
 
     .img-btn {
@@ -97,40 +101,40 @@
     }
 
     .img-btn:hover {
-      transform: scale(1.1);
+      transform: scale(1.08);
       filter: brightness(1.2);
     }
 
     .img-btn img {
-      width: 160px;
+      width: 140px;
       height: auto;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
     .corner-bottom-left {
-      position: absolute;
-      bottom: 25px;
-      left: 25px;
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 10px;
-      z-index: 10;
+      gap: 8px;
+      z-index: 99;
     }
 
     .corner-bottom-right {
-      position: absolute;
-      bottom: 25px;
-      right: 25px;
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      z-index: 10;
+      z-index: 99;
     }
 
     .btn-news-img {
-      width: 160px !important;
+      width: 130px !important;
       height: auto !important;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
@@ -139,17 +143,21 @@
     .user-profile-badge {
       display: none;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
       background: var(--panel-bg);
-      padding: 6px 16px 6px 6px;
+      padding: 5px 12px 5px 5px;
       border-radius: 30px;
       border: 2px solid #fff;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .user-profile-badge img {
-      width: 40px;
-      height: 40px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
       object-fit: cover;
     }
@@ -174,25 +182,25 @@
       border-radius: 16px;
       width: 100%;
       max-width: 450px;
-      padding: 25px;
+      padding: 20px;
       position: relative;
       box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-      max-height: 90vh;
+      max-height: 85vh;
       overflow-y: auto;
     }
 
     .modal-close {
       position: absolute;
-      top: 15px; right: 15px;
+      top: 12px; right: 12px;
       background: none;
       border: none;
       color: #fff;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       cursor: pointer;
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       display: flex;
       flex-direction: column;
       gap: 5px;
@@ -204,12 +212,13 @@
       border: 1px solid #444;
       background: #0f172a;
       color: #fff;
+      width: 100%;
     }
 
     .tab-container {
       display: flex;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     .tab-btn {
@@ -235,16 +244,16 @@
       font-weight: bold;
       cursor: pointer;
       width: 100%;
+      text-align: center;
     }
 
     .modal-action-btn:hover { background: var(--btn-hover); }
     .modal-action-btn:disabled { background: #444; cursor: not-allowed; }
 
-    /* Estilos para carrusel de noticias */
     .news-card {
       background: #0f172a;
       border-radius: 8px;
-      padding: 15px;
+      padding: 12px;
       border-left: 4px solid var(--btn-hover);
       margin-top: 10px;
       position: relative;
@@ -253,7 +262,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 15px;
+      margin-top: 12px;
       gap: 10px;
     }
     .news-controls button {
@@ -265,17 +274,16 @@
       color: #3498db;
     }
 
-    /* Botón de Admin flotante solo imagen limpia */
     .admin-trigger-btn {
       position: fixed;
-      bottom: 25px;
-      right: 180px;
-      width: 55px;
-      height: 55px;
+      bottom: 20px;
+      right: 140px;
+      width: 50px;
+      height: 50px;
       border: none;
       cursor: pointer;
       background: none;
-      z-index: 9999;
+      z-index: 99;
       display: none;
       padding: 0;
       transition: transform 0.2s ease, filter 0.2s ease;
@@ -291,7 +299,6 @@
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
     }
 
-    /* Estilo para los resultados de búsqueda clickeables */
     .search-player-item {
       background: #16213e;
       border: 1px solid #444;
@@ -305,6 +312,18 @@
       background: #0f3460;
     }
 
+    .admin-code-item {
+      background: #0f172a;
+      border: 1px solid #444;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
     #toast-container {
       position: fixed;
       bottom: 20px; right: 20px;
@@ -312,16 +331,18 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      max-width: 90%;
     }
 
     .toast {
       background: var(--panel-bg);
       color: #fff;
       border: 2px solid var(--btn-hover);
-      padding: 12px 20px;
+      padding: 10px 16px;
       border-radius: 10px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.3);
       animation: fadeIn 0.3s forwards;
+      font-size: 0.9rem;
     }
 
     @keyframes fadeIn {
@@ -330,20 +351,15 @@
     }
 
     @media (max-width: 768px) {
-      body { overflow: auto; }
-      .fish-logo-img { max-width: 280px; }
-      .center-menu { margin-bottom: 20px; }
-      .corner-bottom-left, .corner-bottom-right {
-        position: relative;
-        bottom: auto; left: auto; right: auto;
-        width: 100%;
-        align-items: center;
-        margin-top: 10px;
-      }
-      .center-menu { flex-direction: column; width: 100%; }
-      .img-btn img { width: 130px; }
-      .btn-news-img { width: 130px !important; }
-      .admin-trigger-btn { right: 20px; bottom: 90px; }
+      .main-container { padding-top: 70px; }
+      .fish-logo-img { max-width: 260px; }
+      .center-menu { gap: 15px; margin-bottom: 15px; }
+      .img-btn img { width: 115px; }
+      .btn-news-img { width: 110px !important; }
+      .admin-trigger-btn { right: 15px; bottom: 85px; width: 45px; height: 45px; }
+      .corner-bottom-left { bottom: 10px; left: 10px; }
+      .corner-bottom-right { bottom: 10px; right: 10px; }
+      .modal-card { padding: 15px; max-height: 80vh; }
     }
   </style>
 </head>
@@ -364,7 +380,7 @@
         <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account">
       </button>
     </div>
-    <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto;" onclick="logout()">🚪 Log out</button>
+    <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto; padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">🚪 Log out</button>
   </div>
 
   <!-- CENTRO -->
@@ -511,8 +527,8 @@
       </div>
       <button type="button" class="modal-action-btn" onclick="updateProfileData()">Save Changes</button>
 
-      <!-- BÚSQUEDA DE USUARIOS (PROTEGIDA CONTRA AUTOCOMPLETADO Y CORREOS) -->
-      <hr style="border:0; border-top:1px solid #444; margin:20px 0;">
+      <!-- BÚSQUEDA DE USUARIOS -->
+      <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
       <h3>🔍 Search Player</h3>
       <form autocomplete="off" onsubmit="event.preventDefault(); handleUserSearch();">
         <div class="form-group">
@@ -558,7 +574,44 @@
     </div>
   </div>
 
-  <!-- MODAL ADMIN PANEL (PROTEGIDO CONTRA AUTOCOMPLETADO) -->
+  <!-- MODAL SHOP (CON BOB Y CANJE DE CÓDIGOS ABAJO DE LA IMAGEN) -->
+  <div id="modal-shop" class="modal-overlay">
+    <div class="modal-card" style="text-align: center;">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>🛒 Bob's Fishing Shop</h2>
+      
+      <!-- IMAGEN DE BOB -->
+      <img src="https://i.postimg.cc/NMtYbvzw/shop.png" alt="Bob Shop" style="width: 150px; height: auto; margin: 10px 0; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));">
+      <p style="font-size: 0.9rem; color: #a0aec0; margin-bottom: 15px;">"Welcome! Redeem your promo codes or buy upgrades!"</p>
+
+      <!-- CANJEAR CÓDIGOS DE REGALO -->
+      <div style="background: #0f172a; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #0f3460; text-align: left;">
+        <h3 style="margin-top:0; font-size: 1.1rem; color: #2ecc71; text-align: center;">🎁 Redeem Promo Code</h3>
+        <form autocomplete="off" onsubmit="event.preventDefault(); redeemCode();">
+          <div class="form-group" style="margin-bottom: 8px;">
+            <input type="text" id="redeemCodeInput" autocomplete="off" name="redeem_code_field" placeholder="Enter promo code..." style="text-align: center; text-transform: uppercase;">
+          </div>
+          <button type="submit" class="modal-action-btn" style="background:#27ae60;">Claim Code</button>
+        </form>
+      </div>
+      
+      <div style="background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="text-align: left;">
+          <strong>🎣 Better Rod</strong><br><span style="font-size: 0.8rem; color: #a0aec0;">Catch rare fish easier</span>
+        </div>
+        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="showToast('🎣 Rod upgrade feature coming soon!')">100 💰</button>
+      </div>
+
+      <div style="background: #0f172a; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="text-align: left;">
+          <strong>🪱 Special Bait</strong><br><span style="font-size: 0.8rem; color: #a0aec0;">Attract bigger catches</span>
+        </div>
+        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="showToast('🪱 Bait store feature coming soon!')">50 💰</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ADMIN PANEL -->
   <div id="modal-admin" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -574,7 +627,7 @@
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
         <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="adminBanUser(true)">Ban</button>
         <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="adminBanUser(false)">Unban</button>
-        <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="adminTempBan()">Temp Ban</button>
+        <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="openTempBanPrompt()">Temp Ban</button>
       </div>
 
       <div class="form-group">
@@ -584,6 +637,26 @@
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
         <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyCoins(1)">Give Coins</button>
         <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyCoins(-1)">Remove Coins</button>
+      </div>
+
+      <!-- CREAR Y GESTIONAR CÓDIGOS PROMOCIONALES -->
+      <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
+      <h3>🎟️ Promo Codes Management</h3>
+      <div class="form-group">
+        <label>Code Name</label>
+        <input type="text" id="adminPromoCode" autocomplete="off" placeholder="e.g. FISHING2026">
+      </div>
+      <div class="form-group">
+        <label>Coins Reward</label>
+        <input type="number" id="adminPromoCoins" placeholder="Coins amount">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#2980b9; margin-bottom: 10px;" onclick="adminCreateCode()">Create Code</button>
+      
+      <div style="margin-top: 10px;">
+        <label style="font-size:0.9rem; color:#a0aec0; margin-bottom: 5px; display:block;">Active Codes List:</label>
+        <div id="adminCodesList" style="max-height: 120px; overflow-y: auto; background: #0f172a; padding: 5px; border-radius: 8px;">
+          <p style="font-size:0.8rem; color:#a0aec0; text-align:center; margin:10px 0;">Loading codes...</p>
+        </div>
       </div>
 
       <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
@@ -612,11 +685,16 @@
     </div>
   </div>
 
-  <div id="modal-shop" class="modal-overlay">
-    <div class="modal-card">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>🛒 Fishing Shop</h2>
-      <p>Upgrade your rods, bait, and tanks here.</p>
+  <!-- MODAL CUSTOM PARA TEMP BAN (SIN USAR PROMPT NATIVO) -->
+  <div id="modal-temp-ban" class="modal-overlay">
+    <div class="modal-card" style="max-width: 350px;">
+      <button class="modal-close" onclick="document.getElementById('modal-temp-ban').style.display='none'">✖</button>
+      <h2>⏳ Temporary Ban</h2>
+      <div class="form-group">
+        <label>Hours for temporary ban</label>
+        <input type="number" id="tempBanHoursInput" placeholder="e.g. 24" value="24">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="adminTempBan()">Apply Temp Ban</button>
     </div>
   </div>
 
@@ -655,7 +733,6 @@
     let newsList = [];
     let currentNewsIndex = 0;
 
-    // Toast personalizado para notificaciones (Sin usar alert nativa)
     function showToast(message) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -670,6 +747,9 @@
       document.getElementById(modalId).style.display = 'flex';
       if (modalId === 'modal-profile') {
         loadProfileData();
+      }
+      if (modalId === 'modal-admin') {
+        loadAdminCodes();
       }
     }
 
@@ -791,6 +871,7 @@
           photoURL: photoURL,
           coins: 0,
           fishes: [],
+          redeemedCodes: [],
           isBanned: false,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -913,6 +994,53 @@
       }
     }
 
+    async function redeemCode() {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("⚠️ You must be logged in to redeem codes.");
+        return;
+      }
+
+      const code = document.getElementById('redeemCodeInput').value.trim().toUpperCase();
+      if (!code) {
+        showToast("⚠️ Enter a code.");
+        return;
+      }
+
+      try {
+        const codeRef = db.collection('codes').doc(code);
+        const codeSnap = await codeRef.get();
+
+        if (!codeSnap.exists) {
+          showToast("❌ Invalid or expired code.");
+          return;
+        }
+
+        const codeData = codeSnap.data();
+        const playerRef = db.collection('jugadores').doc(user.uid);
+        const playerSnap = await playerRef.get();
+        const playerData = playerSnap.data();
+
+        const redeemedList = playerData.redeemedCodes || [];
+        if (redeemedList.includes(code)) {
+          showToast("⚠️ You have already redeemed this code!");
+          return;
+        }
+
+        await db.runTransaction(async (transaction) => {
+          transaction.update(playerRef, {
+            coins: firebase.firestore.FieldValue.increment(codeData.coins),
+            redeemedCodes: firebase.firestore.FieldValue.arrayUnion(code)
+          });
+        });
+
+        showToast(`🎉 Success! You received +${codeData.coins} coins!`);
+        document.getElementById('redeemCodeInput').value = "";
+      } catch (err) {
+        showToast("❌ Error redeeming code: " + err.message);
+      }
+    }
+
     async function handleUserSearch() {
       const searchTerm = document.getElementById('searchUsernameInput').value.trim();
       const resultDiv = document.getElementById('searchResult');
@@ -958,7 +1086,6 @@
       openModal('modal-view-profile');
     }
 
-    // --- Sistema de Noticias con Carrusel, Fecha y Borrado ---
     function listenToNews() {
       db.collection('news')
         .orderBy('createdAt', 'desc')
@@ -992,7 +1119,6 @@
       const nextBtn = document.getElementById('nextNewsBtn');
 
       const news = newsList[currentNewsIndex];
-      
       let formattedDate = "Just now";
       if (news.createdAt) {
         const dateObj = news.createdAt.toDate();
@@ -1034,7 +1160,6 @@
 
     listenToNews();
 
-    // --- Panel de Admin usando Username ---
     async function getUidByUsername(username) {
       const snapshot = await db.collection('jugadores').where('username', '==', username).get();
       if (snapshot.empty) return null;
@@ -1062,10 +1187,22 @@
       }
     }
 
+    function openTempBanPrompt() {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      if (!username) {
+        showToast("⚠️ Enter a target username first.");
+        return;
+      }
+      document.getElementById('modal-temp-ban').style.display = 'flex';
+    }
+
     async function adminTempBan() {
       const username = document.getElementById('adminTargetUsername').value.trim();
-      const hours = prompt("How many hours for temporary ban?");
-      if (!username || !hours) return;
+      const hours = parseInt(document.getElementById('tempBanHoursInput').value);
+      if (!username || isNaN(hours)) {
+        showToast("⚠️ Enter valid hours.");
+        return;
+      }
       
       try {
         const targetUid = await getUidByUsername(username);
@@ -1076,6 +1213,7 @@
         const unbanDate = new Date(Date.now() + hours * 3600000);
         await db.collection('jugadores').doc(targetUid).update({ tempBanUntil: unbanDate });
         showToast(`✅ Temp ban applied to ${username} until: ${unbanDate.toLocaleString()}`);
+        document.getElementById('modal-temp-ban').style.display = 'none';
       } catch (err) {
         showToast("❌ Error: " + err.message);
       }
@@ -1102,6 +1240,68 @@
         showToast(`✅ Coins updated for ${username} (${val > 0 ? '+' : ''}${val})`);
       } catch (err) {
         showToast("❌ Error updating coins: " + err.message);
+      }
+    }
+
+    async function adminCreateCode() {
+      const codeName = document.getElementById('adminPromoCode').value.trim().toUpperCase();
+      const coins = parseInt(document.getElementById('adminPromoCoins').value);
+
+      if (!codeName || isNaN(coins)) {
+        showToast("⚠️ Enter a valid code and coin amount.");
+        return;
+      }
+
+      try {
+        await db.collection('codes').doc(codeName).set({
+          coins: coins,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast(`✅ Promo code "${codeName}" created with ${coins} coins!`);
+        document.getElementById('adminPromoCode').value = "";
+        document.getElementById('adminPromoCoins').value = "";
+        loadAdminCodes();
+      } catch (err) {
+        showToast("❌ Error creating code: " + err.message);
+      }
+    }
+
+    async function loadAdminCodes() {
+      const container = document.getElementById('adminCodesList');
+      container.innerHTML = '<p style="font-size:0.8rem; color:#a0aec0; text-align:center; margin:10px 0;">Loading codes...</p>';
+      
+      try {
+        const snapshot = await db.collection('codes').get();
+        if (snapshot.empty) {
+          container.innerHTML = '<p style="font-size:0.8rem; color:#a0aec0; text-align:center; margin:10px 0;">No active codes.</p>';
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const code = doc.id;
+          const coins = data.coins || 0;
+          html += `
+            <div class="admin-code-item">
+              <span><strong>🎟️ ${code}</strong> (${coins} 💰)</span>
+              <button type="button" style="background:#e74c3c; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="adminDeleteCode('${code}')">🗑️ Delete</button>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">Error loading codes.</p>';
+      }
+    }
+
+    async function adminDeleteCode(codeName) {
+      try {
+        await db.collection('codes').doc(codeName).delete();
+        showToast(`✅ Code "${codeName}" deleted successfully.`);
+        loadAdminCodes();
+      } catch (err) {
+        showToast("❌ Error deleting code: " + err.message);
       }
     }
 
