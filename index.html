@@ -85,7 +85,7 @@
 
     .center-menu {
       display: flex;
-      gap: 15px;
+      gap: 20px;
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
@@ -106,7 +106,7 @@
     }
 
     .img-btn img {
-      width: 130px;
+      width: 140px;
       height: auto;
       object-fit: contain;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
@@ -142,6 +142,13 @@
     }
 
     .btn-index-img {
+      width: 110px !important;
+      height: auto !important;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+    }
+
+    .btn-market-img {
       width: 110px !important;
       height: auto !important;
       object-fit: contain;
@@ -440,10 +447,11 @@
     @media (max-width: 768px) {
       .main-container { padding-top: 70px; }
       .fish-logo-img { max-width: 260px; }
-      .center-menu { gap: 10px; margin-bottom: 15px; }
-      .img-btn img { width: 105px; }
+      .center-menu { gap: 15px; margin-bottom: 15px; }
+      .img-btn img { width: 115px; }
       .btn-news-img { width: 110px !important; }
       .btn-index-img { width: 95px !important; }
+      .btn-market-img { width: 95px !important; }
       .admin-trigger-btn { right: 15px; bottom: 85px; width: 45px; height: 45px; }
       .corner-bottom-left { bottom: 10px; left: 10px; }
       .corner-bottom-right { bottom: 10px; right: 10px; }
@@ -485,9 +493,6 @@
       <button class="img-btn" onclick="startGame()">
         <img src="https://i.postimg.cc/d36Z9BQ7/play.png" alt="Play">
       </button>
-      <button class="img-btn" onclick="openModal('modal-market')">
-        <img src="https://i.postimg.cc/pXqPJd8Z/market.png" alt="Market">
-      </button>
       <button class="img-btn" onclick="openModal('modal-achievements')">
         <img src="https://i.postimg.cc/rsjR9JyD/achievements.png" alt="Achievements">
       </button>
@@ -509,8 +514,11 @@
     <button class="cast-line-btn" onclick="castLine()">🎣 Cast Line!</button>
   </div>
 
-  <!-- ESQUINA INFERIOR DERECHA: News y Index -->
+  <!-- ESQUINA INFERIOR DERECHA: Market, News y Index -->
   <div class="corner-bottom-right">
+    <button class="img-btn" onclick="openMarketModal()">
+      <img src="https://i.postimg.cc/pXqPJd8Z/market.png" alt="Market" class="btn-market-img">
+    </button>
     <button class="img-btn" onclick="openIndexModal()">
       <img src="https://i.postimg.cc/Y9mR2jN6/index.png" alt="Fish Index" class="btn-index-img">
     </button>
@@ -523,6 +531,56 @@
   <button id="adminBtn" class="admin-trigger-btn" onclick="openModal('modal-admin')">
     <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
   </button>
+
+  <!-- MODAL MARKET -->
+  <div id="modal-market" class="modal-overlay">
+    <div class="modal-card" style="max-width: 650px;">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>🏛️ Player Market & Sell</h2>
+      
+      <div class="tab-container">
+        <button id="tab-market-buy-btn" class="tab-btn active" onclick="switchMarketTab('buy')">🛒 Player Market</button>
+        <button id="tab-market-sell-btn" class="tab-btn" onclick="switchMarketTab('sell')">💰 Sell My Fish</button>
+      </div>
+
+      <!-- SECCIÓN 1: COMPRAR A OTROS JUGADORES (MARKET) -->
+      <div id="market-buy-section">
+        <p style="font-size:0.85rem; color:#a0aec0; margin-bottom:10px;">Buy fish offered by real players in the community market:</p>
+        <div id="market-listings-container" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+          <p style="color:#a0aec0; text-align:center;">Loading market offers...</p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: VENDER MIS PECES (SELL / BOT SELL / MARKET SELL) -->
+      <div id="market-sell-section" style="display: none;">
+        <p style="font-size:0.85rem; color:#a0aec0; margin-bottom:10px;">Select a fish from your backpack to sell:</p>
+        <div id="market-my-fishes-container" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+          <p style="color:#a0aec0; text-align:center;">Loading your fishes...</p>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: MIS OFERTAS ACTIVAS EN EL MERCADO (PARA CANCELAR) -->
+      <hr style="border:0; border-top:1px solid #444; margin:15px 0;">
+      <h3 style="font-size: 1rem; color: #3498db; margin-bottom: 5px;">📋 My Active Market Listings (Cancel & Retrieve)</h3>
+      <div id="market-my-active-listings" style="max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
+        <p style="font-size: 0.8rem; color:#a0aec0; text-align:center;">Loading your active listings...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PRECIO DE VENTA EN MARKET -->
+  <div id="modal-market-price-prompt" class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-card" style="max-width: 320px;">
+      <button class="modal-close" onclick="document.getElementById('modal-market-price-prompt').style.display='none'">✖</button>
+      <h3>🏷️ Set Market Price</h3>
+      <p style="font-size:0.85rem; color:#a0aec0;" id="prompt-fish-name-label">Fish: Opah</p>
+      <div class="form-group">
+        <label>Price in Coins (💰)</label>
+        <input type="number" id="market-sell-price-input" min="1" placeholder="e.g. 50">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="confirmMarketSell()">Post to Market</button>
+    </div>
+  </div>
 
   <!-- MODAL ACCOUNT / AUTH -->
   <div id="modal-account" class="modal-overlay">
@@ -650,48 +708,6 @@
         <button type="submit" class="modal-action-btn">Search User</button>
       </form>
       <div id="searchResult" style="margin-top: 10px; display:none;"></div>
-    </div>
-  </div>
-
-  <!-- MODAL MARKET -->
-  <div id="modal-market" class="modal-overlay">
-    <div class="modal-card" style="max-width: 650px;">
-      <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>🛒 Players Market</h2>
-      <div class="tab-container" style="margin-top: 10px;">
-        <button id="market-tab-sell-btn" class="tab-btn active" onclick="switchMarketTab('sell')">Sell Fish</button>
-        <button id="market-tab-offers-btn" class="tab-btn" onclick="switchMarketTab('offers')">Player Offers</button>
-      </div>
-
-      <!-- SECCIÓN SELL FISH -->
-      <div id="market-section-sell">
-        <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 10px;">Select a fish from your backpack to sell for instant cash (Bot Sell) or list it in the market (Market Sell):</p>
-        <div id="market-my-fish-list" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-          <p style="color:#a0aec0; text-align:center;">Loading your fish...</p>
-        </div>
-      </div>
-
-      <!-- SECCIÓN PLAYER OFFERS -->
-      <div id="market-section-offers" style="display: none;">
-        <p style="font-size: 0.85rem; color: #a0aec0; margin-bottom: 10px;">Browse fish listings from other real players:</p>
-        <div id="market-global-offers-list" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-          <p style="color:#a0aec0; text-align:center;">Loading market offers...</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL PRECIO MARKET SELL -->
-  <div id="modal-market-price" class="modal-overlay" style="z-index: 1050;">
-    <div class="modal-card" style="max-width: 320px;">
-      <button class="modal-close" onclick="document.getElementById('modal-market-price').style.display='none'">✖</button>
-      <h3 style="margin-top:0;">🏷️ List Fish on Market</h3>
-      <p id="market-sell-fish-name" style="font-size: 0.9rem; color: #3498db; font-weight: bold;"></p>
-      <div class="form-group">
-        <label>Price in Coins (💰)</label>
-        <input type="number" id="market-sell-price-input" min="1" placeholder="e.g. 50">
-      </div>
-      <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="confirmMarketSell()">Publish Offer</button>
     </div>
   </div>
 
@@ -965,7 +981,7 @@
     let selectedShelfIndex = 0;
     let activeFishAnimations = [];
     let currentIndexFish = 0;
-    let selectedFishIndexToMarketSell = null;
+    let selectedFishToMarket = null; // Para guardar temporalmente el pez seleccionado para market sell
 
     const ALLOWED_FISH_TYPES = [
       { 
@@ -1054,10 +1070,6 @@
       if (modalId === 'modal-backpack') {
         loadBackpackData();
       }
-      if (modalId === 'modal-market') {
-        loadMarketMyFish();
-        loadGlobalMarketOffers();
-      }
     }
 
     function closeAllModals() {
@@ -1067,261 +1079,6 @@
 
     function openMyProfileModal() {
       openModal('modal-profile');
-    }
-
-    function switchMarketTab(tab) {
-      if (tab === 'sell') {
-        document.getElementById('market-section-sell').style.display = 'block';
-        document.getElementById('market-section-offers').style.display = 'none';
-        document.getElementById('market-tab-sell-btn').classList.add('active');
-        document.getElementById('market-tab-offers-btn').classList.remove('active');
-        loadMarketMyFish();
-      } else {
-        document.getElementById('market-section-sell').style.display = 'none';
-        document.getElementById('market-section-offers').style.display = 'block';
-        document.getElementById('market-tab-offers-btn').classList.add('active');
-        document.getElementById('market-tab-sell-btn').classList.remove('active');
-        loadGlobalMarketOffers();
-      }
-    }
-
-    async function loadMarketMyFish() {
-      const user = auth.currentUser;
-      const listEl = document.getElementById('market-my-fish-list');
-      if (!user) return;
-      listEl.innerHTML = '<p style="color:#a0aec0; text-align:center;">Loading your fish...</p>';
-
-      try {
-        const doc = await db.collection('jugadores').doc(user.uid).get();
-        if (doc.exists) {
-          const fishes = doc.data().fishes || [];
-          if (fishes.length === 0) {
-            listEl.innerHTML = '<p style="color:#a0aec0; text-align:center;">You have no fish in your backpack. Go fishing!</p>';
-            return;
-          }
-          let html = '';
-          fishes.forEach((f, idx) => {
-            const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === f.name) || ALLOWED_FISH_TYPES[0];
-            html += `
-              <div style="background: #16213e; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <img src="${fishObj.img}" style="width: 35px; height: 35px; object-fit: contain;">
-                  <div>
-                    <strong>${f.name}</strong><br>
-                    <span style="font-size:0.75rem; color:#2ecc71;">Base Value: ${fishObj.value} 💰</span>
-                  </div>
-                </div>
-                <div style="display:flex; gap: 8px;">
-                  <button class="modal-action-btn" style="background:#e74c3c; width:auto; padding: 5px 10px; font-size:0.8rem;" onclick="botSellFish(${idx}, '${f.name}', ${fishObj.value})">Bot Sell (${fishObj.value} 💰)</button>
-                  <button class="modal-action-btn" style="background:#2980b9; width:auto; padding: 5px 10px; font-size:0.8rem;" onclick="openMarketSellPrompt(${idx}, '${f.name}')">Market Sell</button>
-                </div>
-              </div>
-            `;
-          });
-          listEl.innerHTML = html;
-        }
-      } catch (err) {
-        listEl.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading fish.</p>';
-      }
-    }
-
-    async function botSellFish(fishIndex, fishName, fishValue) {
-      const user = auth.currentUser;
-      if (!user) return;
-
-      try {
-        const playerRef = db.collection('jugadores').doc(user.uid);
-        const doc = await playerRef.get();
-        if (doc.exists) {
-          let fishes = doc.data().fishes || [];
-          if (fishes[fishIndex]) {
-            fishes.splice(fishIndex, 1);
-            await playerRef.update({
-              fishes: fishes,
-              coins: firebase.firestore.FieldValue.increment(fishValue)
-            });
-            showToast(`✅ Sold ${fishName} to Bot for +${fishValue} 💰!`);
-            loadMarketMyFish();
-            updateGameHUD();
-          }
-        }
-      } catch (err) {
-        showToast("❌ Error selling fish: " + err.message);
-      }
-    }
-
-    function openMarketSellPrompt(fishIndex, fishName) {
-      selectedFishIndexToMarketSell = fishIndex;
-      document.getElementById('market-sell-fish-name').innerText = `Fish: ${fishName}`;
-      document.getElementById('market-sell-price-input').value = "";
-      document.getElementById('modal-market-price').style.display = 'flex';
-    }
-
-    async function confirmMarketSell() {
-      const user = auth.currentUser;
-      if (!user || selectedFishIndexToMarketSell === null) return;
-
-      const price = parseInt(document.getElementById('market-sell-price-input').value);
-      if (isNaN(price) || price <= 0) {
-        showToast("⚠️ Enter a valid price in coins.");
-        return;
-      }
-
-      try {
-        const playerRef = db.collection('jugadores').doc(user.uid);
-        const playerDoc = await playerRef.get();
-        if (!playerDoc.exists) return;
-
-        const playerData = playerDoc.data();
-        let fishes = playerData.fishes || [];
-        const targetFish = fishes[selectedFishIndexToMarketSell];
-
-        if (!targetFish) {
-          showToast("❌ Fish not found in backpack.");
-          document.getElementById('modal-market-price').style.display = 'none';
-          return;
-        }
-
-        fishes.splice(selectedFishIndexToMarketSell, 1);
-
-        await db.runTransaction(async (transaction) => {
-          transaction.update(playerRef, { fishes: fishes });
-          const marketRef = db.collection('market').doc();
-          transaction.set(marketRef, {
-            sellerUid: user.uid,
-            sellerName: playerData.username || "Player",
-            fishName: targetFish.name,
-            price: price,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        });
-
-        showToast(`🎉 Successfully listed ${targetFish.name} on the Market for ${price} 💰!`);
-        document.getElementById('modal-market-price').style.display = 'none';
-        selectedFishIndexToMarketSell = null;
-        loadMarketMyFish();
-      } catch (err) {
-        showToast("❌ Error listing item: " + err.message);
-      }
-    }
-
-    async function loadGlobalMarketOffers() {
-      const listEl = document.getElementById('market-global-offers-list');
-      listEl.innerHTML = '<p style="color:#a0aec0; text-align:center;">Loading market offers...</p>';
-
-      try {
-        const snapshot = await db.collection('market').orderBy('createdAt', 'desc').get();
-        if (snapshot.empty) {
-          listEl.innerHTML = '<p style="color:#a0aec0; text-align:center;">No offers available in the market right now.</p>';
-          return;
-        }
-
-        const currentUser = auth.currentUser;
-        let html = '';
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const offerId = doc.id;
-          const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === data.fishName) || ALLOWED_FISH_TYPES[0];
-          const isMyOffer = currentUser && currentUser.uid === data.sellerUid;
-
-          html += `
-            <div style="background: #16213e; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center;">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <img src="${fishObj.img}" style="width: 35px; height: 35px; object-fit: contain;">
-                <div>
-                  <strong>${data.fishName}</strong><br>
-                  <span style="font-size:0.75rem; color:#a0aec0;">Seller: <strong>${data.sellerName}</strong> | Price: <span style="color:#2ecc71;">${data.price} 💰</span></span>
-                </div>
-              </div>
-              <div>
-                ${isMyOffer ? 
-                  `<button class="modal-action-btn" style="background:#e74c3c; width:auto; padding: 5px 10px; font-size:0.8rem;" onclick="cancelMarketOffer('${offerId}', '${data.fishName}')">Cancel Offer</button>` :
-                  `<button class="modal-action-btn" style="background:#27ae60; width:auto; padding: 5px 10px; font-size:0.8rem;" onclick="buyMarketOffer('${offerId}', '${data.sellerUid}', ${data.price}, '${data.fishName}')">Buy (${data.price} 💰)</button>`
-                }
-              </div>
-            </div>
-          `;
-        });
-        listEl.innerHTML = html;
-      } catch (err) {
-        listEl.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading market offers.</p>';
-      }
-    }
-
-    async function cancelMarketOffer(offerId, fishName) {
-      const user = auth.currentUser;
-      if (!user) return;
-
-      try {
-        const offerRef = db.collection('market').doc(offerId);
-        const playerRef = db.collection('jugadores').doc(user.uid);
-
-        await db.runTransaction(async (transaction) => {
-          const offerDoc = await transaction.get(offerRef);
-          if (!offerDoc.exists) throw new Error("Offer no longer exists.");
-          const offerData = offerDoc.data();
-          if (offerData.sellerUid !== user.uid) throw new Error("Unauthorized.");
-
-          const playerDoc = await transaction.get(playerRef);
-          if (!playerDoc.exists) throw new Error("Player not found.");
-          let fishes = playerDoc.data().fishes || [];
-
-          fishes.push({ name: fishName, timestamp: new Date().toISOString() });
-
-          transaction.update(playerRef, { fishes: fishes });
-          transaction.delete(offerRef);
-        });
-
-        showToast(`✅ Offer cancelled. ${fishName} returned to your backpack.`);
-        loadGlobalMarketOffers();
-      } catch (err) {
-        showToast("❌ Error cancelling offer: " + err.message);
-      }
-    }
-
-    async function buyMarketOffer(offerId, sellerUid, price, fishName) {
-      const user = auth.currentUser;
-      if (!user) {
-        showToast("⚠️ You must be logged in to buy.");
-        return;
-      }
-      if (user.uid === sellerUid) {
-        showToast("⚠️ You cannot buy your own offer!");
-        return;
-      }
-
-      try {
-        const buyerRef = db.collection('jugadores').doc(user.uid);
-        const sellerRef = db.collection('jugadores').doc(sellerUid);
-        const offerRef = db.collection('market').doc(offerId);
-
-        await db.runTransaction(async (transaction) => {
-          const buyerDoc = await transaction.get(buyerRef);
-          const offerDoc = await transaction.get(offerRef);
-
-          if (!buyerDoc.exists || !offerDoc.exists) {
-            throw new Error("Offer or buyer profile not found.");
-          }
-
-          const buyerCoins = buyerDoc.data().coins || 0;
-          if (buyerCoins < price) {
-            throw new Error("You do not have enough coins!");
-          }
-
-          let buyerFishes = buyerDoc.data().fishes || [];
-          buyerFishes.push({ name: fishName, timestamp: new Date().toISOString() });
-
-          transaction.update(buyerRef, { coins: buyerCoins - price, fishes: buyerFishes });
-          transaction.update(sellerRef, { coins: firebase.firestore.FieldValue.increment(price) });
-          transaction.delete(offerRef);
-        });
-
-        showToast(`🎉 Successfully purchased ${fishName} for ${price} 💰!`);
-        loadGlobalMarketOffers();
-        updateGameHUD();
-      } catch (err) {
-        showToast("❌ Error buying offer: " + err.message);
-      }
     }
 
     function openIndexModal() {
@@ -1349,6 +1106,326 @@
       document.getElementById('index-rarity').innerText = fish.rarity;
       document.getElementById('index-counter').innerText = `${currentIndexFish + 1} / ${ALLOWED_FISH_TYPES.length}`;
     }
+
+    // --- SISTEMA DE MERCADO Y VENTA ---
+    function openMarketModal() {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("⚠️ You must be logged in to access the market.");
+        openModal('modal-account');
+        return;
+      }
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.getElementById('modal-market').style.display = 'flex';
+      switchMarketTab('buy');
+    }
+
+    function switchMarketTab(tab) {
+      const buySec = document.getElementById('market-buy-section');
+      const sellSec = document.getElementById('market-sell-section');
+      const buyBtn = document.getElementById('tab-market-buy-btn');
+      const sellBtn = document.getElementById('tab-market-sell-btn');
+
+      if (tab === 'buy') {
+        buySec.style.display = 'block';
+        sellSec.style.display = 'none';
+        buyBtn.classList.add('active');
+        sellBtn.classList.remove('active');
+        loadMarketListings();
+      } else {
+        buySec.style.display = 'none';
+        sellSec.style.display = 'block';
+        sellBtn.classList.add('active');
+        buyBtn.classList.remove('active');
+        loadMyFishesForMarket();
+      }
+      loadMyActiveListings();
+    }
+
+    async function loadMarketListings() {
+      const container = document.getElementById('market-listings-container');
+      container.innerHTML = '<p style="color:#a0aec0; text-align:center;">Loading market offers...</p>';
+
+      try {
+        const snapshot = await db.collection('marketListings').orderBy('createdAt', 'desc').get();
+        if (snapshot.empty) {
+          container.innerHTML = '<p style="color:#a0aec0; text-align:center;">No player offers right now.</p>';
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const item = doc.data();
+          const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === item.fishName) || ALLOWED_FISH_TYPES[0];
+          const isMyListing = auth.currentUser && item.sellerUid === auth.currentUser.uid;
+
+          html += `
+            <div style="background: #16213e; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <img src="${fishObj.img}" style="width: 35px; height: 35px; object-fit: contain;">
+                <div>
+                  <strong>🐟 ${item.fishName}</strong><br>
+                  <span style="font-size:0.75rem; color:#a0aec0;">Seller: ${item.sellerName} | Price: 💰 ${item.price}</span>
+                </div>
+              </div>
+              <div>
+                ${isMyListing ? 
+                  `<span style="font-size:0.75rem; color:#f39c12; font-weight:bold;">Your Listing</span>` : 
+                  `<button type="button" class="modal-action-btn" style="background:#27ae60; padding: 6px 12px; font-size: 0.8rem;" onclick="buyMarketItem('${doc.id}', '${item.sellerUid}', ${item.price}, '${item.fishName}')">Buy (${item.price} 💰)</button>`
+                }
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        console.error("Market load error:", err);
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading market. Check permissions.</p>';
+      }
+    }
+
+    async function loadMyFishesForMarket() {
+      const user = auth.currentUser;
+      if (!user) return;
+      const container = document.getElementById('market-my-fishes-container');
+      container.innerHTML = '<p style="color:#a0aec0; text-align:center;">Loading your fishes...</p>';
+
+      try {
+        const doc = await db.collection('jugadores').doc(user.uid).get();
+        if (doc.exists) {
+          const fishes = doc.data().fishes || [];
+          if (fishes.length === 0) {
+            container.innerHTML = '<p style="color:#a0aec0; text-align:center;">You have no fish to sell! Go fishing.</p>';
+            return;
+          }
+
+          let html = '';
+          fishes.forEach((f, index) => {
+            const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === f.name) || ALLOWED_FISH_TYPES[0];
+            html += `
+              <div style="background: #16213e; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <img src="${fishObj.img}" style="width: 35px; height: 35px; object-fit: contain;">
+                  <div>
+                    <strong>🐟 ${f.name}</strong><br>
+                    <span style="font-size:0.75rem; color:#2ecc71;">System Value: ${fishObj.value} 💰</span>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 6px 10px; font-size: 0.75rem;" onclick="botSellFish(${index}, '${f.name}', ${fishObj.value})">Bot Sell</button>
+                  <button type="button" class="modal-action-btn" style="background:#2980b9; padding: 6px 10px; font-size: 0.75rem;" onclick="promptMarketSell(${index}, '${f.name}')">Market Sell</button>
+                </div>
+              </div>
+            `;
+          });
+          container.innerHTML = html;
+        }
+      } catch (err) {
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading inventory.</p>';
+      }
+    }
+
+    async function loadMyActiveListings() {
+      const user = auth.currentUser;
+      if (!user) return;
+      const container = document.getElementById('market-my-active-listings');
+
+      try {
+        const snapshot = await db.collection('marketListings').where('sellerUid', '==', user.uid).get();
+        if (snapshot.empty) {
+          container.innerHTML = '<p style="font-size: 0.8rem; color:#a0aec0; text-align:center;">You have no active market offers.</p>';
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const item = doc.data();
+          const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === item.fishName) || ALLOWED_FISH_TYPES[0];
+          html += `
+            <div style="background: #0f172a; padding: 8px; border-radius: 6px; border: 1px solid #444; display: flex; justify-content: space-between; align-items: center;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <img src="${fishObj.img}" style="width: 25px; height: 25px; object-fit: contain;">
+                <span style="font-size: 0.85rem;"><strong>${item.fishName}</strong> - 💰 ${item.price}</span>
+              </div>
+              <button type="button" class="modal-action-btn" style="background:#c0392b; padding: 4px 8px; font-size: 0.75rem; width: auto;" onclick="cancelMarketListing('${doc.id}', '${item.fishName}')">Cancel & Retrieve</button>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = '<p style="font-size: 0.8rem; color:#e74c3c; text-align:center;">Error loading active listings.</p>';
+      }
+    }
+
+    async function botSellFish(fishIndex, fishName, fishValue) {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const playerRef = db.collection('jugadores').doc(user.uid);
+        await db.runTransaction(async (transaction) => {
+          const doc = await transaction.get(playerRef);
+          if (!doc.exists) throw new Error("Player not found");
+          
+          let fishes = doc.data().fishes || [];
+          if (fishes.length <= fishIndex) throw new Error("Fish not found");
+
+          fishes.splice(fishIndex, 1); // Elimina el pez definitivamente
+
+          transaction.update(playerRef, {
+            coins: firebase.firestore.FieldValue.increment(fishValue),
+            fishes: fishes
+          });
+        });
+
+        showToast(`💰 Bot sold ${fishName} for +${fishValue} coins!`);
+        loadMyFishesForMarket();
+        updateGameHUD();
+      } catch (err) {
+        showToast("❌ Error selling fish: " + err.message);
+      }
+    }
+
+    function promptMarketSell(fishIndex, fishName) {
+      selectedFishToMarket = { index: fishIndex, name: fishName };
+      document.getElementById('prompt-fish-name-label').innerText = `Fish: ${fishName}`;
+      document.getElementById('market-sell-price-input').value = "";
+      document.getElementById('modal-market-price-prompt').style.display = 'flex';
+    }
+
+    async function confirmMarketSell() {
+      const user = auth.currentUser;
+      if (!user || !selectedFishToMarket) return;
+
+      const priceInput = parseInt(document.getElementById('market-sell-price-input').value);
+      if (isNaN(priceInput) || priceInput <= 0) {
+        showToast("⚠️ Please enter a valid price.");
+        return;
+      }
+
+      try {
+        const playerRef = db.collection('jugadores').doc(user.uid);
+        const playerSnap = await playerRef.get();
+        if (!playerSnap.exists) return;
+
+        const playerData = playerSnap.data();
+        let fishes = playerData.fishes || [];
+
+        if (fishes.length <= selectedFishToMarket.index) {
+          showToast("❌ Fish no longer exists in your inventory.");
+          document.getElementById('modal-market-price-prompt').style.display = 'none';
+          return;
+        }
+
+        // Sacar el pez del inventario del jugador
+        fishes.splice(selectedFishToMarket.index, 1);
+
+        // Crear la oferta en la colección pública 'marketListings'
+        await db.collection('marketListings').add({
+          sellerUid: user.uid,
+          sellerName: playerData.username || "Player",
+          fishName: selectedFishToMarket.name,
+          price: priceInput,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Actualizar inventario del jugador
+        await playerRef.update({ fishes: fishes });
+
+        showToast(`✅ ${selectedFishToMarket.name} successfully listed on the Market for ${priceInput} 💰!`);
+        document.getElementById('modal-market-price-prompt').style.display = 'none';
+        loadMyFishesForMarket();
+        loadMyActiveListings();
+      } catch (err) {
+        showToast("❌ Error listing item: " + err.message);
+      }
+    }
+
+    async function cancelMarketListing(listingId, fishName) {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const listingRef = db.collection('marketListings').doc(listingId);
+        const playerRef = db.collection('jugadores').doc(user.uid);
+
+        await db.runTransaction(async (transaction) => {
+          const listingSnap = await transaction.get(listingRef);
+          if (!listingSnap.exists) throw new Error("Listing does not exist anymore.");
+          
+          const listingData = listingSnap.data();
+          if (listingData.sellerUid !== user.uid) throw new Error("Not authorized.");
+
+          const playerSnap = await transaction.get(playerRef);
+          if (!playerSnap.exists) throw new Error("Player not found.");
+
+          // Devolver el pez a la mochila del jugador
+          transaction.update(playerRef, {
+            fishes: firebase.firestore.FieldValue.arrayUnion({ name: fishName, timestamp: new Date().toISOString() })
+          });
+
+          // Borrar la oferta del mercado
+          transaction.delete(listingRef);
+        });
+
+        showToast(`✅ Listing cancelled. ${fishName} returned to your backpack.`);
+        loadMyActiveListings();
+        loadMyFishesForMarket();
+      } catch (err) {
+        showToast("❌ Error cancelling listing: " + err.message);
+      }
+    }
+
+    async function buyMarketItem(listingId, sellerUid, price, fishName) {
+      const user = auth.currentUser;
+      if (!user) return;
+      if (user.uid === sellerUid) {
+        showToast("⚠️ You cannot buy your own listing!");
+        return;
+      }
+
+      try {
+        const buyerRef = db.collection('jugadores').doc(user.uid);
+        const sellerRef = db.collection('jugadores').doc(sellerUid);
+        const listingRef = db.collection('marketListings').doc(listingId);
+
+        await db.runTransaction(async (transaction) => {
+          const buyerSnap = await transaction.get(buyerRef);
+          const sellerSnap = await transaction.get(sellerRef);
+          const listingSnap = await transaction.get(listingRef);
+
+          if (!listingSnap.exists) throw new Error("This item was already sold or removed.");
+          if (!buyerSnap.exists) throw new Error("Buyer profile not found.");
+
+          const buyerCoins = buyerSnap.data().coins || 0;
+          if (buyerCoins < price) throw new Error("Not enough coins to buy this fish!");
+
+          // Descontar monedas al comprador y agregar el pez
+          transaction.update(buyerRef, {
+            coins: buyerCoins - price,
+            fishes: firebase.firestore.FieldValue.arrayUnion({ name: fishName, timestamp: new Date().toISOString() })
+          });
+
+          // Si el vendedor existe, darle sus monedas
+          if (sellerSnap.exists) {
+            const sellerCoins = sellerSnap.data().coins || 0;
+            transaction.update(sellerRef, {
+              coins: sellerCoins + price
+            });
+          }
+
+          // Eliminar la oferta del mercado
+          transaction.delete(listingRef);
+        });
+
+        showToast(`🎉 Successfully purchased ${fishName} for ${price} 💰!`);
+        loadMarketListings();
+        updateGameHUD();
+      } catch (err) {
+        showToast("❌ Purchase error: " + err.message);
+      }
+    }
+    // --- FIN SISTEMA DE MERCADO ---
 
     async function openMyAquarium() {
       const user = auth.currentUser;
@@ -1601,6 +1678,7 @@
       }
     }
 
+    // Al cazar peces ya no da dinero directo, van directo a la mochila
     async function castLine() {
       const user = auth.currentUser;
       if (!user) return;
