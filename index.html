@@ -511,13 +511,15 @@
       </div>
       <button type="button" class="modal-action-btn" onclick="updateProfileData()">Save Changes</button>
 
-      <!-- BÚSQUEDA DE USUARIOS CON PERFIL CLICKEABLE (SIN AUTOCOMPLETAR CORREO) -->
+      <!-- BÚSQUEDA DE USUARIOS (PROTEGIDA CONTRA AUTOCOMPLETADO Y CORREOS) -->
       <hr style="border:0; border-top:1px solid #444; margin:20px 0;">
       <h3>🔍 Search Player</h3>
-      <div class="form-group">
-        <input type="text" id="searchUsernameInput" name="search-player" autocomplete="off" placeholder="Enter username...">
-      </div>
-      <button type="button" class="modal-action-btn" onclick="handleUserSearch()">Search User</button>
+      <form autocomplete="off" onsubmit="event.preventDefault(); handleUserSearch();">
+        <div class="form-group">
+          <input type="text" id="searchUsernameInput" autocomplete="off" name="search_player_unique_field" placeholder="Enter username...">
+        </div>
+        <button type="submit" class="modal-action-btn">Search User</button>
+      </form>
       <div id="searchResult" style="margin-top: 10px; display:none;"></div>
     </div>
   </div>
@@ -541,7 +543,7 @@
     </div>
   </div>
 
-  <!-- MODAL NEWS (CON FECHA DE PUBLICACIÓN) -->
+  <!-- MODAL NEWS -->
   <div id="modal-news" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -556,16 +558,18 @@
     </div>
   </div>
 
-  <!-- MODAL ADMIN PANEL -->
+  <!-- MODAL ADMIN PANEL (PROTEGIDO CONTRA AUTOCOMPLETADO) -->
   <div id="modal-admin" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
       <h2>⚙️ Admin Control Panel</h2>
       
-      <div class="form-group">
-        <label>Target Username</label>
-        <input type="text" id="adminTargetUsername" name="admin-target-user" autocomplete="off" placeholder="Exact username...">
-      </div>
+      <form autocomplete="off" onsubmit="return false;">
+        <div class="form-group">
+          <label>Target Username</label>
+          <input type="text" id="adminTargetUsername" autocomplete="off" name="admin_target_unique_field" placeholder="Exact username...">
+        </div>
+      </form>
 
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
         <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="adminBanUser(true)">Ban</button>
@@ -651,6 +655,7 @@
     let newsList = [];
     let currentNewsIndex = 0;
 
+    // Toast personalizado para notificaciones (Sin usar alert nativa)
     function showToast(message) {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -953,7 +958,7 @@
       openModal('modal-view-profile');
     }
 
-    // --- Sistema de Noticias con Fecha legible formateada ---
+    // --- Sistema de Noticias con Carrusel, Fecha y Borrado ---
     function listenToNews() {
       db.collection('news')
         .orderBy('createdAt', 'desc')
@@ -988,8 +993,7 @@
 
       const news = newsList[currentNewsIndex];
       
-      // Mostrar la fecha formateada si existe createdAt
-      let formattedDate = "Justo ahora";
+      let formattedDate = "Just now";
       if (news.createdAt) {
         const dateObj = news.createdAt.toDate();
         formattedDate = dateObj.toLocaleDateString() + " " + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -1020,7 +1024,6 @@
     }
 
     async function deleteNews(newsId) {
-      if (!confirm("Are you sure you want to delete this news item?")) return;
       try {
         await db.collection('news').doc(newsId).delete();
         showToast("✅ News deleted successfully.");
