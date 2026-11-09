@@ -1024,6 +1024,16 @@
 
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
         <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
+          <div style="font-size: 30px;">🐛</div>
+          <div>
+            <strong>Worm Bait (+Luck)</strong><br><span style="font-size: 0.8rem; color: #64748b;">Increases rare/epic/legendary/mythic catch rate for 1 use</span>
+          </div>
+        </div>
+        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="buyBait()">50 💰</button>
+      </div>
+
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
+        <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
           <div style="font-size: 30px;">🏛️</div>
           <div>
             <strong>🏰 Extra Aquarium Room</strong><br><span style="font-size: 0.8rem; color: #64748b;">Unlock a brand new aquarium room with 8 slots</span>
@@ -1044,6 +1054,13 @@
         <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #1e3a8a;">🎒 Items Owned</h3>
         <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tanks Bought: 0</p>
         <p id="backpack-rooms-count" style="margin: 3px 0; font-size: 0.85rem;">Aquarium Rooms Owned: 1</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; background: #ffffff; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <img src="https://i.postimg.cc/KYgqH6Sn/worm-bait.png" style="width: 30px; height: 30px; object-fit: contain;">
+            <span style="font-size: 0.85rem;"><strong>Worm Bait:</strong> <span id="backpack-bait-count">0</span></span>
+          </div>
+          <button type="button" class="modal-action-btn" style="background:#27ae60; padding: 4px 10px; font-size: 0.75rem; width: auto;" onclick="useBait()">Use (+Luck)</button>
+        </div>
       </div>
 
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
@@ -1121,10 +1138,19 @@
         <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyTanks(-1)">Remove Tanks</button>
       </div>
 
+      <div class="form-group">
+        <label>Worm Bait Amount</label>
+        <input type="number" id="adminBaitAmount" placeholder="Bait amount" value="1" min="1">
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyBait(1)">Give Bait</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyBait(-1)">Remove Bait</button>
+      </div>
+
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
       <h3>🐟 Add Fish to User</h3>
       <div class="form-group">
-        <label>Fish Name (e.g. Legacy Fish, Carp)</label>
+        <label>Fish Name (e.g. Bluefin Tuna, Coelacanth)</label>
         <input type="text" id="adminAddFishName" placeholder="Fish name...">
       </div>
       <button type="button" class="modal-action-btn" style="background:#27ae60; margin-bottom: 15px;" onclick="adminAddFishToUser()">Add Fish</button>
@@ -1147,7 +1173,7 @@
       </div>
       <div class="form-group">
         <label>Bonus Fish Reward (Optional - exact fish name)</label>
-        <input type="text" id="adminPromoFish" placeholder="e.g. Legacy Fish or leave blank">
+        <input type="text" id="adminPromoFish" placeholder="e.g. Bluefin Tuna or leave blank">
       </div>
       <button type="button" class="modal-action-btn" style="background:#2980b9; margin-bottom: 10px;" onclick="adminCreateCode()">Create Code</button>
       
@@ -1232,74 +1258,74 @@
 
     const ALLOWED_FISH_TYPES = [
       { 
-        name: "Opah", 
-        value: 25, 
-        rarity: "Common",
-        desc: "A large, colorful deep-water fish known for its distinct round body and warm-blooded nature.",
-        img: "https://i.postimg.cc/sxhg04JM/opah.png" 
+        name: "Bluefin Tuna", 
+        value: 120, 
+        rarity: "Epic",
+        desc: "A swift and robust pelagic bony fish of warm waters, highly prized for its strength and size.",
+        img: "https://i.postimg.cc/6pPbz9SC/bluefin-tuna.png" 
       },
       { 
-        name: "Clownfish", 
-        value: 20, 
-        rarity: "Common",
-        desc: "A small, vibrant orange fish with distinct white stripes, famous for living among sea anemones.",
-        img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" 
+        name: "Electric Eel", 
+        value: 140, 
+        rarity: "Epic",
+        desc: "A tubular fish capable of generating powerful electric shocks of up to 860 volts for hunting and defense.",
+        img: "https://i.postimg.cc/kgHYwnZX/electric-eel.png" 
       },
       { 
-        name: "Guppy", 
-        value: 10, 
-        rarity: "Common",
-        desc: "A tiny, active freshwater fish featuring a colorful and flowing tail fin.",
-        img: "https://i.postimg.cc/VkcRfY5g/guppy.png" 
+        name: "Manta Ray", 
+        value: 300, 
+        rarity: "Legendary",
+        desc: "The largest ray in the world, known for gracefully gliding with its large pectoral fins in open ocean.",
+        img: "https://i.postimg.cc/mgnpVbqk/mantaray.png" 
       },
       { 
-        name: "Tilapia", 
-        value: 22, 
-        rarity: "Common",
-        desc: "A sturdy cichlid fish commonly found in fresh and brackish waters around warm regions.",
-        img: "https://i.postimg.cc/zXTCP9pD/tilapia.png" 
+        name: "Great White Shark", 
+        value: 350, 
+        rarity: "Legendary",
+        desc: "One of the most iconic and powerful marine predators of temperate oceans across the planet.",
+        img: "https://i.postimg.cc/4x02wJMf/great-white-shark.png" 
       },
       { 
-        name: "Goldfish", 
-        value: 15, 
-        rarity: "Common",
-        desc: "A classic golden freshwater companion known for its peaceful demeanor and graceful swimming.",
-        img: "https://i.postimg.cc/nLSBDZV3/goldfish.png" 
+        name: "Coelacanth", 
+        value: 700, 
+        rarity: "Mythic",
+        desc: "A bizarre prehistoric fish with lobed fins, considered a living fossil that survived the dinosaur extinction.",
+        img: "https://i.postimg.cc/SxRtWXZs/coelacanth.png" 
       },
       { 
-        name: "Cod", 
-        value: 18, 
-        rarity: "Common",
-        desc: "A standard ocean fish found in cold northern waters, prized by fishermen worldwide.",
-        img: "https://i.postimg.cc/rp8x6Fgw/cod.png" 
+        name: "Oarfish", 
+        value: 750, 
+        rarity: "Mythic",
+        desc: "The longest bony fish in the world, with a silver ribbon-like silhouette inhabiting abyssal depths.",
+        img: "https://i.postimg.cc/Z5nDr9fZ/oarfish.png" 
       },
       { 
-        name: "Carp", 
-        value: 45, 
-        rarity: "Rare",
-        desc: "A large freshwater fish celebrated in legends for its strength and perseverance against currents.",
-        img: "https://i.postimg.cc/N0gmhfb0/carp.png" 
+        name: "Barreleye Fish", 
+        value: 1500, 
+        rarity: "Divine",
+        desc: "A fascinating deep-sea fish with a transparent head and liquid-filled dome allowing it to see through its skull.",
+        img: "https://i.postimg.cc/cLC5QKF2/barreleye-fish.png" 
       },
       { 
-        name: "Neon Tetra", 
-        value: 50, 
-        rarity: "Rare",
-        desc: "A glowing tropical fish with iridescent blue and red stripes that light up shallow streams.",
-        img: "https://i.postimg.cc/TPRg8YQ2/neon-tetra.png" 
+        name: "Megamouth Shark", 
+        value: 1600, 
+        rarity: "Divine",
+        desc: "An extremely rare, elusive, and large deep-water shark species with a gigantic filter-feeding mouth.",
+        img: "https://i.postimg.cc/WbXHFmwx/megamouth-shark.png" 
       },
       { 
-        name: "Salmon", 
-        value: 55, 
-        rarity: "Rare",
-        desc: "A migratory swimmer that travels upstream through roaring rivers to return to its origin.",
-        img: "https://i.postimg.cc/bvzkXNLz/salmon.png" 
+        name: "Leafy Seadragon", 
+        value: 1800, 
+        rarity: "Divine",
+        desc: "A close relative of seahorses adorned with long leaf-like appendages used as perfect camouflage among kelp.",
+        img: "https://i.postimg.cc/rwsYSdfb/leafy-seadragon.png" 
       },
       { 
-        name: "Surgeonfish", 
-        value: 60, 
-        rarity: "Rare",
-        desc: "A bright blue marine swimmer with razor-sharp spines along its tail for defense.",
-        img: "https://i.postimg.cc/BvqHWQNS/surgeonfish.png" 
+        name: "Basking Shark", 
+        value: 2000, 
+        rarity: "Divine",
+        desc: "The second largest living fish in the world, a gentle giant swimming slowly with its huge mouth open to filter plankton.",
+        img: "https://i.postimg.cc/nhrwvs3R/basking-shark.png" 
       },
       { 
         name: "Legacy Fish", 
@@ -1433,15 +1459,13 @@
         option.innerText = "Legacy";
         select.appendChild(option);
       } else {
-        const opt1 = document.createElement('option');
-        opt1.value = "Common";
-        opt1.innerText = "Common";
-        select.appendChild(opt1);
-
-        const opt2 = document.createElement('option');
-        opt2.value = "Rare";
-        opt2.innerText = "Rare";
-        select.appendChild(opt2);
+        const rarities = ["Epic", "Legendary", "Mythic", "Divine"];
+        rarities.forEach(r => {
+          const opt = document.createElement('option');
+          opt.value = r;
+          opt.innerText = r;
+          select.appendChild(opt);
+        });
       }
     }
 
@@ -1490,8 +1514,15 @@
       document.getElementById('index-rarity').innerText = fish.rarity;
       
       const badge = document.getElementById('index-rarity');
-      if (fish.rarity === "Rare") {
-        badge.style.background = "#3498db";
+      if (fish.rarity === "Epic") {
+        badge.style.background = "#9b59b6";
+      } else if (fish.rarity === "Legendary") {
+        badge.style.background = "#e67e22";
+      } else if (fish.rarity === "Mythic") {
+        badge.style.background = "#e74c3c";
+      } else if (fish.rarity === "Divine") {
+        badge.style.background = "#f1c40f";
+        badge.style.color = "#1f2937";
       } else if (fish.rarity === "Legacy") {
         badge.style.background = "#8e44ad";
       } else {
@@ -2297,9 +2328,58 @@
         castBtn.disabled = false;
         castBtn.innerText = "🎣 Cast Line!";
         
-        const standardFishes = ALLOWED_FISH_TYPES.filter(f => !f.isLimited);
-        pendingCaughtFish = standardFishes[Math.floor(Math.random() * standardFishes.length)];
-        startFishingMinigame();
+        db.collection('jugadores').doc(user.uid).get().then(doc => {
+          let hasLuck = false;
+          if (doc.exists && (doc.data().wormBaitCount || 0) > 0) {
+            hasLuck = true;
+          }
+
+          const standardFishes = ALLOWED_FISH_TYPES.filter(f => !f.isLimited);
+          
+          if (hasLuck) {
+            // Weighted selection to favor rarer fishes (Epic, Legendary, Mythic, Divine)
+            const weights = standardFishes.map(f => {
+              if (f.rarity === 'Epic') return 4;
+              if (f.rarity === 'Legendary') return 3;
+              if (f.rarity === 'Mythic') return 2;
+              if (f.rarity === 'Divine') return 1;
+              return 1;
+            });
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            let rnd = Math.random() * totalWeight;
+            let chosenIdx = 0;
+            for (let i = 0; i < weights.length; i++) {
+              if (rnd < weights[i]) {
+                chosenIdx = i;
+                break;
+              }
+              rnd -= weights[i];
+            }
+            pendingCaughtFish = standardFishes[chosenIdx];
+          } else {
+            // Normal rarity distribution (rarer fishes appear less frequently)
+            const weights = standardFishes.map(f => {
+              if (f.rarity === 'Epic') return 30;
+              if (f.rarity === 'Legendary') return 15;
+              if (f.rarity === 'Mythic') return 5;
+              if (f.rarity === 'Divine') return 1;
+              return 1;
+            });
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
+            let rnd = Math.random() * totalWeight;
+            let chosenIdx = 0;
+            for (let i = 0; i < weights.length; i++) {
+              if (rnd < weights[i]) {
+                chosenIdx = i;
+                break;
+              }
+              rnd -= weights[i];
+            }
+            pendingCaughtFish = standardFishes[chosenIdx];
+          }
+
+          startFishingMinigame();
+        });
       }, 2000 + Math.random() * 1500);
     }
 
@@ -2408,7 +2488,7 @@
             fishes: firebase.firestore.FieldValue.arrayUnion({ name: pendingCaughtFish.name, timestamp: new Date().toISOString() })
           });
 
-          showToast(`🎉 PERFECT CATCH! You caught a ${pendingCaughtFish.name}!`);
+          showToast(`🎉 PERFECT CATCH! You caught a ${pendingCaughtFish.name} (${pendingCaughtFish.rarity})!`);
           updateGameHUD();
           checkAchievements(currentFishes.length + 1);
         } catch (err) {
@@ -2453,6 +2533,68 @@
         }
       } catch (err) {
         showToast("❌ Error buying tank: " + err.message);
+      }
+    }
+
+    async function buyBait() {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("⚠️ You must be logged in.");
+        return;
+      }
+
+      const cost = 50;
+      try {
+        const playerRef = db.collection('jugadores').doc(user.uid);
+        const doc = await playerRef.get();
+        if (doc.exists) {
+          const data = doc.data();
+          const coins = data.coins || 0;
+          const currentBait = data.wormBaitCount || 0;
+
+          if (coins < cost) {
+            showToast("❌ Not enough coins! You need 50 💰.");
+            return;
+          }
+
+          await playerRef.update({
+            coins: coins - cost,
+            wormBaitCount: currentBait + 1
+          });
+
+          showToast("🐛 Success! Worm Bait purchased and added to your backpack!");
+          loadBackpackData();
+          updateShopCoinsDisplay();
+        }
+      } catch (err) {
+        showToast("❌ Error buying bait: " + err.message);
+      }
+    }
+
+    async function useBait() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const playerRef = db.collection('jugadores').doc(user.uid);
+        const doc = await playerRef.get();
+        if (doc.exists) {
+          const data = doc.data();
+          const currentBait = data.wormBaitCount || 0;
+          if (currentBait <= 0) {
+            showToast("⚠️ You have no Worm Bait! Buy some in Bob's Shop.");
+            return;
+          }
+
+          await playerRef.update({
+            wormBaitCount: currentBait - 1
+          });
+
+          showToast("✨ Worm Bait activated! Your next catch has increased luck!");
+          loadBackpackData();
+        }
+      } catch (err) {
+        showToast("❌ Error using bait: " + err.message);
       }
     }
 
@@ -2504,8 +2646,10 @@
           const data = doc.data();
           const tanksCount = data.miniTanksCount || 0;
           const roomsCount = data.aquariumRoomsOwned || 1;
+          const baitCount = data.wormBaitCount || 0;
           document.getElementById('backpack-tanks-count').innerText = `Mini Tanks Bought: ${tanksCount}`;
           document.getElementById('backpack-rooms-count').innerText = `Aquarium Rooms Owned: ${roomsCount}`;
+          document.getElementById('backpack-bait-count').innerText = baitCount;
           
           const fishes = data.fishes || [];
           if (fishes.length === 0) {
@@ -2650,6 +2794,7 @@
           coins: 0,
           fishes: [],
           miniTanksCount: 0,
+          wormBaitCount: 0,
           aquariumRoomsOwned: 1,
           aquariumTanksMap: { room_0: new Array(8).fill(null) },
           achievements: { catchFirst: false, gluGluTank: false },
@@ -3162,6 +3307,37 @@
         showToast(`✅ Mini Tanks updated for ${username} (${val > 0 ? '+' : ''}${val})`);
       } catch (err) {
         showToast("❌ Error updating tanks: " + err.message);
+      }
+    }
+
+    async function adminModifyBait(multiplier) {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      const amount = parseInt(document.getElementById('adminBaitAmount').value);
+      if (!username || isNaN(amount) || amount <= 0) {
+        showToast("⚠️ Enter a valid username and bait amount.");
+        return;
+      }
+
+      try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
+
+        const playerRef = db.collection('jugadores').doc(targetUid);
+        const docSnap = await playerRef.get();
+        if (!docSnap.exists) return;
+
+        let currentBait = docSnap.data().wormBaitCount || 0;
+        let val = amount * multiplier;
+        let newBaitCount = currentBait + val;
+        if (newBaitCount < 0) newBaitCount = 0;
+
+        await playerRef.update({ wormBaitCount: newBaitCount });
+        showToast(`✅ Worm Bait updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+      } catch (err) {
+        showToast("❌ Error updating bait: " + err.message);
       }
     }
 
