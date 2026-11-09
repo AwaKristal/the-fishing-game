@@ -228,7 +228,7 @@
 
     .backpack-on-map {
       position: absolute;
-      bottom: 85px;
+      bottom: 140px;
       right: 25px;
       width: 55px;
       height: auto;
@@ -279,7 +279,7 @@
 
     .cast-line-btn {
       position: absolute;
-      bottom: 25px;
+      bottom: 75px;
       left: 50%;
       transform: translateX(-50%);
       background: #2ecc71;
@@ -595,8 +595,8 @@
       .corner-bottom-left { bottom: 10px; left: 10px; }
       .corner-bottom-right { bottom: 10px; right: 10px; gap: 6px; }
       .modal-card { padding: 14px; max-height: 88vh; }
-      .backpack-on-map { bottom: 75px; right: 15px; width: 48px; }
-      #game-screen { background-size: cover; background-position: center; }
+      .backpack-on-map { bottom: 125px; right: 15px; width: 48px; }
+      #game-screen { background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #0b1329; }
     }
   </style>
 </head>
@@ -875,7 +875,7 @@
     </div>
   </div>
 
-  <!-- ACUARIO CORREGIDO: Área de nado exacta dentro del tanque de la repisa -->
+  <!-- ACUARIO CORREGIDO: Área de nado exacta dentro del tanque de la repisa y peces contenidos -->
   <div id="modal-aquarium" class="modal-overlay">
     <div class="modal-card" style="max-width: 680px; padding: 15px; background: #ffffff; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
@@ -893,18 +893,18 @@
         
         <!-- Fila Superior de Tanques (Slots 0 a 3) -->
         <div style="position: absolute; top: 3.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
-          <div id="shelf-top-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
-          <div id="shelf-top-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
-          <div id="shelf-top-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
-          <div id="shelf-top-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
+          <div id="shelf-top-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
+          <div id="shelf-top-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
+          <div id="shelf-top-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
+          <div id="shelf-top-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
         </div>
 
         <!-- Fila Inferior de Tanques (Slots 4 a 7) -->
         <div style="position: absolute; bottom: 8.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
-          <div id="shelf-bot-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
-          <div id="shelf-bot-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
-          <div id="shelf-bot-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
-          <div id="shelf-bot-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
+          <div id="shelf-bot-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
+          <div id="shelf-bot-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
+          <div id="shelf-bot-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
+          <div id="shelf-bot-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
         </div>
 
       </div>
@@ -1986,8 +1986,8 @@
       } else {
         const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName) || ALLOWED_FISH_TYPES[0];
         slotEl.innerHTML = `
-          <div style="position: relative; width: 100%; height: 100%; background-image: url('https://i.postimg.cc/DZs0wKSx/tanque-mini.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
-            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 38px; height: auto; object-fit: contain; pointer-events: none;">
+          <div style="position: relative; width: 100%; height: 100%; background-image: url('https://i.postimg.cc/DZs0wKSx/tanque-mini.png'); background-size: contain; background-repeat: no-repeat; background-position: center; overflow: hidden;">
+            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 32px; height: auto; object-fit: contain; pointer-events: none;">
           </div>
         `;
         startFishAnimation(shelfIndex);
@@ -2136,20 +2136,20 @@
       }
     }
 
-    // Delimitación estricta de la animación del pez dentro del agua del tanque miniatura
+    // Delimitación estricta y acotada dentro del cristal interior del mini tanque
     function startFishAnimation(shelfIndex) {
       const fishImg = document.querySelector(`.swimming-fish-${shelfIndex}`);
       if (!fishImg) return;
 
-      let posX = 35;
-      let posY = 55;
-      let speedX = (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random() * 0.4);
-      let speedY = (Math.random() > 0.5 ? 1 : -1) * (0.15 + Math.random() * 0.25);
+      let posX = 40;
+      let posY = 50;
+      let speedX = (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.3);
+      let speedY = (Math.random() > 0.5 ? 1 : -1) * (0.1 + Math.random() * 0.2);
 
-      const minX = 15;
+      const minX = 10;
       const maxX = 65;
-      const minY = 35;
-      const maxY = 75;
+      const minY = 20;
+      const maxY = 70;
 
       let moveTimer = 0;
 
@@ -2157,8 +2157,8 @@
         moveTimer++;
         if (moveTimer > 40 + Math.random() * 50) {
           moveTimer = 0;
-          speedX = (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.6);
-          speedY = (Math.random() > 0.5 ? 1 : -1) * (0.1 + Math.random() * 0.3);
+          speedX = (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.5);
+          speedY = (Math.random() > 0.5 ? 1 : -1) * (0.1 + Math.random() * 0.25);
         }
 
         posX += speedX;
