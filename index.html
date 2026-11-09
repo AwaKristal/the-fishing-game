@@ -1137,6 +1137,7 @@
         <span id="admin-stat-coins">💰 Coins: 0</span>
         <span id="admin-stat-tanks">🐠 Mini Tanks: 0</span>
         <span id="admin-stat-rooms">🏰 Aquarium Rooms: 1</span>
+        <span id="admin-stat-baits">🪱 Worm Baits: 0</span>
       </div>
 
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
@@ -1173,7 +1174,7 @@
       </div>
 
       <div class="form-group">
-        <label>Worm Baits Amount (<span id="admin-target-baits-display">User Baits: 0</span>)</label>
+        <label>Worm Baits Amount</label>
         <input type="number" id="adminBaitsAmount" placeholder="Baits amount" value="1" min="1">
       </div>
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
@@ -1293,6 +1294,7 @@
     let greenZoneDir = 1.2;
     let captureProgress = 30;
     let pendingCaughtFish = null;
+    let usedBaitThisCast = false;
 
     const ALLOWED_FISH_TYPES = [
       { name: "Opah", value: 25, rarity: "Common", desc: "A large, colorful deep-water fish known for its distinct round body.", img: "https://i.postimg.cc/sxhg04JM/opah.png" },
@@ -2315,11 +2317,13 @@
         const isBaitActive = data.isBaitActive || false;
         const baitsCount = data.wormBaitsCount || 0;
 
+        usedBaitThisCast = false;
         if (isBaitActive && baitsCount > 0) {
           await playerRef.update({
             wormBaitsCount: baitsCount - 1,
             isBaitActive: false
           });
+          usedBaitThisCast = true;
           showToast("🪱 Worm bait consumed for this cast!");
         }
 
@@ -2329,7 +2333,7 @@
           
           const standardFishes = ALLOWED_FISH_TYPES.filter(f => !f.isLimited);
           
-          if (isBaitActive && baitsCount > 0 && Math.random() < 0.45) {
+          if (usedBaitThisCast && Math.random() < 0.45) {
             const rarePlusFishes = standardFishes.filter(f => f.rarity !== 'Common');
             pendingCaughtFish = rarePlusFishes[Math.floor(Math.random() * rarePlusFishes.length)] || standardFishes[0];
           } else {
@@ -2456,7 +2460,7 @@
           updateGameHUD();
           
           const isDivine = pendingCaughtFish.rarity === 'Divine';
-          checkAchievements(currentFishes.length + 1, false, true, isDivine);
+          checkAchievements(currentFishes.length + 1, false, usedBaitThisCast, isDivine);
         } catch (err) {
           showToast("❌ Error saving catch: " + err.message);
         }
@@ -2464,6 +2468,7 @@
         showToast("💥 The fish got away! Try again.");
       }
       pendingCaughtFish = null;
+      usedBaitThisCast = false;
     }
 
     async function buyMiniTank() {
@@ -3141,18 +3146,18 @@
     async function loadTargetUserInventoryForAdmin() {
       const username = document.getElementById('adminTargetUsername').value.trim();
       const listContainer = document.getElementById('admin-target-fishes-list');
-      const baitsDisplay = document.getElementById('admin-target-baits-display');
       
       const statCoins = document.getElementById('admin-stat-coins');
       const statTanks = document.getElementById('admin-stat-tanks');
       const statRooms = document.getElementById('admin-stat-rooms');
+      const statBaits = document.getElementById('admin-stat-baits');
 
       if (!username) {
         listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view fishes...</p>';
-        baitsDisplay.innerText = 'User Baits: 0';
         statCoins.innerText = '💰 Coins: 0';
         statTanks.innerText = '🐠 Mini Tanks: 0';
         statRooms.innerText = '🏰 Aquarium Rooms: 1';
+        statBaits.innerText = '🪱 Worm Baits: 0';
         return;
       }
 
@@ -3160,20 +3165,20 @@
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
           listContainer.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">User not found.</p>';
-          baitsDisplay.innerText = 'User Baits: 0';
           statCoins.innerText = '💰 Coins: 0';
           statTanks.innerText = '🐠 Mini Tanks: 0';
           statRooms.innerText = '🏰 Aquarium Rooms: 1';
+          statBaits.innerText = '🪱 Worm Baits: 0';
           return;
         }
 
         const doc = await db.collection('jugadores').doc(targetUid).get();
         if (doc.exists) {
           const data = doc.data();
-          baitsDisplay.innerText = `User Baits: ${data.wormBaitsCount || 0}`;
           statCoins.innerText = `💰 Coins: ${data.coins || 0}`;
           statTanks.innerText = `🐠 Mini Tanks: ${data.miniTanksCount || 0}`;
           statRooms.innerText = `🏰 Aquarium Rooms: ${data.aquariumRoomsOwned || 1}`;
+          statBaits.innerText = `🪱 Worm Baits: ${data.wormBaitsCount || 0}`;
 
           const fishes = data.fishes || [];
           if (fishes.length === 0) {
