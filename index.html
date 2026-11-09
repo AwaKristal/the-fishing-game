@@ -220,7 +220,7 @@
       top: 0; left: 0;
       width: 100vw; height: 100vh;
       background-image: url('https://i.postimg.cc/3N1KpnjJ/map2.png');
-      background-size: 100% 100%;
+      background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       z-index: 100;
@@ -228,10 +228,9 @@
 
     .backpack-on-map {
       position: absolute;
-      bottom: 95px;
-      left: 50%;
-      transform: translateX(110px);
-      width: 60px;
+      bottom: 85px;
+      right: 25px;
+      width: 55px;
       height: auto;
       cursor: pointer;
       z-index: 105;
@@ -239,7 +238,7 @@
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
     }
     .backpack-on-map:hover {
-      transform: translateX(110px) scale(1.15);
+      transform: scale(1.15);
       filter: brightness(1.2) drop-shadow(0 6px 12px rgba(0,0,0,0.8));
     }
 
@@ -280,19 +279,20 @@
 
     .cast-line-btn {
       position: absolute;
-      bottom: 30px;
+      bottom: 25px;
       left: 50%;
       transform: translateX(-50%);
       background: #2ecc71;
       color: white;
       border: 2px solid #fff;
-      padding: 12px 30px;
+      padding: 12px 28px;
       border-radius: 30px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
       z-index: 105;
       box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      white-space: nowrap;
     }
     .cast-line-btn:hover { background: #27ae60; }
 
@@ -595,9 +595,8 @@
       .corner-bottom-left { bottom: 10px; left: 10px; }
       .corner-bottom-right { bottom: 10px; right: 10px; gap: 6px; }
       .modal-card { padding: 14px; max-height: 88vh; }
-      .backpack-on-map { bottom: 80px; transform: translateX(70px); width: 45px; }
-      .backpack-on-map:hover { transform: translateX(70px) scale(1.15); }
-      #game-screen { background-size: cover; }
+      .backpack-on-map { bottom: 75px; right: 15px; width: 48px; }
+      #game-screen { background-size: cover; background-position: center; }
     }
   </style>
 </head>
@@ -876,6 +875,7 @@
     </div>
   </div>
 
+  <!-- ACUARIO CORREGIDO: Área de nado exacta dentro del tanque de la repisa -->
   <div id="modal-aquarium" class="modal-overlay">
     <div class="modal-card" style="max-width: 680px; padding: 15px; background: #ffffff; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
@@ -888,20 +888,23 @@
         <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(1)">Next Room ▶</button>
       </div>
 
-      <div style="position: relative; width: 100%; height: 390px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: cover; background-position: center; border-radius: 10px; border: 2px solid #cbd5e1; overflow: hidden; margin-bottom: 12px;">
+      <!-- Contenedor ajustado con background-size 100% 100% para evitar cortes y repisas deformes -->
+      <div style="position: relative; width: 100%; aspect-ratio: 16 / 10; max-height: 420px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; border-radius: 10px; border: 2px solid #cbd5e1; overflow: hidden; margin-bottom: 12px;">
         
-        <div style="position: absolute; top: 18px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
-          <div id="shelf-top-0" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
-          <div id="shelf-top-1" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
-          <div id="shelf-top-2" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
-          <div id="shelf-top-3" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
+        <!-- Fila Superior de Tanques (Slots 0 a 3) -->
+        <div style="position: absolute; top: 3.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
+          <div id="shelf-top-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
+          <div id="shelf-top-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
+          <div id="shelf-top-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
+          <div id="shelf-top-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
         </div>
 
-        <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; display: flex; justify-content: space-around; pointer-events: none;">
-          <div id="shelf-bot-0" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
-          <div id="shelf-bot-1" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
-          <div id="shelf-bot-2" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
-          <div id="shelf-bot-3" style="width: 130px; height: 135px; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 2px;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
+        <!-- Fila Inferior de Tanques (Slots 4 a 7) -->
+        <div style="position: absolute; bottom: 8.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
+          <div id="shelf-bot-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
+          <div id="shelf-bot-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
+          <div id="shelf-bot-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
+          <div id="shelf-bot-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
         </div>
 
       </div>
@@ -1984,7 +1987,7 @@
         const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName) || ALLOWED_FISH_TYPES[0];
         slotEl.innerHTML = `
           <div style="position: relative; width: 100%; height: 100%; background-image: url('https://i.postimg.cc/DZs0wKSx/tanque-mini.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
-            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 44px; height: auto; object-fit: contain; pointer-events: none;">
+            <img class="swimming-fish-${shelfIndex}" src="${fishObj.img}" alt="${fishObj.name}" style="position: absolute; width: 38px; height: auto; object-fit: contain; pointer-events: none;">
           </div>
         `;
         startFishAnimation(shelfIndex);
@@ -2133,19 +2136,20 @@
       }
     }
 
+    // Delimitación estricta de la animación del pez dentro del agua del tanque miniatura
     function startFishAnimation(shelfIndex) {
       const fishImg = document.querySelector(`.swimming-fish-${shelfIndex}`);
       if (!fishImg) return;
 
-      let posX = 40;
-      let posY = 50;
-      let speedX = (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random() * 0.5);
-      let speedY = (Math.random() > 0.5 ? 1 : -1) * (0.15 + Math.random() * 0.3);
+      let posX = 35;
+      let posY = 55;
+      let speedX = (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random() * 0.4);
+      let speedY = (Math.random() > 0.5 ? 1 : -1) * (0.15 + Math.random() * 0.25);
 
-      const minX = 10;
-      const maxX = 75;
-      const minY = 15;
-      const maxY = 85;
+      const minX = 15;
+      const maxX = 65;
+      const minY = 35;
+      const maxY = 75;
 
       let moveTimer = 0;
 
@@ -2153,8 +2157,8 @@
         moveTimer++;
         if (moveTimer > 40 + Math.random() * 50) {
           moveTimer = 0;
-          speedX = (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.8);
-          speedY = (Math.random() > 0.5 ? 1 : -1) * (0.1 + Math.random() * 0.4);
+          speedX = (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.6);
+          speedY = (Math.random() > 0.5 ? 1 : -1) * (0.1 + Math.random() * 0.3);
         }
 
         posX += speedX;
@@ -2654,6 +2658,7 @@
 
       const newBio = document.getElementById('profile-edit-bio').value;
       const fileInput = document.getElementById('profile-edit-avatar').files[0];
+
       try {
         showToast("⏳ Saving profile changes...");
         let photoURL = "";
@@ -2924,7 +2929,7 @@
           listContainer.innerHTML = html;
         }
       } catch (err) {
-        listContainer.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">Error loading inventory.</p>';
+        listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Error loading inventory.</p>';
       }
     }
 
@@ -3157,7 +3162,7 @@
         });
         container.innerHTML = html;
       } catch (err) {
-        container.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">Error loading codes.</p>';
+        container.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Error loading codes.</p>';
       }
     }
 
