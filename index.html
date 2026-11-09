@@ -913,11 +913,11 @@
   </div>
 
   <div id="modal-select-fish" class="modal-overlay" style="z-index: 1050;">
-    <div class="modal-card" style="max-width: 350px;">
+    <div class="modal-card" style="max-width: 440px;">
       <button class="modal-close" onclick="document.getElementById('modal-select-fish').style.display='none'">✖</button>
       <h3 style="margin-top:0;">🐟 Select a Fish for Tank</h3>
       <p style="font-size:0.85rem; color:#64748b;">Choose a fish from your inventory:</p>
-      <div id="select-fish-list" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;"></div>
+      <div id="select-fish-list" style="max-height: 240px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 10px;"></div>
       <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="removeFishFromShelf()">🗑️ Remove Tank / Fish</button>
     </div>
   </div>
@@ -1017,7 +1017,7 @@
       
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
         <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #1e3a8a;">🎒 Items Owned</h3>
-        <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tanks in Inventory: 0</p>
+        <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tanks Bought: 0</p>
         <p id="backpack-rooms-count" style="margin: 3px 0; font-size: 0.85rem;">Aquarium Rooms Owned: 1</p>
       </div>
 
@@ -2025,18 +2025,23 @@
     function openSelectFishModal(fishes) {
       const listEl = document.getElementById('select-fish-list');
       if (!fishes || fishes.length === 0) {
-        listEl.innerHTML = '<p style="color:#64748b; text-align:center; margin:10px 0;">You have no fish in your inventory!</p>';
+        listEl.innerHTML = '<p style="color:#64748b; text-align:center; margin:10px 0; grid-column:1/-1;">You have no fish in your inventory!</p>';
       } else {
+        let fishCounts = {};
+        fishes.forEach(f => {
+          if (!fishCounts[f.name]) fishCounts[f.name] = 0;
+          fishCounts[f.name]++;
+        });
+
         let html = '';
-        fishes.forEach((f) => {
-          const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === f.name) || ALLOWED_FISH_TYPES[0];
+        Object.entries(fishCounts).forEach(([fishName, count]) => {
+          const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === fishName) || ALLOWED_FISH_TYPES[0];
           html += `
-            <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="assignFishToShelf('${f.name}')">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <img src="${fishObj.img}" style="width: 25px; height: 25px; object-fit: contain;">
-                <span><strong>${f.name}</strong></span>
-              </div>
-              <span style="font-size:0.75rem; color:#27ae60; font-weight:bold;">Select</span>
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; position: relative; cursor: pointer;" onclick="assignFishToShelf('${fishName}')">
+              <span style="position: absolute; top: 6px; right: 8px; background: #3498db; color: white; font-size: 0.75rem; font-weight: bold; padding: 1px 6px; border-radius: 10px;">x${count}</span>
+              <img src="${fishObj.img}" style="width: 50px; height: 50px; object-fit: contain; margin: 8px 0;">
+              <span style="font-size: 0.85rem; font-weight: bold; text-align: center; margin-bottom: 8px; color: #1e293b;">${fishName}</span>
+              <button type="button" class="modal-action-btn" style="background:#27ae60; padding: 4px; font-size: 0.7rem; width: 100%;">Select</button>
             </div>
           `;
         });
@@ -2133,7 +2138,6 @@
       }
     }
 
-    // Delimitación estricta y acotada dentro del cristal interior del mini tanque
     function startFishAnimation(shelfIndex) {
       const fishImg = document.querySelector(`.swimming-fish-${shelfIndex}`);
       if (!fishImg) return;
@@ -2446,7 +2450,7 @@
           const data = doc.data();
           const tanksCount = data.miniTanksCount || 0;
           const roomsCount = data.aquariumRoomsOwned || 1;
-          document.getElementById('backpack-tanks-count').innerText = `Mini Tanks in Inventory: ${tanksCount}`;
+          document.getElementById('backpack-tanks-count').innerText = `Mini Tanks Bought: ${tanksCount}`;
           document.getElementById('backpack-rooms-count').innerText = `Aquarium Rooms Owned: ${roomsCount}`;
           
           const fishes = data.fishes || [];
@@ -2792,7 +2796,7 @@
               <img src="${avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
               <div>
                 <strong>👤 ${data.username}</strong><br>
-                <span style="font-size:0.8rem; color:#64748b;">Click to view full profile</span>
+                <span style="font-size:0.8rem; color:#64748b;">💰 Coins: ${data.coins || 0} | Click to view full profile</span>
               </div>
             </div>
           </div>
