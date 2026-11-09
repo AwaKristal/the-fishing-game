@@ -1024,7 +1024,7 @@
 
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
         <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
-          <img src="https://i.postimg.cc/gusano.png" alt="Worm Bait" style="width: 40px; height: 40px; object-fit: contain;">
+          <img src="https://i.postimg.cc/KYgqH6Sn/worm-bait.png" alt="Worm Bait" style="width: 40px; height: 40px; object-fit: contain;">
           <div>
             <strong>🪱 Worm Bait</strong><br><span style="font-size: 0.8rem; color: #64748b;">Increases chance for rare/epic/divine fish</span>
           </div>
@@ -1131,6 +1131,14 @@
         </div>
       </form>
 
+      <!-- Target User Stats Info Box -->
+      <div id="admin-user-stats-box" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 0.9rem; display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-weight: bold; color: #1e3a8a;">📊 User Overview:</span>
+        <span id="admin-stat-coins">💰 Coins: 0</span>
+        <span id="admin-stat-tanks">🐠 Mini Tanks: 0</span>
+        <span id="admin-stat-rooms">🏰 Aquarium Rooms: 1</span>
+      </div>
+
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
         <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="adminBanUser(true)">Ban</button>
         <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="adminBanUser(false)">Unban</button>
@@ -1153,6 +1161,15 @@
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
         <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyTanks(1)">Give Tanks</button>
         <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyTanks(-1)">Remove Tanks</button>
+      </div>
+
+      <div class="form-group">
+        <label>Aquarium Rooms Amount</label>
+        <input type="number" id="adminRoomsAmount" placeholder="Rooms amount" value="1" min="1">
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyRooms(1)">Give Rooms</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyRooms(-1)">Remove Rooms</button>
       </div>
 
       <div class="form-group">
@@ -1350,6 +1367,7 @@
       }
       if (modalId === 'modal-admin') {
         loadAdminCodes();
+        loadTargetUserInventoryForAdmin();
       }
       if (modalId === 'modal-backpack') {
         loadBackpackData();
@@ -3124,10 +3142,17 @@
       const username = document.getElementById('adminTargetUsername').value.trim();
       const listContainer = document.getElementById('admin-target-fishes-list');
       const baitsDisplay = document.getElementById('admin-target-baits-display');
+      
+      const statCoins = document.getElementById('admin-stat-coins');
+      const statTanks = document.getElementById('admin-stat-tanks');
+      const statRooms = document.getElementById('admin-stat-rooms');
 
       if (!username) {
         listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view fishes...</p>';
         baitsDisplay.innerText = 'User Baits: 0';
+        statCoins.innerText = '💰 Coins: 0';
+        statTanks.innerText = '🐠 Mini Tanks: 0';
+        statRooms.innerText = '🏰 Aquarium Rooms: 1';
         return;
       }
 
@@ -3136,6 +3161,9 @@
         if (!targetUid) {
           listContainer.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">User not found.</p>';
           baitsDisplay.innerText = 'User Baits: 0';
+          statCoins.innerText = '💰 Coins: 0';
+          statTanks.innerText = '🐠 Mini Tanks: 0';
+          statRooms.innerText = '🏰 Aquarium Rooms: 1';
           return;
         }
 
@@ -3143,6 +3171,9 @@
         if (doc.exists) {
           const data = doc.data();
           baitsDisplay.innerText = `User Baits: ${data.wormBaitsCount || 0}`;
+          statCoins.innerText = `💰 Coins: ${data.coins || 0}`;
+          statTanks.innerText = `🐠 Mini Tanks: ${data.miniTanksCount || 0}`;
+          statRooms.innerText = `🏰 Aquarium Rooms: ${data.aquariumRoomsOwned || 1}`;
 
           const fishes = data.fishes || [];
           if (fishes.length === 0) {
@@ -3273,8 +3304,41 @@
 
         await playerRef.update({ miniTanksCount: newTanksCount });
         showToast(`✅ Mini Tanks updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+        loadTargetUserInventoryForAdmin();
       } catch (err) {
         showToast("❌ Error updating tanks: " + err.message);
+      }
+    }
+
+    async function adminModifyRooms(multiplier) {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      const amount = parseInt(document.getElementById('adminRoomsAmount').value);
+      if (!username || isNaN(amount) || amount <= 0) {
+        showToast("⚠️ Enter a valid username and room amount.");
+        return;
+      }
+
+      try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
+
+        const playerRef = db.collection('jugadores').doc(targetUid);
+        const docSnap = await playerRef.get();
+        if (!docSnap.exists) return;
+
+        let currentRooms = docSnap.data().aquariumRoomsOwned || 1;
+        let val = amount * multiplier;
+        let newRoomsCount = currentRooms + val;
+        if (newRoomsCount < 1) newRoomsCount = 1;
+
+        await playerRef.update({ aquariumRoomsOwned: newRoomsCount });
+        showToast(`✅ Aquarium Rooms updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+        loadTargetUserInventoryForAdmin();
+      } catch (err) {
+        showToast("❌ Error updating rooms: " + err.message);
       }
     }
 
@@ -3380,6 +3444,7 @@
           coins: firebase.firestore.FieldValue.increment(val)
         });
         showToast(`✅ Coins updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+        loadTargetUserInventoryForAdmin();
       } catch (err) {
         showToast("❌ Error updating coins: " + err.message);
       }
