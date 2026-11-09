@@ -220,9 +220,10 @@
       top: 0; left: 0;
       width: 100vw; height: 100vh;
       background-image: url('https://i.postimg.cc/3N1KpnjJ/map2.png');
-      background-size: cover;
+      background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
+      background-color: #0b1329;
       z-index: 100;
     }
 
@@ -666,7 +667,7 @@
           <div id="minigame-progress-fill" class="progress-fill"></div>
         </div>
 
-        <div class="minigame-hint">HOLD click / tap to raise the bar into the green zone!</div>
+        <div class="minigame-hint">HOLD click, Space, W or Up Arrow!</div>
       </div>
     </div>
   </div>
@@ -875,7 +876,6 @@
     </div>
   </div>
 
-  <!-- ACUARIO CORREGIDO: Área de nado exacta dentro del tanque de la repisa y peces contenidos -->
   <div id="modal-aquarium" class="modal-overlay">
     <div class="modal-card" style="max-width: 680px; padding: 15px; background: #ffffff; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
@@ -888,10 +888,8 @@
         <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(1)">Next Room ▶</button>
       </div>
 
-      <!-- Contenedor ajustado con background-size 100% 100% para evitar cortes y repisas deformes -->
       <div style="position: relative; width: 100%; aspect-ratio: 16 / 10; max-height: 420px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; border-radius: 10px; border: 2px solid #cbd5e1; overflow: hidden; margin-bottom: 12px;">
         
-        <!-- Fila Superior de Tanques (Slots 0 a 3) -->
         <div style="position: absolute; top: 3.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
           <div id="shelf-top-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
           <div id="shelf-top-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
@@ -899,7 +897,6 @@
           <div id="shelf-top-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
         </div>
 
-        <!-- Fila Inferior de Tanques (Slots 4 a 7) -->
         <div style="position: absolute; bottom: 8.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
           <div id="shelf-bot-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
           <div id="shelf-bot-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
@@ -2266,6 +2263,19 @@
       window.ontouchstart = () => { isMouseDown = true; };
       window.ontouchend = () => { isMouseDown = false; };
 
+      window.onkeydown = (e) => {
+        if (e.code === 'Space' || e.key === 'KeyW' || e.key === 'w' || e.key === 'ArrowUp' || e.code === 'ArrowUp') {
+          isMouseDown = true;
+          if (e.code === 'Space') e.preventDefault();
+        }
+      };
+
+      window.onkeyup = (e) => {
+        if (e.code === 'Space' || e.key === 'KeyW' || e.key === 'w' || e.key === 'ArrowUp' || e.code === 'ArrowUp') {
+          isMouseDown = false;
+        }
+      };
+
       const greenZoneEl = document.getElementById('minigame-green-zone');
       const catchBarEl = document.getElementById('minigame-catch-bar');
       const progressFillEl = document.getElementById('minigame-progress-fill');
@@ -2327,6 +2337,8 @@
       window.onmouseup = null;
       window.ontouchstart = null;
       window.ontouchend = null;
+      window.onkeydown = null;
+      window.onkeyup = null;
 
       if (success && pendingCaughtFish) {
         const user = auth.currentUser;
