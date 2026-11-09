@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>The Fishing Game</title>
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/cHm1G3Mp/icon.jpg">
+  <!-- Firebase v10.8.0 Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Google reCAPTCHA v2 API -->
+  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+
+  <style>
+    :root {
+      --bg-color: #f4f7fb;
+      --panel-bg: #ffffff;
+      --panel-card-bg: #eef2f7;
+      --accent-color: #1e3a8a;
+      --text-color: #1f2937;
+      --text-muted: #6b7280;
+      --btn-hover: #e94560;
+      --modal-bg: rgba(15, 23, 42, 0.65);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      z-index: 10;
+      gap: 10px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .version-tag {
+      font-size: 0.9rem;
+      font-weight: bold;
+      background: #ffffff;
+      color: #1e3a8a;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .download-app-btn {
+      position: fixed;
+      top: 12px;
+      right: 15px;
+      z-index: 100;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: inline-block;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .download-app-btn:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+    .download-app-btn img {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));
+    }
+
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      width: 100%;
+      min-height: 100vh;
+      padding: 70px 15px 100px 15px;
+      gap: 15px;
+    }
+
+    .title-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .fish-logo-img {
+      max-width: 440px;
+      width: 85%;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+    }
+
+    .center-menu {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .img-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .img-btn:hover {
+      transform: scale(1.08);
+      filter: brightness(1.1);
+    }
+
+    .img-btn img {
+      width: 120px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+
+    .corner-bottom-left {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      z-index: 99;
+    }
+
+    .corner-bottom-right {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      z-index: 99;
+    }
+
+    .btn-news-img {
+      width: 95px !important;
+      height: auto !important;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+
+    .btn-index-img {
+      width: 85px !important;
+      height: auto !important;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+
+    .btn-market-img {
+      width: 85px !important;
+      height: auto !important;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+
+    .user-profile-badge {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      background: #ffffff;
+      padding: 5px 12px 5px 5px;
+      border-radius: 30px;
+      border: 2px solid #1e3a8a;
+      max-width: 180px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .user-profile-badge img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    #game-screen {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-image: url('https://i.postimg.cc/3N1KpnjJ/map2.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #0b1329;
+      z-index: 100;
+    }
+
+    .backpack-on-map {
+      position: absolute;
+      bottom: 140px;
+      right: 25px;
+      width: 55px;
+      height: auto;
+      cursor: pointer;
+      z-index: 105;
+      transition: transform 0.2s ease, filter 0.2s ease;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+    }
+    .backpack-on-map:hover {
+      transform: scale(1.15);
+      filter: brightness(1.2) drop-shadow(0 6px 12px rgba(0,0,0,0.8));
+    }
+
+    .game-hud {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 105;
+    }
+
+    .hud-box {
+      background: rgba(255, 255, 255, 0.9);
+      color: #1e3a8a;
+      border: 2px solid #1e3a8a;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .exit-game-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #e74c3c;
+      color: white;
+      border: 2px solid #fff;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 105;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .cast-line-btn {
+      position: absolute;
+      bottom: 75px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2ecc71;
+      color: white;
+      border: 2px solid #fff;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 105;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      white-space: nowrap;
+    }
+    .cast-line-btn:hover { background: #27ae60; }
+
+    #fishing-minigame-overlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 110;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .minigame-container {
+      background: rgba(255, 255, 255, 0.95);
+      border: 3px solid #3498db;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 280px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      color: #1f2937;
+    }
+
+    .minigame-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #1e3a8a;
+      margin-bottom: 12px;
+    }
+
+    .track-bar {
+      position: relative;
+      width: 45px;
+      height: 260px;
+      background: #e2e8f0;
+      border: 3px solid #1f2937;
+      border-radius: 22px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+
+    .green-zone {
+      position: absolute;
+      width: 100%;
+      height: 65px;
+      background: rgba(46, 204, 113, 0.85);
+      border-top: 2px solid #27ae60;
+      border-bottom: 2px solid #27ae60;
+      top: 100px;
+      left: 0;
+      transition: top 0.05s linear;
+    }
+
+    .catch-bar {
+      position: absolute;
+      width: 100%;
+      height: 22px;
+      background: #1f2937;
+      border: 2px solid #f1c40f;
+      border-radius: 6px;
+      bottom: 0px;
+      left: 0;
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      background: #cbd5e1;
+      border-radius: 6px;
+      border: 1px solid #94a3b8;
+      overflow: hidden;
+    }
+    .progress-fill {
+      width: 20%;
+      height: 100%;
+      background: #2ecc71;
+      transition: width 0.1s linear, background 0.2s;
+    }
+
+    .minigame-hint {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--modal-bg);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    .modal-card {
+      background: var(--panel-bg);
+      border: 2px solid #cbd5e1;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 620px;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      max-height: 90vh;
+      overflow-y: auto;
+      color: var(--text-color);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 1.4rem;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .modal-close:hover { color: #1e3a8a; }
+
+    .form-group {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #1e293b;
+      width: 100%;
+    }
+
+    .tab-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tab-btn.active {
+      background: #1e3a8a;
+      color: #ffffff;
+      border-color: #1e3a8a;
+    }
+
+    .modal-action-btn {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      transition: background 0.2s;
+    }
+
+    .modal-action-btn:hover { background: #1e40af; }
+    .modal-action-btn:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .news-card {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 12px;
+      border-left: 4px solid #1e3a8a;
+      margin-top: 10px;
+      position: relative;
+    }
+    .news-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      gap: 10px;
+    }
+    .news-controls button {
+      width: auto;
+      padding: 6px 12px;
+    }
+    .news-counter {
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+
+    .admin-trigger-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 120px;
+      width: 45px;
+      height: 45px;
+      border: none;
+      cursor: pointer;
+      background: none;
+      z-index: 99;
+      display: none;
+      padding: 0;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .admin-trigger-btn:hover {
+      transform: scale(1.1);
+      filter: brightness(1.1);
+    }
+    .admin-trigger-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+    }
+
+    .search-player-item {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .search-player-item:hover {
+      background: #e2e8f0;
+    }
+
+    .admin-code-item {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    #toast-container {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 90%;
+    }
+
+    .toast {
+      background: #ffffff;
+      color: #1f2937;
+      border: 2px solid #1e3a8a;
+      padding: 10px 16px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+      animation: fadeIn 0.3s forwards;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 8px 12px; }
+      .version-tag { font-size: 0.8rem; padding: 4px 8px; }
+      .download-app-btn img { height: 36px; }
+      .main-container { padding-top: 65px; padding-bottom: 110px; gap: 10px; }
+      .fish-logo-img { max-width: 250px; }
+      .center-menu { gap: 12px; margin-bottom: 10px; }
+      .img-btn img { width: 95px; }
+      .btn-news-img { width: 75px !important; }
+      .btn-index-img { width: 68px !important; }
+      .btn-market-img { width: 68px !important; }
+      .admin-trigger-btn { right: 10px; bottom: 80px; width: 38px; height: 38px; }
+      .corner-bottom-left { bottom: 10px; left: 10px; }
+      .corner-bottom-right { bottom: 10px; right: 10px; gap: 6px; }
+      .modal-card { padding: 14px; max-height: 88vh; }
+      .backpack-on-map { bottom: 125px; right: 15px; width: 48px; }
+      #game-screen { background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #0b1329; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <div class="version-tag">v.1.0.0.0</div>
+    </div>
+    <a href="https://github.com/AwaKristal/the-fishing-game/releases/tag/file" target="_blank" class="download-app-btn">
+      <img src="https://i.postimg.cc/tgytXzq8/download.png" alt="Download">
+    </a>
+  </header>
+
+  <div class="corner-bottom-left">
+    <div id="user-badge" class="user-profile-badge" onclick="openMyProfileModal()">
+      <img id="user-avatar" src="https://via.placeholder.com/40" alt="Avatar">
+      <span id="user-display-name">Username</span>
+    </div>
+    <div id="account-container">
+      <button class="img-btn" onclick="openModal('modal-account')">
+        <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account">
+      </button>
+    </div>
+    <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto; padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">🚪 Log out</button>
+  </div>
+
+  <main class="main-container" id="main-menu-container">
+    <div class="title-box">
+      <img src="https://i.postimg.cc/2yGLxwj5/logo.png" alt="The Fishing Game Logo" class="fish-logo-img">
+    </div>
+
+    <div class="center-menu">
+      <button class="img-btn" onclick="openModal('modal-shop')">
+        <img src="https://i.postimg.cc/2yGLxwj8/shop.png" alt="Shop">
+      </button>
+      <button class="img-btn" onclick="startGame()">
+        <img src="https://i.postimg.cc/d36Z9BQ7/play.png" alt="Play">
+      </button>
+      <button class="img-btn" onclick="openModal('modal-achievements')">
+        <img src="https://i.postimg.cc/rsjR9JyD/achievements.png" alt="Achievements">
+      </button>
+    </div>
+  </main>
+
+  <div id="game-screen">
+    <img src="https://i.postimg.cc/bNcMt94Y/backpack.png" alt="Backpack" class="backpack-on-map" onclick="openModal('modal-backpack')" title="Open Backpack">
+
+    <div class="game-hud">
+      <div class="hud-box" id="hud-coins">💰 0</div>
+      <div class="hud-box" id="hud-fish">🐟 0 Fishes</div>
+    </div>
+
+    <button class="exit-game-btn" onclick="exitGame()">🚪 Exit</button>
+    <button id="cast-btn" class="cast-line-btn" onclick="castLine()">🎣 Cast Line!</button>
+
+    <div id="fishing-minigame-overlay">
+      <div class="minigame-container">
+        <div class="minigame-title">🎣 CATCH THE FISH!</div>
+        
+        <div class="track-bar">
+          <div id="minigame-green-zone" class="green-zone"></div>
+          <div id="minigame-catch-bar" class="catch-bar"></div>
+        </div>
+
+        <div class="progress-track">
+          <div id="minigame-progress-fill" class="progress-fill"></div>
+        </div>
+
+        <div class="minigame-hint">HOLD click, Space, W or Up Arrow!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="corner-bottom-right">
+    <button class="img-btn" onclick="openMarketModal()">
+      <img src="https://i.postimg.cc/pXqPJd8Z/market.png" alt="Market" class="btn-market-img">
+    </button>
+    <button class="img-btn" onclick="openIndexModal()">
+      <img src="https://i.postimg.cc/Y9mR2jN6/index.png" alt="Fish Index" class="btn-index-img">
+    </button>
+    <button class="img-btn" onclick="openModal('modal-news')">
+      <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
+    </button>
+  </div>
+
+  <button id="adminBtn" class="admin-trigger-btn" onclick="openModal('modal-admin')">
+    <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
+  </button>
+
+  <div id="modal-market" class="modal-overlay">
+    <div class="modal-card" style="max-width: 650px;">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>🏛️ Player Market & Sell</h2>
+      
+      <div class="tab-container">
+        <button id="tab-market-buy-btn" class="tab-btn active" onclick="switchMarketTab('buy')">🛒 Player Market</button>
+        <button id="tab-market-sell-btn" class="tab-btn" onclick="switchMarketTab('sell')">💰 Sell My Fish</button>
+      </div>
+
+      <div id="market-buy-section">
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px;">Buy fish offered by real players in the community market:</p>
+        <div id="market-listings-container" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+          <p style="color:#64748b; text-align:center;">Loading market offers...</p>
+        </div>
+      </div>
+
+      <div id="market-sell-section" style="display: none;">
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px;">Select a fish from your backpack to sell:</p>
+        <div id="market-my-fishes-container" style="max-height: 280px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px;">
+          <p style="color:#64748b; text-align:center; grid-column: 1/-1;">Loading your fishes...</p>
+        </div>
+      </div>
+
+      <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
+      <h3 style="font-size: 1rem; color: #1e3a8a; margin-bottom: 5px;">📋 My Active Market Listings (Cancel & Retrieve)</h3>
+      <div id="market-my-active-listings" style="max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
+        <p style="font-size: 0.8rem; color:#64748b; text-align:center;">Loading your active listings...</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-market-price-prompt" class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-card" style="max-width: 320px;">
+      <button class="modal-close" onclick="document.getElementById('modal-market-price-prompt').style.display='none'">✖</button>
+      <h3>🏷️ Set Market Price</h3>
+      <p style="font-size:0.85rem; color:#64748b;" id="prompt-fish-name-label">Fish: Opah</p>
+      <div class="form-group">
+        <label>Price in Coins (💰)</label>
+        <input type="number" id="market-sell-price-input" min="1" placeholder="e.g. 50">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="confirmMarketSell()">Post to Market</button>
+    </div>
+  </div>
+
+  <div id="modal-account" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <div class="tab-container">
+        <button id="tab-login-btn" class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
+        <button id="tab-register-btn" class="tab-btn" onclick="switchAuthTab('register')">Register</button>
+      </div>
+
+      <form id="form-login" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" autocomplete="email" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" autocomplete="current-password" required>
+        </div>
+        <div class="form-group">
+          <div id="recaptcha-login"></div>
+        </div>
+        <button type="submit" class="modal-action-btn">Sign In</button>
+        <p style="font-size:0.85rem; text-align:center; margin-top:10px; cursor:pointer; color:#1e3a8a;" onclick="openModal('modal-forgot')">Forgot password?</p>
+        <p style="font-size:0.9rem; text-align:center; margin-top:10px; cursor:pointer; color:#2ecc71; font-weight:bold;" onclick="openModal('modal-resend-verification')">📧 Resend Verification Email</p>
+      </form>
+
+      <form id="form-register" onsubmit="handleRegister(event)" style="display:none;" autocomplete="on">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="reg-username" autocomplete="given-name" name="new-username" required maxlength="15">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" autocomplete="email" name="new-email" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" autocomplete="new-password" name="new-password" required minlength="6">
+        </div>
+        <div class="form-group">
+          <label>Bio / Description</label>
+          <textarea id="reg-bio" placeholder="Tell us something about you..." maxlength="150" style="resize:none; height:60px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Profile Picture (Max 1MB)</label>
+          <input type="file" id="reg-avatar" accept="image/*">
+        </div>
+        <div class="form-group">
+          <div id="recaptcha-register"></div>
+        </div>
+        <button type="submit" class="modal-action-btn">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-resend-verification" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>📧 Resend Verification Email</h2>
+      <p style="font-size:0.9rem; color:#64748b;">Enter your login credentials to send a fresh verification link to your email.</p>
+      
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="resend-email" placeholder="Your account email" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="resend-password" placeholder="Your password" required>
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="handleResendVerification()">Send Verification Email</button>
+    </div>
+  </div>
+
+  <div id="modal-forgot" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>📬 Recover Password</h2>
+      <p style="font-size:0.9rem; color:#64748b;">Enter your account email to receive a password reset link.</p>
+      
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="forgot-email" placeholder="Your account email" required>
+      </div>
+      <button type="button" class="modal-action-btn" onclick="handleForgotPassword()">Send Reset Link</button>
+    </div>
+  </div>
+
+  <div id="modal-profile" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>👤 Player Profile</h2>
+      <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; position: relative;">
+        <img id="profile-modal-avatar" src="https://via.placeholder.com/60" alt="Avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid #1e3a8a;">
+        <div style="flex:1;">
+          <h3 id="profile-modal-name" style="margin:0; font-size:1.2rem;">Username</h3>
+          <p id="verification-status" style="margin:3px 0; font-size:0.8rem; color:#e74c3c;">⚠️ Email not verified</p>
+          <p style="margin:5px 0 0 0; font-size:0.9rem; color:#64748b;">💰 Coins: <span id="profile-coins">0</span> | 🐟 Fish: <span id="profile-fish-count">0</span></p>
+        </div>
+        <button type="button" class="modal-action-btn" style="width: auto; padding: 6px 10px; font-size: 0.8rem; background: #64748b;" onclick="document.getElementById('profile-edit-username').focus();">⚙️ Edit Profile</button>
+      </div>
+
+      <div class="form-group">
+        <label>Change Username (Allowed every 14 days)</label>
+        <input type="text" id="profile-edit-username" placeholder="New username..." maxlength="15">
+      </div>
+      <div class="form-group">
+        <label>Current Password (Required to change username)</label>
+        <input type="password" id="profile-current-password" placeholder="Enter password to confirm name change">
+      </div>
+      <div class="form-group">
+        <label>Bio / Description</label>
+        <textarea id="profile-edit-bio" placeholder="Write your new description..." maxlength="150" style="resize:none; height:60px;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Change Profile Picture (Max 1MB)</label>
+        <input type="file" id="profile-edit-avatar" accept="image/*">
+      </div>
+      <button type="button" class="modal-action-btn" style="margin-bottom: 10px;" onclick="updateProfileData()">Save Changes</button>
+      
+      <button type="button" class="modal-action-btn" style="background: #2980b9;" onclick="openMyAquarium()">🐠 See Aquarium</button>
+
+      <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
+      <h3>🔍 Search Player</h3>
+      <form autocomplete="off" onsubmit="event.preventDefault(); handleUserSearch();">
+        <div class="form-group">
+          <input type="text" id="searchUsernameInput" autocomplete="off" name="search_player_unique_field" placeholder="Enter username...">
+        </div>
+        <button type="submit" class="modal-action-btn">Search User</button>
+      </form>
+      <div id="searchResult" style="margin-top: 10px; display:none;"></div>
+    </div>
+  </div>
+
+  <div id="modal-view-profile" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="openModal('modal-profile')">✖</button>
+      <h2>👤 Player Info</h2>
+      <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+        <img id="view-profile-avatar" src="https://via.placeholder.com/60" alt="Avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid #1e3a8a;">
+        <div>
+          <h3 id="view-profile-name" style="margin:0; font-size:1.2rem;">Username</h3>
+          <p style="margin:5px 0 0 0; font-size:0.9rem; color:#64748b;">💰 Coins: <span id="view-profile-coins">0</span> | 🐟 Fish: <span id="view-profile-fish-count">0</span></p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Bio / Description</label>
+        <p id="view-profile-bio" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin: 0; min-height: 50px; color: #1e293b; border: 1px solid #cbd5e1; word-break: break-all;"></p>
+      </div>
+
+      <button type="button" class="modal-action-btn" style="background: #2980b9; margin-top: 5px;" onclick="openOtherAquarium()">🐠 See Aquarium</button>
+    </div>
+  </div>
+
+  <div id="modal-aquarium" class="modal-overlay">
+    <div class="modal-card" style="max-width: 680px; padding: 15px; background: #ffffff; border: 2px solid #3498db;">
+      <button class="modal-close" onclick="closeAquariumModal()">✖</button>
+      <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 3px; font-size: 1.3rem;">🐠 Aquarium</h2>
+      <p style="font-size: 0.8rem; color: #64748b; text-align: center; margin-top:0; margin-bottom: 10px;" id="aquarium-subtitle">Viewing aquarium...</p>
+      
+      <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 10px;">
+        <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(-1)">◀ Prev Room</button>
+        <span id="aquarium-room-indicator" style="font-weight: bold; font-size: 0.95rem; color: #d97706;">Room 1</span>
+        <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(1)">Next Room ▶</button>
+      </div>
+
+      <div style="position: relative; width: 100%; aspect-ratio: 16 / 10; max-height: 420px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; border-radius: 10px; border: 2px solid #cbd5e1; overflow: hidden; margin-bottom: 12px;">
+        
+        <div style="position: absolute; top: 3.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
+          <div id="shelf-top-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
+          <div id="shelf-top-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
+          <div id="shelf-top-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
+          <div id="shelf-top-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
+        </div>
+
+        <div style="position: absolute; bottom: 8.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
+          <div id="shelf-bot-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
+          <div id="shelf-bot-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
+          <div id="shelf-bot-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
+          <div id="shelf-bot-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
+        </div>
+
+      </div>
+
+      <div id="aquarium-owner-controls" style="display: none; background: #f8fafc; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #cbd5e1;">
+        <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #27ae60; font-weight: bold;">💡 Each slot requires a Mini Tank! Buy tanks in Bob's Shop if you need more.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-select-fish" class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-card" style="max-width: 440px;">
+      <button class="modal-close" onclick="document.getElementById('modal-select-fish').style.display='none'">✖</button>
+      <h3 style="margin-top:0;">🐟 Select a Fish for Tank</h3>
+      <p style="font-size:0.85rem; color:#64748b;">Choose a fish from your inventory:</p>
+      <div id="select-fish-list" style="max-height: 240px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 10px;"></div>
+      <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="removeFishFromShelf()">🗑️ Remove Tank / Fish</button>
+    </div>
+  </div>
+
+  <div id="modal-index" class="modal-overlay">
+    <div class="modal-card" style="max-width: 440px; text-align: center;">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>📖 Fish Index</h2>
+      <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">Discover all the fish species available in the game.</p>
+      
+      <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <button id="index-toggle-mode-btn" class="modal-action-btn" style="width: auto; padding: 6px 14px; background: #8e44ad; font-size: 0.85rem;" onclick="toggleIndexMode()">⭐ Limited</button>
+        <div style="flex: 1; text-align: left;">
+          <select id="index-rarity-select" onchange="onRarityFilterChange()" style="padding: 8px; font-weight: bold;">
+            <option value="Common">Common</option>
+            <option value="Rare">Rare</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 20px; position: relative; min-height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <span id="index-rarity" style="position: absolute; top: 12px; right: 15px; background: #27ae60; color: #fff; padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;">Common</span>
+        
+        <img id="index-fish-img" src="" alt="Fish" style="width: 110px; height: 110px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));">
+        
+        <h3 id="index-fish-name" style="margin: 0 0 5px 0; font-size: 1.2rem; color: #1e3a8a;">Fish Name</h3>
+        <p id="index-fish-desc" style="font-size: 0.9rem; color: #475569; margin: 0 0 15px 0; padding: 0 10px; min-height: 40px;">Description goes here...</p>
+        
+        <div style="display: flex; justify-content: space-between; width: 100%; position: absolute; top: 50%; transform: translateY(-50%); padding: 0 10px; pointer-events: none;">
+          <button onclick="changeIndexFish(-1)" style="pointer-events: auto; background: rgba(255, 255, 255, 0.9); border: 1px solid #cbd5e1; color: #1e3a8a; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">◀</button>
+          <button onclick="changeIndexFish(1)" style="pointer-events: auto; background: rgba(255, 255, 255, 0.9); border: 1px solid #cbd5e1; color: #1e3a8a; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">▶</button>
+        </div>
+      </div>
+      <p id="index-counter" style="margin-top: 15px; font-size: 0.85rem; color: #64748b;">1 / 5</p>
+    </div>
+  </div>
+
+  <div id="modal-news" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>📰 Game News</h2>
+      <div id="newsFeed">Loading news...</div>
+      
+      <div class="news-controls" id="newsControls" style="display: none;">
+        <button id="prevNewsBtn" class="modal-action-btn" onclick="changeNews(-1)">◀ Prev</button>
+        <span class="news-counter" id="newsCounter">0 / 0</span>
+        <button id="nextNewsBtn" class="modal-action-btn" onclick="changeNews(1)">Next ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-shop" class="modal-overlay">
+    <div class="modal-card" style="text-align: center; position: relative;">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>🛒 Bob's Fishing Shop</h2>
+      
+      <div style="position: absolute; top: 15px; right: 45px; background: #e2e8f0; padding: 5px 12px; border-radius: 20px; font-weight: bold; color: #1e3a8a; font-size: 0.85rem; border: 1px solid #cbd5e1;">
+        💰 <span id="shop-user-coins">0</span> Coins
+      </div>
+
+      <img src="https://i.postimg.cc/NMtYbvzw/shop.png" alt="Bob Shop" style="width: 140px; height: auto; margin: 10px 0; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));">
+      <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">"Welcome! Redeem your promo codes or buy upgrades!"</p>
+
+      <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; text-align: left;">
+        <h3 style="margin-top:0; font-size: 1.1rem; color: #2ecc71; text-align: center;">🎁 Redeem Promo Code</h3>
+        <form autocomplete="off" onsubmit="event.preventDefault(); redeemCode();">
+          <div class="form-group" style="margin-bottom: 8px;">
+            <input type="text" id="redeemCodeInput" autocomplete="off" name="redeem_code_field" placeholder="Enter promo code..." style="text-align: center; text-transform: uppercase;">
+          </div>
+          <button type="submit" class="modal-action-btn" style="background:#27ae60;">Claim Code</button>
+        </form>
+      </div>
+
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
+        <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
+          <img src="https://i.postimg.cc/DZs0wKSx/tanque-mini.png" alt="Mini Tank" style="width: 40px; height: 40px; object-fit: contain;">
+          <div>
+            <strong>🐠 Mini Tank</strong><br><span style="font-size: 0.8rem; color: #64748b;">Required to place a fish in an aquarium slot</span>
+          </div>
+        </div>
+        <button id="buy-tank-btn" class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="buyMiniTank()">75 💰</button>
+      </div>
+
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
+        <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
+          <div style="font-size: 30px;">🏛️</div>
+          <div>
+            <strong>🏰 Extra Aquarium Room</strong><br><span style="font-size: 0.8rem; color: #64748b;">Unlock a brand new aquarium room with 8 slots</span>
+          </div>
+        </div>
+        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #3498db;" onclick="buyAquariumRoom()">1000 💰</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-backpack" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>🎒 Player Backpack</h2>
+      <p style="font-size: 0.9rem; color: #64748b;">Your items and caught fish:</p>
+      
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
+        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #1e3a8a;">🎒 Items Owned</h3>
+        <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tanks Bought: 0</p>
+        <p id="backpack-rooms-count" style="margin: 3px 0; font-size: 0.85rem;">Aquarium Rooms Owned: 1</p>
+      </div>
+
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #2ecc71;">🐟 Caught Fishes</h3>
+        <div id="backpack-fish-list" style="max-height: 180px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; font-size: 0.85rem; color: #64748b; padding-top: 5px;">
+          No fish caught yet. Go fishing!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-achievements" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>🏆 Achievements</h2>
+      <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Unlock achievements as you progress in the game!</p>
+      
+      <div id="achievements-list" style="display: flex; flex-direction: column; gap: 10px;">
+        <div id="ach-catch-first" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
+          <div style="font-size: 2rem;">🏆</div>
+          <div>
+            <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">Catch!</h4>
+            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">That was easy.</p>
+            <span style="font-size: 0.75rem; color: #64748b;">Catch your first fish.</span>
+          </div>
+          <div id="ach-catch-first-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
+        </div>
+
+        <div id="ach-glu-glu" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
+          <div style="font-size: 2rem;">🏆</div>
+          <div>
+            <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">Glu glu tank</h4>
+            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">Amazing!</p>
+            <span style="font-size: 0.75rem; color: #64748b;">Buy a fish tank.</span>
+          </div>
+          <div id="ach-glu-glu-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-admin" class="modal-overlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeAllModals()">✖</button>
+      <h2>⚙️ Admin Control Panel</h2>
+      
+      <form autocomplete="off" onsubmit="return false;">
+        <div class="form-group">
+          <label>Target Username</label>
+          <input type="text" id="adminTargetUsername" autocomplete="off" name="admin_target_unique_field" placeholder="Exact username..." oninput="loadTargetUserInventoryForAdmin()">
+        </div>
+      </form>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+        <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="adminBanUser(true)">Ban</button>
+        <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="adminBanUser(false)">Unban</button>
+        <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="openTempBanPrompt()">Temp Ban</button>
+      </div>
+
+      <div class="form-group">
+        <label>Coins Amount</label>
+        <input type="number" id="adminCoinsAmount" placeholder="Amount">
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyCoins(1)">Give Coins</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyCoins(-1)">Remove Coins</button>
+      </div>
+
+      <div class="form-group">
+        <label>Mini Tanks Amount</label>
+        <input type="number" id="adminTanksAmount" placeholder="Tanks amount" value="1" min="1">
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyTanks(1)">Give Tanks</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyTanks(-1)">Remove Tanks</button>
+      </div>
+
+      <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
+      <h3>🐟 Add Fish to User</h3>
+      <div class="form-group">
+        <label>Fish Name (e.g. Legacy Fish, Carp)</label>
+        <input type="text" id="adminAddFishName" placeholder="Fish name...">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#27ae60; margin-bottom: 15px;" onclick="adminAddFishToUser()">Add Fish</button>
+
+      <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
+      <h3>🗑️ Remove Fish from User Inventory</h3>
+      <div id="admin-target-fishes-list" style="max-height: 140px; overflow-y: auto; background: #f8fafc; padding: 8px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #cbd5e1;">
+        <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view fishes...</p>
+      </div>
+
+      <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
+      <h3>🎟️ Promo Codes Management</h3>
+      <div class="form-group">
+        <label>Code Name</label>
+        <input type="text" id="adminPromoCode" autocomplete="off" placeholder="e.g. FISHING2026">
+      </div>
+      <div class="form-group">
+        <label>Coins Reward</label>
+        <input type="number" id="adminPromoCoins" placeholder="Coins amount">
+      </div>
+      <div class="form-group">
+        <label>Bonus Fish Reward (Optional - exact fish name)</label>
+        <input type="text" id="adminPromoFish" placeholder="e.g. Legacy Fish or leave blank">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#2980b9; margin-bottom: 10px;" onclick="adminCreateCode()">Create Code</button>
+      
+      <div style="margin-top: 10px;">
+        <label style="font-size:0.9rem; color:#64748b; margin-bottom: 5px; display:block;">Active Codes List:</label>
+        <div id="adminCodesList" style="max-height: 120px; overflow-y: auto; background: #f8fafc; padding: 5px; border-radius: 8px; border: 1px solid #cbd5e1;">
+          <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Loading codes...</p>
+        </div>
+      </div>
+
+      <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
+      <h3>📢 Post News</h3>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="newsTitle" placeholder="News title">
+      </div>
+      <div class="form-group">
+        <label>Content</label>
+        <textarea id="newsContent" placeholder="News body..." rows="3" style="resize:none;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Image (Max 1MB)</label>
+        <input type="file" id="newsImage" accept="image/*">
+      </div>
+      <button type="button" class="modal-action-btn" onclick="adminPostNews()">Publish News</button>
+    </div>
+  </div>
+
+  <div id="modal-temp-ban" class="modal-overlay">
+    <div class="modal-card" style="max-width: 350px;">
+      <button class="modal-close" onclick="document.getElementById('modal-temp-ban').style.display='none'">✖</button>
+      <h2>⏳ Temporary Ban</h2>
+      <div class="form-group">
+        <label>Hours for temporary ban</label>
+        <input type="number" id="tempBanHoursInput" placeholder="e.g. 24" value="24">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="adminTempBan()">Apply Temp Ban</button>
+    </div>
+  </div>
+
+  <div id="modal-admin-remove-fish" class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-card" style="max-width: 300px;">
+      <button class="modal-close" onclick="document.getElementById('modal-admin-remove-fish').style.display='none'">✖</button>
+      <h3>🗑️ Remove Fish Quantity</h3>
+      <p style="font-size:0.85rem; color:#64748b;" id="admin-remove-fish-name-label">Fish: Goldfish</p>
+      <div class="form-group">
+        <label>Quantity to remove</label>
+        <input type="number" id="admin-remove-fish-qty-input" min="1" value="1" placeholder="Quantity">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="confirmAdminRemoveFish()">Delete</button>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script>
+    const RECAPTCHA_SITE_KEY = "6Lex8BMuAAAAAPx6P5c7RwFUNi_9dpZPX0hw_Il9";
+    let recaptchaLoginId = null;
+    let recaptchaRegisterId = null;
+    let viewingTargetFishes = [];
+    let viewingTargetTanks = [];
+    let viewingTargetUsername = "";
+    let viewingTargetUid = "";
+    let isViewingMyAquarium = false;
+    let selectedShelfIndex = 0;
+    let currentAquariumRoomIndex = 0;
+    let totalAquariumRoomsOwned = 1;
+    let activeFishAnimations = [];
+    let currentIndexFish = 0;
+    let isLimitedMode = false;
+    let selectedFishToMarket = null;
+    let adminSelectedFishToRemove = "";
+
+    let isMouseDown = false;
+    let minigameLoop = null;
+    let catchBarY = 0;
+    let catchBarSpeed = 0;
+    let greenZoneY = 80;
+    let greenZoneDir = 1.2;
+    let captureProgress = 30;
+    let pendingCaughtFish = null;
+
+    const ALLOWED_FISH_TYPES = [
+      { 
+        name: "Opah", 
+        value: 25, 
+        rarity: "Common",
+        desc: "A large, colorful deep-water fish known for its distinct round body and warm-blooded nature.",
+        img: "https://i.postimg.cc/sxhg04JM/opah.png" 
+      },
+      { 
+        name: "Clownfish", 
+        value: 20, 
+        rarity: "Common",
+        desc: "A small, vibrant orange fish with distinct white stripes, famous for living among sea anemones.",
+        img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" 
+      },
+      { 
+        name: "Guppy", 
+        value: 10, 
+        rarity: "Common",
+        desc: "A tiny, active freshwater fish featuring a colorful and flowing tail fin.",
+        img: "https://i.postimg.cc/VkcRfY5g/guppy.png" 
+      },
+      { 
+        name: "Tilapia", 
+        value: 22, 
+        rarity: "Common",
+        desc: "A sturdy cichlid fish commonly found in fresh and brackish waters around warm regions.",
+        img: "https://i.postimg.cc/zXTCP9pD/tilapia.png" 
+      },
+      { 
+        name: "Goldfish", 
+        value: 15, 
+        rarity: "Common",
+        desc: "A classic golden freshwater companion known for its peaceful demeanor and graceful swimming.",
+        img: "https://i.postimg.cc/nLSBDZV3/goldfish.png" 
+      },
+      { 
+        name: "Cod", 
+        value: 18, 
+        rarity: "Common",
+        desc: "A standard ocean fish found in cold northern waters, prized by fishermen worldwide.",
+        img: "https://i.postimg.cc/rp8x6Fgw/cod.png" 
+      },
+      { 
+        name: "Carp", 
+        value: 45, 
+        rarity: "Rare",
+        desc: "A large freshwater fish celebrated in legends for its strength and perseverance against currents.",
+        img: "https://i.postimg.cc/N0gmhfb0/carp.png" 
+      },
+      { 
+        name: "Neon Tetra", 
+        value: 50, 
+        rarity: "Rare",
+        desc: "A glowing tropical fish with iridescent blue and red stripes that light up shallow streams.",
+        img: "https://i.postimg.cc/TPRg8YQ2/neon-tetra.png" 
+      },
+      { 
+        name: "Salmon", 
+        value: 55, 
+        rarity: "Rare",
+        desc: "A migratory swimmer that travels upstream through roaring rivers to return to its origin.",
+        img: "https://i.postimg.cc/bvzkXNLz/salmon.png" 
+      },
+      { 
+        name: "Surgeonfish", 
+        value: 60, 
+        rarity: "Rare",
+        desc: "A bright blue marine swimmer with razor-sharp spines along its tail for defense.",
+        img: "https://i.postimg.cc/BvqHWQNS/surgeonfish.png" 
+      },
+      { 
+        name: "Legacy Fish", 
+        value: 150, 
+        rarity: "Legacy",
+        isLimited: true,
+        desc: "A legendary collector species from ancient waters. Extremely rare and valuable!",
+        img: "https://i.postimg.cc/J79pfZXs/legacy-fish.png" 
+      }
+    ];
+
+    function onloadCallback() {
+      try {
+        recaptchaLoginId = grecaptcha.render('recaptcha-login', { 'sitekey': RECAPTCHA_SITE_KEY });
+        recaptchaRegisterId = grecaptcha.render('recaptcha-register', { 'sitekey': RECAPTCHA_SITE_KEY });
+      } catch (e) {
+        console.error("reCAPTCHA render error:", e);
+      }
+    }
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAqd4GXj6YKm_7c5TF5mIGPPbo1pk4mKig",
+      authDomain: "the-fishing-game-digitalized.firebaseapp.com",
+      projectId: "the-fishing-game-digitalized",
+      storageBucket: "the-fishing-game-digitalized.firebasestorage.app",
+      messagingSenderId: "543997573488",
+      appId: "1:543997573488:web:5f40d69af320e6d1f977b5",
+      measurementId: "G-54GSL312X2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const ADMIN_UID = "09SjiwOt9fYdFbc1wQp17Ot467F2";
+
+    let newsList = [];
+    let currentNewsIndex = 0;
+
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerText = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    function openModal(modalId) {
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.getElementById(modalId).style.display = 'flex';
+      if (modalId === 'modal-profile') {
+        loadProfileData();
+      }
+      if (modalId === 'modal-shop') {
+        updateShopCoinsDisplay();
+      }
+      if (modalId === 'modal-admin') {
+        loadAdminCodes();
+      }
+      if (modalId === 'modal-backpack') {
+        loadBackpackData();
+      }
+      if (modalId === 'modal-achievements') {
+        loadAchievementsUI();
+      }
+    }
+
+    async function updateShopCoinsDisplay() {
+      const user = auth.currentUser;
+      if (!user) return;
+      try {
+        const doc = await db.collection('jugadores').doc(user.uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          document.getElementById('shop-user-coins').innerText = data.coins || 0;
+        }
+      } catch (err) {
+        console.error("Error updating shop coins:", err);
+      }
+    }
+
+    function closeAllModals() {
+      stopFishAnimations();
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+    }
+
+    function openMyProfileModal() {
+      openModal('modal-profile');
+    }
+
+    function openIndexModal() {
+      currentIndexFish = 0;
+      isLimitedMode = false;
+      updateIndexRarityDropdown();
+      renderIndexFish();
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.getElementById('modal-index').style.display = 'flex';
+    }
+
+    function toggleIndexMode() {
+      isLimitedMode = !isLimitedMode;
+      const modeBtn = document.getElementById('index-toggle-mode-btn');
+      
+      if (isLimitedMode) {
+        modeBtn.innerText = " Normal";
+        modeBtn.style.background = "#27ae60";
+      } else {
+        modeBtn.innerText = "⭐ Limited";
+        modeBtn.style.background = "#8e44ad";
+      }
+
+      updateIndexRarityDropdown();
+      currentIndexFish = 0;
+      renderIndexFish();
+    }
+
+    function updateIndexRarityDropdown() {
+      const select = document.getElementById('index-rarity-select');
+      select.innerHTML = '';
+
+      if (isLimitedMode) {
+        const option = document.createElement('option');
+        option.value = "Legacy";
+        option.innerText = "Legacy";
+        select.appendChild(option);
+      } else {
+        const opt1 = document.createElement('option');
+        opt1.value = "Common";
+        opt1.innerText = "Common";
+        select.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = "Rare";
+        opt2.innerText = "Rare";
+        select.appendChild(opt2);
+      }
+    }
+
+    function onRarityFilterChange() {
+      currentIndexFish = 0;
+      renderIndexFish();
+    }
+
+    function getFilteredIndexFishes() {
+      const selectedRarity = document.getElementById('index-rarity-select').value;
+      return ALLOWED_FISH_TYPES.filter(f => f.rarity === selectedRarity);
+    }
+
+    function changeIndexFish(direction) {
+      const filteredFishes = getFilteredIndexFishes();
+      if (filteredFishes.length === 0) return;
+
+      currentIndexFish += direction;
+      if (currentIndexFish < 0) {
+        currentIndexFish = filteredFishes.length - 1;
+      } else if (currentIndexFish >= filteredFishes.length) {
+        currentIndexFish = 0;
+      }
+      renderIndexFish();
+    }
+
+    function renderIndexFish() {
+      const filteredFishes = getFilteredIndexFishes();
+      if (filteredFishes.length === 0) {
+        document.getElementById('index-fish-img').src = "";
+        document.getElementById('index-fish-name').innerText = "No fish found";
+        document.getElementById('index-fish-desc').innerText = "No fishes available for this rarity yet.";
+        document.getElementById('index-rarity').innerText = "-";
+        document.getElementById('index-counter').innerText = "0 / 0";
+        return;
+      }
+
+      if (currentIndexFish >= filteredFishes.length) {
+        currentIndexFish = 0;
+      }
+
+      const fish = filteredFishes[currentIndexFish];
+      document.getElementById('index-fish-img').src = fish.img;
+      document.getElementById('index-fish-name').innerText = fish.name;
+      document.getElementById('index-fish-desc').innerText = fish.desc;
+      document.getElementById('index-rarity').innerText = fish.rarity;
+      
+      const badge = document.getElementById('index-rarity');
+      if (fish.rarity === "Rare") {
+        badge.style.background = "#3498db";
+      } else if (fish.rarity === "Legacy") {
+        badge.style.background = "#8e44ad";
+      } else {
+        badge.style.background = "#27ae60";
+      }
+
+      document.getElementById('index-counter').innerText = `${currentIndexFish + 1} / ${filteredFishes.length}`;
+    }
+
+    async function checkAchievements(fishesCount, tankBought = false) {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const docRef = db.collection('jugadores').doc(user.uid);
+        const doc = await docRef.get();
+        if (doc.exists) {
+          const data = doc.data();
+          let achievements = data.achievements || {};
+          let updated = false;
+
+          if (fishesCount > 0 && !achievements.catchFirst) {
+            achievements.catchFirst = true;
+            updated = true;
+            showToast("🏆 Achievement Unlocked: Catch! (That was easy.)");
+          }
+
+          if (tankBought && !achievements.gluGluTank) {
+            achievements.gluGluTank = true;
+            updated = true;
+            showToast("🏆 Achievement Unlocked: Glu glu tank! (Amazing!)");
+          }
+
+          if (updated) {
+            await docRef.update({ achievements: achievements });
+          }
+        }
+      } catch (err) {
+        console.error("Error checking achievements:", err);
+      }
+    }
+
+    async function loadAchievementsUI() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const doc = await db.collection('jugadores').doc(user.uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          const achievements = data.achievements || {};
+
+          const achItem1 = document.getElementById('ach-catch-first');
+          const achStatus1 = document.getElementById('ach-catch-first-status');
+
+          if (achievements.catchFirst) {
+            achItem1.style.opacity = '1';
+            achItem1.style.borderColor = '#2ecc71';
+            achStatus1.innerHTML = '✅ Completed';
+            achStatus1.style.color = '#2ecc71';
+          } else {
+            achItem1.style.opacity = '0.5';
+            achItem1.style.borderColor = '#cbd5e1';
+            achStatus1.innerHTML = '🔒 Locked';
+            achStatus1.style.color = '#e74c3c';
+          }
+
+          const achItem2 = document.getElementById('ach-glu-glu');
+          const achStatus2 = document.getElementById('ach-glu-glu-status');
+
+          if (achievements.gluGluTank) {
+            achItem2.style.opacity = '1';
+            achItem2.style.borderColor = '#2ecc71';
+            achStatus2.innerHTML = '✅ Completed';
+            achStatus2.style.color = '#2ecc71';
+          } else {
+            achItem2.style.opacity = '0.5';
+            achItem2.style.borderColor = '#cbd5e1';
+            achStatus2.innerHTML = '🔒 Locked';
+            achStatus2.style.color = '#e74c3c';
+          }
+        }
+      } catch (err) {
+        console.error("Error loading achievements UI:", err);
+      }
+    }
+
+    function openMarketModal() {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("⚠️ You must be logged in to access the market.");
+        openModal('modal-account');
+        return;
+      }
+      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.getElementById('modal-market').style.display = 'flex';
+      switchMarketTab('buy');
+    }
+
+    function switchMarketTab(tab) {
+      const buySec = document.getElementById('market-buy-section');
+      const sellSec = document.getElementById('market-sell-section');
+      const buyBtn = document.getElementById('tab-market-buy-btn');
+      const sellBtn = document.getElementById('tab-market-sell-btn');
+
+      if (tab === 'buy') {
+        buySec.style.display = 'block';
+        sellSec.style.display = 'none';
+        buyBtn.classList.add('active');
+        sellBtn.classList.remove('active');
+        loadMarketListings();
+      } else {
+        buySec.style.display = 'none';
+        sellSec.style.display = 'block';
+        sellBtn.classList.add('active');
+        buyBtn.classList.remove('active');
+        loadMyFishesForMarket();
+      }
+      loadMyActiveListings();
+    }
+
+    async function loadMarketListings() {
+      const container = document.getElementById('market-listings-container');
+      container.innerHTML = '<p style="color:#64748b; text-align:center;">Loading market offers...</p>';
+
+      try {
+        const snapshot = await db.collection('marketListings').orderBy('createdAt', 'desc').get();
+        if (snapshot.empty) {
+          container.innerHTML = '<p style="color:#64748b; text-align:center;">No player offers right now.</p>';
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const item = doc.data();
+          const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === item.fishName) || ALLOWED_FISH_TYPES[0];
+          const isMyListing = auth.currentUser && item.sellerUid === auth.currentUser.uid;
+
+          html += `
+            <div style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <img src="${fishObj.img}" style="width: 35px; height: 35px; object-fit: contain;">
+                <div>
+                  <strong>🐟 ${item.fishName}</strong><br>
+                  <span style="font-size:0.75rem; color:#64748b;">Seller: ${item.sellerName} | Price: 💰 ${item.price}</span>
+                </div>
+              </div>
+              <div>
+                ${isMyListing ? 
+                  `<span style="font-size:0.75rem; color:#d97706; font-weight:bold;">Your Listing</span>` : 
+                  `<button type="button" class="modal-action-btn" style="background:#27ae60; padding: 6px 12px; font-size: 0.8rem;" onclick="buyMarketItem('${doc.id}', '${item.sellerUid}', ${item.price}, '${item.fishName}')">Buy (${item.price} 💰)</button>`
+                }
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading market.</p>';
+      }
+    }
+
+    async function loadMyFishesForMarket() {
+      const user = auth.currentUser;
+      if (!user) return;
+      const container = document.getElementById('market-my-fishes-container');
+      container.innerHTML = '<p style="color:#64748b; text-align:center; grid-column: 1/-1;">Loading your fishes...</p>';
+
+      try {
+        const doc = await db.collection('jugadores').doc(user.uid).get();
+        if (doc.exists) {
+          const fishes = doc.data().fishes || [];
+          if (fishes.length === 0) {
+            container.innerHTML = '<p style="color:#64748b; text-align:center; grid-column: 1/-1;">You have no fish to sell!</p>';
+            return;
+          }
+
+          let fishCounts = {};
+          fishes.forEach((f, idx) => {
+            if (!fishCounts[f.name]) {
+              fishCounts[f.name] = { count: 0, firstIndex: idx, name: f.name };
+            }
+            fishCounts[f.name].count++;
+          });
+
+          let html = '';
+          Object.values(fishCounts).forEach((group) => {
+            const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === group.name) || ALLOWED_FISH_TYPES[0];
+            const isLimited = fishObj.isLimited
