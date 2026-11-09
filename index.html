@@ -1022,12 +1022,11 @@
         <button id="buy-tank-btn" class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #27ae60;" onclick="buyMiniTank()">75 💰</button>
       </div>
 
-      <!-- Worm Bait shop item -->
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
         <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
-          <img src="https://i.postimg.cc/jj7g4f7R/gusano.png" alt="Worm Bait" style="width: 40px; height: 40px; object-fit: contain;">
+          <img src="https://i.postimg.cc/gusano.png" alt="Worm Bait" style="width: 40px; height: 40px; object-fit: contain;">
           <div>
-            <strong>🐛 Worm Bait</strong><br><span style="font-size: 0.8rem; color: #64748b;">Use bait to increase fish catch rates</span>
+            <strong>🪱 Worm Bait</strong><br><span style="font-size: 0.8rem; color: #64748b;">Increases chance for rare/epic/divine fish</span>
           </div>
         </div>
         <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #2ecc71;" onclick="buyWormBait()">25 💰</button>
@@ -1040,7 +1039,7 @@
             <strong>🏰 Extra Aquarium Room</strong><br><span style="font-size: 0.8rem; color: #64748b;">Unlock a brand new aquarium room with 8 slots</span>
           </div>
         </div>
-        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #2ecc71;" onclick="buyAquariumRoom()">1000 💰</button>
+        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #3498db;" onclick="buyAquariumRoom()">1000 💰</button>
       </div>
     </div>
   </div>
@@ -1054,8 +1053,11 @@
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
         <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #1e3a8a;">🎒 Items Owned</h3>
         <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tanks Bought: 0</p>
-        <p id="backpack-baits-count" style="margin: 3px 0; font-size: 0.85rem;">Worm Baits Owned: 0</p>
         <p id="backpack-rooms-count" style="margin: 3px 0; font-size: 0.85rem;">Aquarium Rooms Owned: 1</p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px solid #cbd5e1; padding-top: 8px;">
+          <span id="backpack-baits-count" style="font-size: 0.85rem; font-weight: bold; color: #27ae60;">Worm Baits: 0</span>
+          <button type="button" class="modal-action-btn" style="width: auto; padding: 5px 12px; background: #2ecc71; font-size: 0.8rem;" onclick="toggleUseWormBait()" id="backpack-bait-toggle-btn">Equip Bait</button>
+        </div>
       </div>
 
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
@@ -1094,14 +1096,14 @@
           <div id="ach-glu-glu-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
         </div>
 
-        <div id="ach-worm-bait" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
+        <div id="ach-worm" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
           <div style="font-size: 2rem;">🏆</div>
           <div>
             <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">Not Hungry Anymore</h4>
-            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">Thats was a good worm!.</p>
+            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">That was a good worm!.</p>
             <span style="font-size: 0.75rem; color: #64748b;">Use a bait to catch a fish.</span>
           </div>
-          <div id="ach-worm-bait-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
+          <div id="ach-worm-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
         </div>
 
         <div id="ach-divine" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
@@ -1153,10 +1155,19 @@
         <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyTanks(-1)">Remove Tanks</button>
       </div>
 
+      <div class="form-group">
+        <label>Worm Baits Amount (<span id="admin-target-baits-display">User Baits: 0</span>)</label>
+        <input type="number" id="adminBaitsAmount" placeholder="Baits amount" value="1" min="1">
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyBaits(1)">Give Baits</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyBaits(-1)">Remove Baits</button>
+      </div>
+
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
       <h3>🐟 Add Fish to User</h3>
       <div class="form-group">
-        <label>Fish Name (e.g. Legacy Fish, Carp)</label>
+        <label>Fish Name (e.g. Legacy Fish, Divine Fish, Opah)</label>
         <input type="text" id="adminAddFishName" placeholder="Fish name...">
       </div>
       <button type="button" class="modal-action-btn" style="background:#27ae60; margin-bottom: 15px;" onclick="adminAddFishToUser()">Add Fish</button>
@@ -1263,87 +1274,27 @@
     let pendingCaughtFish = null;
 
     const ALLOWED_FISH_TYPES = [
-      // Common original restored (5)
-      { 
-        name: "Goldfish", 
-        value: 10, 
-        rarity: "Common",
-        desc: "A classic small freshwater fish popular in home aquariums.",
-        img: "https://i.postimg.cc/nLSBDZV3/goldfish.png" 
-      },
-      { 
-        name: "Clownfish", 
-        value: 15, 
-        rarity: "Common",
-        desc: "A small, brightly colored anemone dweller.",
-        img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" 
-      },
-      { 
-        name: "Guppy", 
-        value: 20, 
-        rarity: "Common",
-        desc: "A colorful and active small freshwater species.",
-        img: "https://i.postimg.cc/VkcRfY5g/guppy.png" 
-      },
-      { 
-        name: "Carp", 
-        value: 25, 
-        rarity: "Common",
-        desc: "A hearty freshwater fish common in ponds.",
-        img: "https://i.postimg.cc/N0gmhfb0/carp.png" 
-      },
-      { 
-        name: "Salmon", 
-        value: 35, 
-        rarity: "Common",
-        desc: "A resilient fish known for its migration up rivers.",
-        img: "https://i.postimg.cc/bvzkXNLz/salmon.png" 
-      },
-      // Rare original restored (5)
-      { 
-        name: "Angelfish", 
-        value: 50, 
-        rarity: "Rare",
-        desc: "An elegant freshwater fish with long, graceful fins.",
-        img: "https://i.postimg.cc/sxhg04JM/opah.png" 
-      },
-      { 
-        name: "Pufferfish", 
-        value: 60, 
-        rarity: "Rare",
-        desc: "Inflates into a prickly ball when threatened.",
-        img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" 
-      },
-      { 
-        name: "Catfish", 
-        value: 70, 
-        rarity: "Rare",
-        desc: "A bottom-dwelling fish with distinctive sensory barbels.",
-        img: "https://i.postimg.cc/VkcRfY5g/guppy.png" 
-      },
-      { 
-        name: "Red Snapper", 
-        value: 85, 
-        rarity: "Rare",
-        desc: "A prized coastal ocean fish with vibrant red scales.",
-        img: "https://i.postimg.cc/zXTCP9pD/tilapia.png" 
-      },
-      { 
-        name: "Opah", 
-        value: 100, 
-        rarity: "Rare",
-        desc: "A large, colorful deep-water fish with bright red fins.",
-        img: "https://i.postimg.cc/nLSBDZV3/goldfish.png" 
-      },
-      // Additional special fish
-      { 
-        name: "Legacy Fish", 
-        value: 150, 
-        rarity: "Legacy",
-        isLimited: true,
-        desc: "A legendary collector species from ancient waters. Extremely rare and valuable!",
-        img: "https://i.postimg.cc/J79pfZXs/legacy-fish.png" 
-      }
+      { name: "Opah", value: 25, rarity: "Common", desc: "A large, colorful deep-water fish known for its distinct round body.", img: "https://i.postimg.cc/sxhg04JM/opah.png" },
+      { name: "Clownfish", value: 20, rarity: "Common", desc: "A small, vibrant orange fish with white stripes.", img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" },
+      { name: "Guppy", value: 10, rarity: "Common", desc: "A tiny, active freshwater fish featuring a colorful tail fin.", img: "https://i.postimg.cc/VkcRfY5g/guppy.png" },
+      { name: "Tilapia", value: 22, rarity: "Common", desc: "A sturdy cichlid fish found in warm regions.", img: "https://i.postimg.cc/zXTCP9pD/tilapia.png" },
+      { name: "Goldfish", value: 15, rarity: "Common", desc: "A classic golden freshwater companion.", img: "https://i.postimg.cc/nLSBDZV3/goldfish.png" },
+      { name: "Cod", value: 18, rarity: "Common", desc: "A standard ocean fish found in cold northern waters.", img: "https://i.postimg.cc/rp8x6Fgw/cod.png" },
+      { name: "Carp", value: 45, rarity: "Rare", desc: "A large freshwater fish celebrated for its strength.", img: "https://i.postimg.cc/N0gmhfb0/carp.png" },
+      { name: "Neon Tetra", value: 50, rarity: "Rare", desc: "A glowing tropical fish with iridescent stripes.", img: "https://i.postimg.cc/TPRg8YQ2/neon-tetra.png" },
+      { name: "Salmon", value: 55, rarity: "Rare", desc: "A migratory swimmer traveling upstream through rivers.", img: "https://i.postimg.cc/bvzkXNLz/salmon.png" },
+      { name: "Surgeonfish", value: 60, rarity: "Rare", desc: "A bright blue marine swimmer with defensive spines.", img: "https://i.postimg.cc/BvqHWQNS/surgeonfish.png" },
+      { name: "Barreleye Fish", value: 80, rarity: "Rare", desc: "A deep-sea fish with a transparent fluid-filled head.", img: "https://i.postimg.cc/cLC5QKF2/barreleye-fish.png" },
+      { name: "Basking Shark", value: 95, rarity: "Rare", desc: "A massive filter-feeding shark gliding peacefully.", img: "https://i.postimg.cc/nhrwvs3R/basking-shark.png" },
+      { name: "Bluefin Tuna", value: 110, rarity: "Rare", desc: "A powerful and fast ocean predator.", img: "https://i.postimg.cc/6pPbz9SC/bluefin-tuna.png" },
+      { name: "Electric Eel", value: 130, rarity: "Rare", desc: "A serpentine fish capable of generating high voltage.", img: "https://i.postimg.cc/kgHYwnZX/electric-eel.png" },
+      { name: "Leafy Seadragon", value: 145, rarity: "Rare", desc: "A master of camouflage adorned with leaf-like appendages.", img: "https://i.postimg.cc/rwsYSdfb/leafy-seadragon.png" },
+      { name: "Manta Ray", value: 160, rarity: "Rare", desc: "A graceful giant gliding through tropical waters.", img: "https://i.postimg.cc/mgnpVbqk/mantaray.png" },
+      { name: "Coelacanth", value: 250, rarity: "Epic", desc: "A rare prehistoric 'living fossil' fish.", img: "https://i.postimg.cc/SxRtWXZs/coelacanth.png" },
+      { name: "Great White Shark", value: 320, rarity: "Legendary", desc: "The undisputed king of ocean predators.", img: "https://i.postimg.cc/4x02wJMf/great-white-shark.png" },
+      { name: "Megamouth Shark", value: 450, rarity: "Mythic", desc: "An elusive deep-water giant with glowing lips.", img: "https://i.postimg.cc/WbXHFmwx/megamouth-shark.png" },
+      { name: "Oarfish", value: 600, rarity: "Divine", desc: "A magnificent serpent-like creature of ancient myth.", img: "https://i.postimg.cc/Z5nDr9fZ/oarfish.png" },
+      { name: "Legacy Fish", value: 1000, rarity: "Legacy", isLimited: true, desc: "A legendary collector species from ancient waters. Admin only!", img: "https://i.postimg.cc/J79pfZXs/legacy-fish.png" }
     ];
 
     function onloadCallback() {
@@ -1468,15 +1419,12 @@
         option.innerText = "Legacy";
         select.appendChild(option);
       } else {
-        const opt1 = document.createElement('option');
-        opt1.value = "Common";
-        opt1.innerText = "Common";
-        select.appendChild(opt1);
-
-        const opt2 = document.createElement('option');
-        opt2.value = "Rare";
-        opt2.innerText = "Rare";
-        select.appendChild(opt2);
+        ['Common', 'Rare', 'Epic', 'Legendary', 'Mythic', 'Divine'].forEach(rarity => {
+          const opt = document.createElement('option');
+          opt.value = rarity;
+          opt.innerText = rarity;
+          select.appendChild(opt);
+        });
       }
     }
 
@@ -1525,18 +1473,18 @@
       document.getElementById('index-rarity').innerText = fish.rarity;
       
       const badge = document.getElementById('index-rarity');
-      if (fish.rarity === "Rare") {
-        badge.style.background = "#3498db";
-      } else if (fish.rarity === "Legacy") {
-        badge.style.background = "#8e44ad";
-      } else {
-        badge.style.background = "#27ae60";
-      }
+      if (fish.rarity === "Rare") badge.style.background = "#3498db";
+      else if (fish.rarity === "Epic") badge.style.background = "#9b59b6";
+      else if (fish.rarity === "Legendary") badge.style.background = "#e67e22";
+      else if (fish.rarity === "Mythic") badge.style.background = "#e74c3c";
+      else if (fish.rarity === "Divine") badge.style.background = "#f1c40f";
+      else if (fish.rarity === "Legacy") badge.style.background = "#8e44ad";
+      else badge.style.background = "#27ae60";
 
       document.getElementById('index-counter').innerText = `${currentIndexFish + 1} / ${filteredFishes.length}`;
     }
 
-    async function checkAchievements(fishesCount, tankBought = false, usedBait = false, fishRarity = "") {
+    async function checkAchievements(fishesCount, tankBought = false, usedBait = false, caughtDivine = false) {
       const user = auth.currentUser;
       if (!user) return;
 
@@ -1560,16 +1508,16 @@
             showToast("🏆 Achievement Unlocked: Glu glu tank! (Amazing!)");
           }
 
-          if (usedBait && !achievements.wormBait) {
-            achievements.wormBait = true;
+          if (usedBait && !achievements.wormBaitAch) {
+            achievements.wormBaitAch = true;
             updated = true;
-            showToast("🏆 Achievement Unlocked: Not Hungry Anymore. (Thats was a good worm!.)");
+            showToast("🏆 Achievement Unlocked: Not Hungry Anymore (That was a good worm!.)");
           }
 
-          if (fishRarity === "Divine" && !achievements.divine) {
-            achievements.divine = true;
+          if (caughtDivine && !achievements.divineAch) {
+            achievements.divineAch = true;
             updated = true;
-            showToast("🏆 Achievement Unlocked: Divine i say. (Beautiful.)");
+            showToast("🏆 Achievement Unlocked: Divine i say (Beautiful.)");
           }
 
           if (updated) {
@@ -1593,62 +1541,30 @@
 
           const achItem1 = document.getElementById('ach-catch-first');
           const achStatus1 = document.getElementById('ach-catch-first-status');
-
           if (achievements.catchFirst) {
-            achItem1.style.opacity = '1';
-            achItem1.style.borderColor = '#2ecc71';
-            achStatus1.innerHTML = '✅ Completed';
-            achStatus1.style.color = '#2ecc71';
-          } else {
-            achItem1.style.opacity = '0.5';
-            achItem1.style.borderColor = '#cbd5e1';
-            achStatus1.innerHTML = '🔒 Locked';
-            achStatus1.style.color = '#e74c3c';
+            achItem1.style.opacity = '1'; achItem1.style.borderColor = '#2ecc71';
+            achStatus1.innerHTML = '✅ Completed'; achStatus1.style.color = '#2ecc71';
           }
 
           const achItem2 = document.getElementById('ach-glu-glu');
           const achStatus2 = document.getElementById('ach-glu-glu-status');
-
           if (achievements.gluGluTank) {
-            achItem2.style.opacity = '1';
-            achItem2.style.borderColor = '#2ecc71';
-            achStatus2.innerHTML = '✅ Completed';
-            achStatus2.style.color = '#2ecc71';
-          } else {
-            achItem2.style.opacity = '0.5';
-            achItem2.style.borderColor = '#cbd5e1';
-            achStatus2.innerHTML = '🔒 Locked';
-            achStatus2.style.color = '#e74c3c';
+            achItem2.style.opacity = '1'; achItem2.style.borderColor = '#2ecc71';
+            achStatus2.innerHTML = '✅ Completed'; achStatus2.style.color = '#2ecc71';
           }
 
-          const achItem3 = document.getElementById('ach-worm-bait');
-          const achStatus3 = document.getElementById('ach-worm-bait-status');
-
-          if (achievements.wormBait) {
-            achItem3.style.opacity = '1';
-            achItem3.style.borderColor = '#2ecc71';
-            achStatus3.innerHTML = '✅ Completed';
-            achStatus3.style.color = '#2ecc71';
-          } else {
-            achItem3.style.opacity = '0.5';
-            achItem3.style.borderColor = '#cbd5e1';
-            achStatus3.innerHTML = '🔒 Locked';
-            achStatus3.style.color = '#e74c3c';
+          const achItem3 = document.getElementById('ach-worm');
+          const achStatus3 = document.getElementById('ach-worm-status');
+          if (achievements.wormBaitAch) {
+            achItem3.style.opacity = '1'; achItem3.style.borderColor = '#2ecc71';
+            achStatus3.innerHTML = '✅ Completed'; achStatus3.style.color = '#2ecc71';
           }
 
           const achItem4 = document.getElementById('ach-divine');
           const achStatus4 = document.getElementById('ach-divine-status');
-
-          if (achievements.divine) {
-            achItem4.style.opacity = '1';
-            achItem4.style.borderColor = '#2ecc71';
-            achStatus4.innerHTML = '✅ Completed';
-            achStatus4.style.color = '#2ecc71';
-          } else {
-            achItem4.style.opacity = '0.5';
-            achItem4.style.borderColor = '#cbd5e1';
-            achStatus4.innerHTML = '🔒 Locked';
-            achStatus4.style.color = '#e74c3c';
+          if (achievements.divineAch) {
+            achItem4.style.opacity = '1'; achItem4.style.borderColor = '#2ecc71';
+            achStatus4.innerHTML = '✅ Completed'; achStatus4.style.color = '#2ecc71';
           }
         }
       } catch (err) {
@@ -2365,38 +2281,47 @@
       const user = auth.currentUser;
       if (!user) return;
 
-      // Check if user wants to use bait
-      let useBait = false;
-      try {
-        const docRef = db.collection('jugadores').doc(user.uid);
-        const doc = await docRef.get();
-        if (doc.exists) {
-          const data = doc.data();
-          let baits = data.wormBaitsCount || 0;
-          if (baits > 0) {
-            await docRef.update({ wormBaitsCount: baits - 1 });
-            useBait = true;
-            showToast("🐛 Worm bait consumed for this cast!");
-          }
-        }
-      } catch (e) {
-        console.error("Error checking bait:", e);
-      }
-
       const castBtn = document.getElementById('cast-btn');
       castBtn.disabled = true;
       castBtn.innerText = "⏳ Waiting for bite...";
       showToast("🎣 Line cast! Waiting...");
 
-      setTimeout(() => {
+      try {
+        const playerRef = db.collection('jugadores').doc(user.uid);
+        const docSnap = await playerRef.get();
+        const data = docSnap.exists ? docSnap.data() : {};
+        const isBaitActive = data.isBaitActive || false;
+        const baitsCount = data.wormBaitsCount || 0;
+
+        if (isBaitActive && baitsCount > 0) {
+          await playerRef.update({
+            wormBaitsCount: baitsCount - 1,
+            isBaitActive: false
+          });
+          showToast("🪱 Worm bait consumed for this cast!");
+        }
+
+        setTimeout(() => {
+          castBtn.disabled = false;
+          castBtn.innerText = "🎣 Cast Line!";
+          
+          const standardFishes = ALLOWED_FISH_TYPES.filter(f => !f.isLimited);
+          
+          if (isBaitActive && baitsCount > 0 && Math.random() < 0.45) {
+            const rarePlusFishes = standardFishes.filter(f => f.rarity !== 'Common');
+            pendingCaughtFish = rarePlusFishes[Math.floor(Math.random() * rarePlusFishes.length)] || standardFishes[0];
+          } else {
+            pendingCaughtFish = standardFishes[Math.floor(Math.random() * standardFishes.length)];
+          }
+
+          startFishingMinigame();
+        }, 2000 + Math.random() * 1500);
+
+      } catch (err) {
         castBtn.disabled = false;
         castBtn.innerText = "🎣 Cast Line!";
-        
-        const standardFishes = ALLOWED_FISH_TYPES.filter(f => !f.isLimited);
-        pendingCaughtFish = standardFishes[Math.floor(Math.random() * standardFishes.length)];
-        pendingCaughtFish.usedBait = useBait;
-        startFishingMinigame();
-      }, 2000 + Math.random() * 1500);
+        showToast("❌ Error casting line: " + err.message);
+      }
     }
 
     function startFishingMinigame() {
@@ -2498,15 +2423,18 @@
         try {
           const playerRef = db.collection('jugadores').doc(user.uid);
           const docSnap = await playerRef.get();
-          const currentFishes = docSnap.data().fishes || [];
+          const data = docSnap.data();
+          const currentFishes = data.fishes || [];
 
           await playerRef.update({
             fishes: firebase.firestore.FieldValue.arrayUnion({ name: pendingCaughtFish.name, timestamp: new Date().toISOString() })
           });
 
-          showToast(`🎉 PERFECT CATCH! You caught a ${pendingCaughtFish.name}!`);
+          showToast(`🎉 PERFECT CATCH! You caught a ${pendingCaughtFish.name} (${pendingCaughtFish.rarity})!`);
           updateGameHUD();
-          checkAchievements(currentFishes.length + 1, false, pendingCaughtFish.usedBait, pendingCaughtFish.rarity);
+          
+          const isDivine = pendingCaughtFish.rarity === 'Divine';
+          checkAchievements(currentFishes.length + 1, false, true, isDivine);
         } catch (err) {
           showToast("❌ Error saving catch: " + err.message);
         }
@@ -2578,7 +2506,7 @@
             wormBaitsCount: currentBaits + 1
           });
 
-          showToast("🎉 Success! Worm Bait bought and added to your backpack!");
+          showToast("🪱 Success! Worm Bait bought and added to your backpack!");
           loadBackpackData();
           updateShopCoinsDisplay();
         }
@@ -2623,6 +2551,33 @@
       }
     }
 
+    async function toggleUseWormBait() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const playerRef = db.collection('jugadores').doc(user.uid);
+        const doc = await playerRef.get();
+        if (doc.exists) {
+          const data = doc.data();
+          const baits = data.wormBaitsCount || 0;
+          const currentActive = data.isBaitActive || false;
+
+          if (baits <= 0 && !currentActive) {
+            showToast("⚠️ You don't have any Worm Baits! Buy some in Bob's Shop.");
+            return;
+          }
+
+          const newActive = !currentActive;
+          await playerRef.update({ isBaitActive: newActive });
+          showToast(newActive ? "🪱 Worm Bait equipped! Next cast will have better luck." : "🛑 Worm Bait unequipped.");
+          loadBackpackData();
+        }
+      } catch (err) {
+        showToast("❌ Error toggling bait: " + err.message);
+      }
+    }
+
     async function loadBackpackData() {
       const user = auth.currentUser;
       if (!user) return;
@@ -2634,12 +2589,23 @@
         if (doc.exists) {
           const data = doc.data();
           const tanksCount = data.miniTanksCount || 0;
-          const baitsCount = data.wormBaitsCount || 0;
           const roomsCount = data.aquariumRoomsOwned || 1;
+          const baitsCount = data.wormBaitsCount || 0;
+          const isBaitActive = data.isBaitActive || false;
+
           document.getElementById('backpack-tanks-count').innerText = `Mini Tanks Bought: ${tanksCount}`;
-          document.getElementById('backpack-baits-count').innerText = `Worm Baits Owned: ${baitsCount}`;
           document.getElementById('backpack-rooms-count').innerText = `Aquarium Rooms Owned: ${roomsCount}`;
+          document.getElementById('backpack-baits-count').innerText = `Worm Baits: ${baitsCount}`;
           
+          const toggleBtn = document.getElementById('backpack-bait-toggle-btn');
+          if (isBaitActive) {
+            toggleBtn.innerText = "Unequip Bait";
+            toggleBtn.style.background = "#e74c3c";
+          } else {
+            toggleBtn.innerText = "Equip Bait";
+            toggleBtn.style.background = "#2ecc71";
+          }
+
           const fishes = data.fishes || [];
           if (fishes.length === 0) {
             listContainer.innerHTML = "No fish caught yet. Go fishing!";
@@ -2784,9 +2750,10 @@
           fishes: [],
           miniTanksCount: 0,
           wormBaitsCount: 0,
+          isBaitActive: false,
           aquariumRoomsOwned: 1,
           aquariumTanksMap: { room_0: new Array(8).fill(null) },
-          achievements: { catchFirst: false, gluGluTank: false, wormBait: false, divine: false },
+          achievements: { catchFirst: false, gluGluTank: false, wormBaitAch: false, divineAch: false },
           redeemedCodes: [],
           lastUsernameChange: null,
           isBanned: false,
@@ -3151,8 +3118,11 @@
     async function loadTargetUserInventoryForAdmin() {
       const username = document.getElementById('adminTargetUsername').value.trim();
       const listContainer = document.getElementById('admin-target-fishes-list');
+      const baitsDisplay = document.getElementById('admin-target-baits-display');
+
       if (!username) {
         listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view fishes...</p>';
+        baitsDisplay.innerText = 'User Baits: 0';
         return;
       }
 
@@ -3160,12 +3130,16 @@
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
           listContainer.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">User not found.</p>';
+          baitsDisplay.innerText = 'User Baits: 0';
           return;
         }
 
         const doc = await db.collection('jugadores').doc(targetUid).get();
         if (doc.exists) {
-          const fishes = doc.data().fishes || [];
+          const data = doc.data();
+          baitsDisplay.innerText = `User Baits: ${data.wormBaitsCount || 0}`;
+
+          const fishes = data.fishes || [];
           if (fishes.length === 0) {
             listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">User has no fishes.</p>';
             return;
@@ -3296,6 +3270,38 @@
         showToast(`✅ Mini Tanks updated for ${username} (${val > 0 ? '+' : ''}${val})`);
       } catch (err) {
         showToast("❌ Error updating tanks: " + err.message);
+      }
+    }
+
+    async function adminModifyBaits(multiplier) {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      const amount = parseInt(document.getElementById('adminBaitsAmount').value);
+      if (!username || isNaN(amount) || amount <= 0) {
+        showToast("⚠️ Enter a valid username and bait amount.");
+        return;
+      }
+
+      try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
+
+        const playerRef = db.collection('jugadores').doc(targetUid);
+        const docSnap = await playerRef.get();
+        if (!docSnap.exists) return;
+
+        let currentBaits = docSnap.data().wormBaitsCount || 0;
+        let val = amount * multiplier;
+        let newBaitsCount = currentBaits + val;
+        if (newBaitsCount < 0) newBaitsCount = 0;
+
+        await playerRef.update({ wormBaitsCount: newBaitsCount });
+        showToast(`✅ Worm Baits updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+        loadTargetUserInventoryForAdmin();
+      } catch (err) {
+        showToast("❌ Error updating baits: " + err.message);
       }
     }
 
