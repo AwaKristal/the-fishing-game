@@ -834,24 +834,35 @@
       </div>
 
       <div class="form-group">
-        <label>Change Username (Allowed every 14 days)</label>
-        <input type="text" id="profile-edit-username" placeholder="New username..." maxlength="15">
-      </div>
-      <div class="form-group">
-        <label>Current Password (Required to change username)</label>
-        <input type="password" id="profile-current-password" placeholder="Enter password to confirm name change">
-      </div>
-      <div class="form-group">
         <label>Bio / Description</label>
-        <textarea id="profile-edit-bio" placeholder="Write your new description..." maxlength="150" style="resize:none; height:60px;"></textarea>
+        <p id="profile-bio-display" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin: 0; min-height: 45px; color: #1e293b; border: 1px solid #cbd5e1; word-break: break-all; font-size: 0.9rem;"></p>
       </div>
-      <div class="form-group">
-        <label>Change Profile Picture (Max 1MB)</label>
-        <input type="file" id="profile-edit-avatar" accept="image/*">
+
+      <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+        <button type="button" class="modal-action-btn" style="background: #2980b9; flex: 1;" onclick="openMyAquarium()">🐠 See Aquarium</button>
+        <button type="button" class="modal-action-btn" style="background: #f39c12; flex: 1;" onclick="toggleEditProfileSection()">✏️ Edit Profile</button>
       </div>
-      <button type="button" class="modal-action-btn" style="margin-bottom: 10px;" onclick="updateProfileData()">Save Changes</button>
-      
-      <button type="button" class="modal-action-btn" style="background: #2980b9;" onclick="openMyAquarium()">🐠 See Aquarium</button>
+
+      <div id="profile-edit-section" style="display: none; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; margin-bottom: 15px;">
+        <h4 style="margin: 0 0 10px 0; color: #1e3a8a;">⚙️ Edit Profile Details</h4>
+        <div class="form-group">
+          <label>Change Username (Allowed every 14 days)</label>
+          <input type="text" id="profile-edit-username" placeholder="New username..." maxlength="15">
+        </div>
+        <div class="form-group">
+          <label>Current Password (Required to change username)</label>
+          <input type="password" id="profile-current-password" placeholder="Enter password to confirm name change">
+        </div>
+        <div class="form-group">
+          <label>Bio / Description</label>
+          <textarea id="profile-edit-bio" placeholder="Write your new description..." maxlength="150" style="resize:none; height:60px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Change Profile Picture (Max 1MB)</label>
+          <input type="file" id="profile-edit-avatar" accept="image/*">
+        </div>
+        <button type="button" class="modal-action-btn" onclick="updateProfileData()">Save Changes</button>
+      </div>
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
       <h3>🔍 Search Player</h3>
@@ -979,13 +990,14 @@
   </div>
 
   <div id="modal-shop" class="modal-overlay">
-    <div class="modal-card" style="text-align: center;">
+    <div class="modal-card" style="text-align: center; position: relative;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>🛒 Bob's Fishing Shop</h2>
       
-      <div style="background: #e2e8f0; padding: 8px 15px; border-radius: 20px; display: inline-block; font-weight: bold; color: #1e3a8a; margin-bottom: 5px;">
-        💰 Your Balance: <span id="shop-user-coins">0</span> Coins
+      <div style="position: absolute; top: 15px; right: 45px; background: #e2e8f0; padding: 4px 10px; border-radius: 12px; font-weight: bold; color: #1e3a8a; font-size: 0.85rem; border: 1px solid #cbd5e1;">
+        💰 Coins: <span id="shop-user-coins">0</span>
       </div>
+
+      <h2 style="margin-top: 0;">🛒 Bob's Fishing Shop</h2>
 
       <img src="https://i.postimg.cc/NMtYbvzw/shop.png" alt="Bob Shop" style="width: 140px; height: auto; margin: 10px 0; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));">
       <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">"Welcome! Redeem your promo codes or buy upgrades!"</p>
@@ -1340,6 +1352,7 @@
       document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
       document.getElementById(modalId).style.display = 'flex';
       if (modalId === 'modal-profile') {
+        document.getElementById('profile-edit-section').style.display = 'none';
         loadProfileData();
       }
       if (modalId === 'modal-shop') {
@@ -1354,6 +1367,11 @@
       if (modalId === 'modal-achievements') {
         loadAchievementsUI();
       }
+    }
+
+    function toggleEditProfileSection() {
+      const sec = document.getElementById('profile-edit-section');
+      sec.style.display = (sec.style.display === 'none' || sec.style.display === '') ? 'block' : 'none';
     }
 
     async function updateShopCoinsDisplay() {
@@ -2690,6 +2708,7 @@
         if (doc.exists) {
           const data = doc.data();
           document.getElementById('profile-modal-name').innerText = data.username || "Player";
+          document.getElementById('profile-bio-display').innerText = data.bio || "No bio yet.";
           document.getElementById('profile-edit-username').value = data.username || "";
           document.getElementById('profile-edit-bio').value = data.bio || "";
           document.getElementById('profile-coins').innerText = data.coins || 0;
@@ -2776,7 +2795,8 @@
         });
 
         showToast("✅ Profile updated successfully!");
-        closeAllModals();
+        document.getElementById('profile-edit-section').style.display = 'none';
+        loadProfileData();
       } catch (err) {
         showToast("❌ Error updating profile: " + err.message);
       }
