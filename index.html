@@ -689,6 +689,36 @@
     <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
   </button>
 
+  <!-- Ban Notification Modal -->
+  <div id="modal-ban-notice" class="modal-overlay" style="z-index: 3000;">
+    <div class="modal-card" style="max-width: 400px; text-align: center; border: 3px solid #e74c3c;">
+      <h2 style="color: #e74c3c; margin-top: 0;">🚫 ACCESS DENIED</h2>
+      <p style="font-size: 1.05rem; font-weight: bold;" id="ban-type-label">Your account has been banned.</p>
+      <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; margin: 15px 0; text-align: left;">
+        <p style="margin: 0 0 8px 0; font-size: 0.9rem;"><strong>📌 Reason:</strong> <span id="ban-reason-text" style="color: #c0392b;">No reason specified</span></p>
+        <p style="margin: 0; font-size: 0.9rem;"><strong>⏳ Duration:</strong> <span id="ban-duration-text" style="color: #2980b9;">Permanent</span></p>
+      </div>
+      <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="handleBanDismiss()">Acknowledge & Logout</button>
+    </div>
+  </div>
+
+  <!-- Admin Ban Reason Prompt Modal -->
+  <div id="modal-admin-ban-prompt" class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-card" style="max-width: 350px;">
+      <button class="modal-close" onclick="document.getElementById('modal-admin-ban-prompt').style.display='none'">✖</button>
+      <h3 id="admin-ban-prompt-title">🔨 Ban User</h3>
+      <div class="form-group" id="admin-ban-hours-group" style="display: none;">
+        <label>Hours for temporary ban</label>
+        <input type="number" id="tempBanHoursInput" placeholder="e.g. 24" value="24" min="1">
+      </div>
+      <div class="form-group">
+        <label>Reason for Ban</label>
+        <textarea id="adminBanReasonInput" placeholder="Enter reason for the ban..." rows="3" style="resize:none;" required></textarea>
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="confirmAdminBanAction()">Confirm Ban</button>
+    </div>
+  </div>
+
   <div id="modal-market" class="modal-overlay">
     <div class="modal-card" style="max-width: 650px;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
@@ -1039,7 +1069,7 @@
             <strong>🏰 Extra Aquarium Room</strong><br><span style="font-size: 0.8rem; color: #64748b;">Unlock a brand new aquarium room with 8 slots</span>
           </div>
         </div>
-        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #3498db;" onclick="buyAquariumRoom()">1000 💰</button>
+        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #2ecc71;" onclick="buyAquariumRoom()">1000 💰</button>
       </div>
     </div>
   </div>
@@ -1061,7 +1091,7 @@
       </div>
 
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
-        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #2ecc71;">🐟 Caught Fishes</h3>
+        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #27ae60;">🐟 Caught Fishes</h3>
         <div id="backpack-fish-list" style="max-height: 180px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; font-size: 0.85rem; color: #64748b; padding-top: 5px;">
           No fish caught yet. Go fishing!
         </div>
@@ -1141,9 +1171,9 @@
       </div>
 
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-        <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="adminBanUser(true)">Ban</button>
-        <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="adminBanUser(false)">Unban</button>
-        <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="openTempBanPrompt()">Temp Ban</button>
+        <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="openBanPrompt(true)">Perma Ban</button>
+        <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="adminUnbanUser()">Unban</button>
+        <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="openBanPrompt(false)">Temp Ban</button>
       </div>
 
       <div class="form-group">
@@ -1241,18 +1271,6 @@
     </div>
   </div>
 
-  <div id="modal-temp-ban" class="modal-overlay">
-    <div class="modal-card" style="max-width: 350px;">
-      <button class="modal-close" onclick="document.getElementById('modal-temp-ban').style.display='none'">✖</button>
-      <h2>⏳ Temporary Ban</h2>
-      <div class="form-group">
-        <label>Hours for temporary ban</label>
-        <input type="number" id="tempBanHoursInput" placeholder="e.g. 24" value="24">
-      </div>
-      <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="adminTempBan()">Apply Temp Ban</button>
-    </div>
-  </div>
-
   <div id="modal-admin-remove-fish" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 300px;">
       <button class="modal-close" onclick="document.getElementById('modal-admin-remove-fish').style.display='none'">✖</button>
@@ -1285,6 +1303,7 @@
     let isLimitedMode = false;
     let selectedFishToMarket = null;
     let adminSelectedFishToRemove = "";
+    let isCurrentBanPerma = true;
 
     let isMouseDown = false;
     let minigameLoop = null;
@@ -1365,8 +1384,6 @@
       if (username.includes(" ")) {
         return "Los espacios no están permitidos en el nombre de usuario.";
       }
-      // Check for accents, letters like Ñ/ñ, and special characters except underscore (_)
-      // Allowed: letters a-z (case insensitive), numbers 0-9, and underscore (_)
       const regex = /^[a-zA-Z0-9_]+$/;
       if (!regex.test(username)) {
         return "Caracteres prohibidos: no se permiten letras con acentos, la letra Ñ/ñ, ni caracteres especiales (excepto '_').";
@@ -1375,7 +1392,9 @@
     }
 
     function openModal(modalId) {
-      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.modal-overlay').forEach(el => {
+        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+      });
       document.getElementById(modalId).style.display = 'flex';
       if (modalId === 'modal-profile') {
         document.getElementById('profile-edit-section').style.display = 'none';
@@ -1417,7 +1436,9 @@
 
     function closeAllModals() {
       stopFishAnimations();
-      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.modal-overlay').forEach(el => {
+        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+      });
     }
 
     function openMyProfileModal() {
@@ -1429,7 +1450,9 @@
       isLimitedMode = false;
       updateIndexRarityDropdown();
       renderIndexFish();
-      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.modal-overlay').forEach(el => {
+        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+      });
       document.getElementById('modal-index').style.display = 'flex';
     }
 
@@ -1620,7 +1643,9 @@
         openModal('modal-account');
         return;
       }
-      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.modal-overlay').forEach(el => {
+        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+      });
       document.getElementById('modal-market').style.display = 'flex';
       switchMarketTab('buy');
     }
@@ -2030,7 +2055,9 @@
 
     function renderAquarium(username, fishes, tanksMap) {
       stopFishAnimations();
-      document.querySelectorAll('.modal-overlay').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.modal-overlay').forEach(el => {
+        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+      });
       document.getElementById('modal-aquarium').style.display = 'flex';
       document.getElementById('aquarium-title').innerText = `🐠 ${username}'s Aquarium`;
       
@@ -2747,8 +2774,7 @@
 
       try {
         await auth.signInWithEmailAndPassword(email, pass);
-        showToast("🚀 Welcome back!");
-        closeAllModals();
+        // Ban check is handled in auth state observer
         grecaptcha.reset(recaptchaLoginId);
       } catch (err) {
         showToast("❌ Login error: " + err.message);
@@ -2765,7 +2791,6 @@
 
       const username = document.getElementById('reg-username').value.trim();
       
-      // Strict validation for registration username
       const validationError = validateUsernameFormat(username);
       if (validationError) {
         showToast("⚠️ " + validationError);
@@ -2809,6 +2834,8 @@
           redeemedCodes: [],
           lastUsernameChange: null,
           isBanned: false,
+          tempBanUntil: null,
+          banReason: "",
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -2898,7 +2925,6 @@
         let currentUsername = playerData.username;
 
         if (newUsername && newUsername !== currentUsername) {
-          // Strict validation for username change
           const validationError = validateUsernameFormat(newUsername);
           if (validationError) {
             showToast("⚠️ " + validationError);
@@ -3411,7 +3437,55 @@
       }
     }
 
-    async function adminBanUser(isBanned) {
+    function openBanPrompt(isPerma) {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      if (!username) {
+        showToast("⚠️ Enter a target username first.");
+        return;
+      }
+      isCurrentBanPerma = isPerma;
+      document.getElementById('admin-ban-prompt-title').innerText = isPerma ? "🔨 Permanent Ban User" : "⏳ Temporary Ban User";
+      document.getElementById('admin-ban-hours-group').style.display = isPerma ? 'none' : 'block';
+      document.getElementById('adminBanReasonInput').value = "";
+      document.getElementById('modal-admin-ban-prompt').style.display = 'flex';
+    }
+
+    async function confirmAdminBanAction() {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      const reason = document.getElementById('adminBanReasonInput').value.trim() || "No reason provided";
+      if (!username) return;
+
+      try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("❌ User not found.");
+          return;
+        }
+
+        if (isCurrentBanPerma) {
+          await db.collection('jugadores').doc(targetUid).update({
+            isBanned: true,
+            tempBanUntil: null,
+            banReason: reason
+          });
+          showToast(`✅ Permanently banned ${username}.`);
+        } else {
+          const hours = parseInt(document.getElementById('tempBanHoursInput').value) || 24;
+          const unbanDate = new Date(Date.now() + hours * 3600000);
+          await db.collection('jugadores').doc(targetUid).update({
+            isBanned: false,
+            tempBanUntil: unbanDate,
+            banReason: reason
+          });
+          showToast(`✅ Temp banned ${username} for ${hours} hour(s).`);
+        }
+        document.getElementById('modal-admin-ban-prompt').style.display = 'none';
+      } catch (err) {
+        showToast("❌ Error: " + err.message);
+      }
+    }
+
+    async function adminUnbanUser() {
       const username = document.getElementById('adminTargetUsername').value.trim();
       if (!username) {
         showToast("⚠️ Enter a target username.");
@@ -3423,42 +3497,14 @@
           showToast("❌ User not found.");
           return;
         }
-        await db.collection('jugadores').doc(targetUid).update({ isBanned: isBanned });
-        showToast(`✅ User ${username} successfully ${isBanned ? 'banned' : 'unbanned'}.`);
+        await db.collection('jugadores').doc(targetUid).update({
+          isBanned: false,
+          tempBanUntil: null,
+          banReason: ""
+        });
+        showToast(`✅ User ${username} successfully unbanned.`);
       } catch (err) {
-        showToast("❌ Error updating ban status: " + err.message);
-      }
-    }
-
-    function openTempBanPrompt() {
-      const username = document.getElementById('adminTargetUsername').value.trim();
-      if (!username) {
-        showToast("⚠️ Enter a target username first.");
-        return;
-      }
-      document.getElementById('modal-temp-ban').style.display = 'flex';
-    }
-
-    async function adminTempBan() {
-      const username = document.getElementById('adminTargetUsername').value.trim();
-      const hours = parseInt(document.getElementById('tempBanHoursInput').value);
-      if (!username || isNaN(hours)) {
-        showToast("⚠️ Enter valid hours.");
-        return;
-      }
-      
-      try {
-        const targetUid = await getUidByUsername(username);
-        if (!targetUid) {
-          showToast("❌ User not found.");
-          return;
-        }
-        const unbanDate = new Date(Date.now() + hours * 3600000);
-        await db.collection('jugadores').doc(targetUid).update({ tempBanUntil: unbanDate });
-        showToast(`✅ Temp ban applied to ${username} until: ${unbanDate.toLocaleString()}`);
-        document.getElementById('modal-temp-ban').style.display = 'none';
-      } catch (err) {
-        showToast("❌ Error: " + err.message);
+        showToast("❌ Error unbanning user: " + err.message);
       }
     }
 
@@ -3606,21 +3652,53 @@
     auth.onAuthStateChanged(async user => {
       const adminBtn = document.getElementById('adminBtn');
       if (user) {
-        document.getElementById('account-container').style.display = 'none';
-        document.getElementById('btn-logout').style.display = 'inline-flex';
-        document.getElementById('user-badge').style.display = 'flex';
-        
         try {
           const doc = await db.collection('jugadores').doc(user.uid).get();
           if (doc.exists) {
             const data = doc.data();
+            
+            // Check ban status
+            let isBanned = data.isBanned === true;
+            let tempBanUntil = data.tempBanUntil;
+            let banReason = data.banReason || "No reason specified";
+
+            if (!isBanned && tempBanUntil) {
+              const unbanDate = tempBanUntil.toDate ? tempBanUntil.toDate() : new Date(tempBanUntil);
+              if (Date.now() < unbanDate.getTime()) {
+                isBanned = true;
+              } else {
+                // Temp ban expired, clear it
+                await db.collection('jugadores').doc(user.uid).update({ tempBanUntil: null, banReason: "" });
+                isBanned = false;
+              }
+            }
+
+            if (isBanned) {
+              // Display ban notice modal
+              document.getElementById('ban-type-label').innerText = tempBanUntil ? "Your account is temporarily banned." : "Your account has been permanently banned.";
+              document.getElementById('ban-reason-text').innerText = banReason;
+              
+              if (tempBanUntil) {
+                const unbanDate = tempBanUntil.toDate ? tempBanUntil.toDate() : new Date(tempBanUntil);
+                document.getElementById('ban-duration-text').innerText = `Temporary (Expires: ${unbanDate.toLocaleString()})`;
+              } else {
+                document.getElementById('ban-duration-text').innerText = "Permanent";
+              }
+
+              document.getElementById('modal-ban-notice').style.display = 'flex';
+              return;
+            }
+
+            document.getElementById('account-container').style.display = 'none';
+            document.getElementById('btn-logout').style.display = 'inline-flex';
+            document.getElementById('user-badge').style.display = 'flex';
             document.getElementById('user-display-name').innerText = data.username || "Player";
             if (data.photoURL) {
               document.getElementById('user-avatar').src = data.photoURL;
             }
           }
         } catch(e) {
-          document.getElementById('user-display-name').innerText = user.displayName || "Player";
+          console.error("Error loading user session:", e);
         }
 
         if (ADMIN_UID && user.uid === ADMIN_UID) {
@@ -3639,6 +3717,11 @@
         renderCurrentNews();
       }
     });
+
+    function handleBanDismiss() {
+      document.getElementById('modal-ban-notice').style.display = 'none';
+      auth.signOut();
+    }
 
     function logout() {
       auth.signOut();
