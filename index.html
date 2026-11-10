@@ -707,10 +707,29 @@
     <div class="modal-card" style="max-width: 350px;">
       <button class="modal-close" onclick="document.getElementById('modal-admin-ban-prompt').style.display='none'">✖</button>
       <h3 id="admin-ban-prompt-title">🔨 Ban User</h3>
-      <div class="form-group" id="admin-ban-hours-group" style="display: none;">
-        <label>Hours for temporary ban</label>
-        <input type="number" id="tempBanHoursInput" placeholder="e.g. 24" value="24" min="1">
+      
+      <div id="admin-ban-duration-group" style="display: none; margin-bottom: 12px;">
+        <label style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; display: block;">Temporary Ban Duration</label>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-size: 0.75rem;">Days</label>
+            <input type="number" id="tempBanDaysInput" placeholder="0" value="0" min="0">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-size: 0.75rem;">Hours</label>
+            <input type="number" id="tempBanHoursInput" placeholder="0" value="24" min="0">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-size: 0.75rem;">Minutes</label>
+            <input type="number" id="tempBanMinutesInput" placeholder="0" value="0" min="0">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-size: 0.75rem;">Seconds</label>
+            <input type="number" id="tempBanSecondsInput" placeholder="0" value="0" min="0">
+          </div>
+        </div>
       </div>
+
       <div class="form-group">
         <label>Reason for Ban</label>
         <textarea id="adminBanReasonInput" placeholder="Enter reason for the ban..." rows="3" style="resize:none;" required></textarea>
@@ -2774,10 +2793,6 @@
 
       try {
         await auth.signInWithEmailAndPassword(email, pass);
-
-        // <-- AGREGA ESTA LÍNEA AQUÍ PARA CERRAR EL MODAL AUTOMÁTICAMENTE -->
-        closeAllModals();
-        
         // Ban check is handled in auth state observer
         grecaptcha.reset(recaptchaLoginId);
       } catch (err) {
@@ -3449,7 +3464,7 @@
       }
       isCurrentBanPerma = isPerma;
       document.getElementById('admin-ban-prompt-title').innerText = isPerma ? "🔨 Permanent Ban User" : "⏳ Temporary Ban User";
-      document.getElementById('admin-ban-hours-group').style.display = isPerma ? 'none' : 'block';
+      document.getElementById('admin-ban-duration-group').style.display = isPerma ? 'none' : 'block';
       document.getElementById('adminBanReasonInput').value = "";
       document.getElementById('modal-admin-ban-prompt').style.display = 'flex';
     }
@@ -3474,14 +3489,25 @@
           });
           showToast(`✅ Permanently banned ${username}.`);
         } else {
-          const hours = parseInt(document.getElementById('tempBanHoursInput').value) || 24;
-          const unbanDate = new Date(Date.now() + hours * 3600000);
+          const days = parseInt(document.getElementById('tempBanDaysInput').value) || 0;
+          const hours = parseInt(document.getElementById('tempBanHoursInput').value) || 0;
+          const minutes = parseInt(document.getElementById('tempBanMinutesInput').value) || 0;
+          const seconds = parseInt(document.getElementById('tempBanSecondsInput').value) || 0;
+
+          const totalMilliseconds = (days * 24 * 3600 + hours * 3600 + minutes * 60 + seconds) * 1000;
+
+          if (totalMilliseconds <= 0) {
+            showToast("⚠️ Please specify a valid duration greater than 0.");
+            return;
+          }
+
+          const unbanDate = new Date(Date.now() + totalMilliseconds);
           await db.collection('jugadores').doc(targetUid).update({
             isBanned: false,
             tempBanUntil: unbanDate,
             banReason: reason
           });
-          showToast(`✅ Temp banned ${username} for ${hours} hour(s).`);
+          showToast(`✅ Temp banned ${username} successfully.`);
         }
         document.getElementById('modal-admin-ban-prompt').style.display = 'none';
       } catch (err) {
