@@ -3857,7 +3857,6 @@
       }
     }
 
-    // Corrección crítica en el observador de estado de autenticación de Firebase
     auth.onAuthStateChanged(async user => {
       const adminBtn = document.getElementById('adminBtn');
       if (user) {
@@ -3867,7 +3866,6 @@
           let doc = await docRef.get();
           
           if (!doc.exists) {
-            // Si por alguna razón el documento de perfil no existe en Firestore, lo creamos por defecto para evitar pantallas en blanco
             const defaultUsername = user.displayName || user.email.split('@')[0] || "Player";
             await docRef.set({
               username: defaultUsername,
