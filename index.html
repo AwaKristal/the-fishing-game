@@ -878,6 +878,7 @@
         <div>
           <h3 id="profile-modal-name" style="margin:0; font-size:1.2rem;">Username</h3>
           <p id="verification-status" style="margin:3px 0; font-size:0.8rem; color:#e74c3c;">⚠️ Email not verified</p>
+          <p id="verification-timer" style="margin:2px 0 0 0; font-size:0.75rem; color:#c0392b; font-weight:bold; display:none;">⌛ Auto-deletion in: Calculating...</p>
           <p style="margin:5px 0 0 0; font-size:0.9rem; color:#64748b;">💰 Coins: <span id="profile-coins">0</span> | 🐟 Fish: <span id="profile-fish-count">0</span></p>
         </div>
       </div>
@@ -1323,6 +1324,7 @@
     let selectedFishToMarket = null;
     let adminSelectedFishToRemove = "";
     let isCurrentBanPerma = true;
+    let verificationTimerInterval = null;
 
     let isMouseDown = false;
     let minigameLoop = null;
@@ -1395,7 +1397,6 @@
       setTimeout(() => toast.remove(), 4000);
     }
 
-    // Helper function for username validation
     function validateUsernameFormat(username) {
       if (username.length > 20) {
         return "Username cannot be longer than 20 characters.";
@@ -1455,6 +1456,7 @@
 
     function closeAllModals() {
       stopFishAnimations();
+      if (verificationTimerInterval) clearInterval(verificationTimerInterval);
       document.querySelectorAll('.modal-overlay').forEach(el => {
         if (el.id !== 'modal-ban-notice') el.style.display = 'none';
       });
@@ -1764,13 +1766,14 @@
               <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; position: relative;">
                 <span style="position: absolute; top: 6px; right: 8px; background: #3498db; color: white; font-size: 0.75rem; font-weight: bold; padding: 1px 6px; border-radius: 10px;">x${group.count}</span>
                 <img src="${fishObj.img}" style="width: 50px; height: 50px; object-fit: contain; margin: 8px 0;">
-                <span style="font-size: 0.85rem; font-weight: bold; text-align: center; margin-bottom: 8px; color: #1e293b;">${group.name}</span>
-                
+                <span style="font-size: 0.85rem; font-weight: bold; text-align: center; margin-bottom: 2px; color: #1e293b;">${group.name}</span>
+                <span style="font-size: 0.75rem; color: #d97706; font-weight: bold; margin-bottom: 8px;">Value: 💰 ${fishObj.value}</span>
+
                 ${isLimited ? 
                   `<span style="font-size: 0.7rem; color: #8e44ad; font-weight: bold; background: #f3e8ff; padding: 4px 8px; border-radius: 6px; width: 100%; text-align: center;">🔒 Untradeable</span>` :
                   `<div style="display: flex; gap: 4px; width: 100%;">
-                    <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 4px; font-size: 0.7rem; flex:1;" onclick="botSellFish(${group.firstIndex}, '${group.name}', ${fishObj.value})">Bot Sell</button>
-                    <button type="button" class="modal-action-btn" style="background:#2980b9; padding: 4px; font-size: 0.7rem; flex:1;" onclick="promptMarketSell(${group.firstIndex}, '${group.name}')">Market</button>
+                    <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 4px; font-size: 0.68rem; flex:1;" onclick="botSellFish(${group.firstIndex}, '${group.name}', ${fishObj.value})">Bot Sell (${fishObj.value} 💰)</button>
+                    <button type="button" class="modal-action-btn" style="background:#2980b9; padding: 4px; font-size: 0.68rem; flex:1;" onclick="promptMarketSell(${group.firstIndex}, '${group.name}')">Market</button>
                   </div>`
                 }
               </div>
@@ -2396,12 +2399,10 @@
           
           const standardFishes = ALLOWED_FISH_TYPES.filter(f => !f.isLimited);
           
-          // Custom weighted random distribution with 3% luck modifier when bait is active
           const rand = Math.random();
           let chosenPool = standardFishes;
 
           if (usedBaitThisCast) {
-            // With 3% luck boost, slightly increase weight of rare+ categories
             if (rand < 0.03) {
               const divineMythic = standardFishes.filter(f => f.rarity === 'Divine' || f.rarity === 'Mythic');
               if (divineMythic.length > 0) chosenPool = divineMythic;
@@ -2411,7 +2412,6 @@
             }
           }
 
-          // Strict tier-based probabilities for unbaited/general catches
           const tierRoll = Math.random() * 100;
           let targetRarity = "Common";
           if (tierRoll < 0.05) targetRarity = "Divine";      // 0.05%
@@ -2917,13 +2917,9 @@
       try {
         await user.reload();
         const statusEl = document.getElementById('verification-status');
-        if (user.emailVerified) {
-          statusEl.innerText = "✅ Email verified";
-          statusEl.style.color = "#2ecc71";
-        } else {
-          statusEl.innerText = "⚠️ Email not verified";
-          statusEl.style.color = "#e74c3c";
-        }
+        const timerEl = document.getElementById('verification-timer');
+        
+        if (verificationTimerInterval) clearInterval(verificationTimerInterval);
 
         const doc = await db.collection('jugadores').doc(user.uid).get();
         if (doc.exists) {
@@ -2937,6 +2933,44 @@
           document.getElementById('profile-current-password').value = "";
           if (data.photoURL) {
             document.getElementById('profile-modal-avatar').src = data.photoURL;
+          }
+
+          if (user.emailVerified) {
+            statusEl.innerText = "✅ Email verified";
+            statusEl.style.color = "#2ecc71";
+            timerEl.style.display = 'none';
+          } else {
+            statusEl.innerText = "⚠️ Email not verified";
+            statusEl.style.color = "#e74c3c";
+            timerEl.style.display = 'block';
+
+            let createdAtMs = Date.now();
+            if (user.metadata && user.metadata.creationTime) {
+              createdAtMs = new Date(user.metadata.creationTime).getTime();
+            } else if (data.createdAt) {
+              createdAtMs = data.createdAt.toDate ? data.createdAt.toDate().getTime() : new Date(data.createdAt).getTime();
+            }
+
+            const deletionTimeMs = createdAtMs + (3 * 24 * 60 * 60 * 1000); // 3 days limit
+
+            const updateTimerDisplay = () => {
+              const now = Date.now();
+              const diff = deletionTimeMs - now;
+
+              if (diff <= 0) {
+                timerEl.innerText = "⌛ Auto-deletion: Account scheduled for deletion!";
+                clearInterval(verificationTimerInterval);
+              } else {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+                timerEl.innerText = `⌛ Auto-deletion in: ${days}d ${hours}h ${mins}m ${secs}s`;
+              }
+            };
+
+            updateTimerDisplay();
+            verificationTimerInterval = setInterval(updateTimerDisplay, 1000);
           }
         }
       } catch (err) {
