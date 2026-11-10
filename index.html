@@ -1855,7 +1855,6 @@
             }
           });
 
-          // Obtener también cuántos están en el market listados para descontarlos del total disponible para venta al bot
           const marketSnap = await db.collection('marketListings').where('sellerUid', '==', user.uid).where('fishName', '==', fishName).get();
           let listedInMarket = marketSnap.size;
 
@@ -2256,7 +2255,6 @@
         Object.entries(fishCounts).forEach(([fishName, count]) => {
           const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === fishName) || ALLOWED_FISH_TYPES[0];
           
-          // Verificar si está listado en el market
           const isListed = marketListedFishes.includes(fishName);
 
           html += `
@@ -2281,7 +2279,6 @@
       if (!user) return;
 
       try {
-        // Bug Fix 1: Validar que el pez no esté puesto en una oferta del market
         const marketSnap = await db.collection('marketListings').where('sellerUid', '==', user.uid).where('fishName', '==', fishName).get();
         if (!marketSnap.empty) {
           showToast(`You cannot put ${fishName} in a tank because it is currently listed on the Market!`);
@@ -3515,7 +3512,6 @@
         return;
       }
 
-      // Bug Fix 2: Validar que el pez exista en ALLOWED_FISH_TYPES (comparación insensible a mayúsculas/minúsculas)
       const matchFish = ALLOWED_FISH_TYPES.find(f => f.name.toLowerCase() === fishNameInput.toLowerCase());
       if (!matchFish) {
         showToast(`Error: The fish "${fishNameInput}" does not exist in the game database!`);
@@ -3861,51 +3857,80 @@
       }
     }
 
+    // Corrección crítica en el observador de estado de autenticación de Firebase
     auth.onAuthStateChanged(async user => {
       const adminBtn = document.getElementById('adminBtn');
       if (user) {
         closeAllModals(); 
         try {
-          const doc = await db.collection('jugadores').doc(user.uid).get();
-          if (doc.exists) {
-            const data = doc.data();
+          const docRef = db.collection('jugadores').doc(user.uid);
+          let doc = await docRef.get();
+          
+          if (!doc.exists) {
+            // Si por alguna razón el documento de perfil no existe en Firestore, lo creamos por defecto para evitar pantallas en blanco
+            const defaultUsername = user.displayName || user.email.split('@')[0] || "Player";
+            await docRef.set({
+              username: defaultUsername,
+              email: user.email,
+              bio: "",
+              photoURL: "",
+              coins: 0,
+              fishes: [],
+              miniTanksCount: 0,
+              wormBaitsCount: 0,
+              isBaitActive: false,
+              aquariumRoomsOwned: 1,
+              aquariumTanksMap: { room_0: new Array(8).fill(null) },
+              achievements: { catchFirst: false, gluGluTank: false, wormBaitAch: false, divineAch: false },
+              redeemedCodes: [],
+              lastUsernameChange: null,
+              isBanned: false,
+              tempBanUntil: null,
+              banReason: "",
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            doc = await docRef.get();
+          }
+
+          const data = doc.data();
+          
+          let isBanned = data.isBanned === true;
+          let tempBanUntil = data.tempBanUntil;
+          let banReason = data.banReason || "No reason specified";
+
+          if (!isBanned && tempBanUntil) {
+            const unbanDate = tempBanUntil.toDate ? tempBanUntil.toDate() : new Date(tempBanUntil);
+            if (Date.now() < unbanDate.getTime()) {
+              isBanned = true;
+            } else {
+              await docRef.update({ tempBanUntil: null, banReason: "" });
+              isBanned = false;
+            }
+          }
+
+          if (isBanned) {
+            document.getElementById('ban-type-label').innerText = tempBanUntil ? "Your account is temporarily banned." : "Your account has been permanently banned.";
+            document.getElementById('ban-reason-text').innerText = banReason;
             
-            let isBanned = data.isBanned === true;
-            let tempBanUntil = data.tempBanUntil;
-            let banReason = data.banReason || "No reason specified";
-
-            if (!isBanned && tempBanUntil) {
+            if (tempBanUntil) {
               const unbanDate = tempBanUntil.toDate ? tempBanUntil.toDate() : new Date(tempBanUntil);
-              if (Date.now() < unbanDate.getTime()) {
-                isBanned = true;
-              } else {
-                await db.collection('jugadores').doc(user.uid).update({ tempBanUntil: null, banReason: "" });
-                isBanned = false;
-              }
+              document.getElementById('ban-duration-text').innerText = `Temporary (Expires: ${unbanDate.toLocaleString()})`;
+            } else {
+              document.getElementById('ban-duration-text').innerText = "Permanent";
             }
 
-            if (isBanned) {
-              document.getElementById('ban-type-label').innerText = tempBanUntil ? "Your account is temporarily banned." : "Your account has been permanently banned.";
-              document.getElementById('ban-reason-text').innerText = banReason;
-              
-              if (tempBanUntil) {
-                const unbanDate = tempBanUntil.toDate ? tempBanUntil.toDate() : new Date(tempBanUntil);
-                document.getElementById('ban-duration-text').innerText = `Temporary (Expires: ${unbanDate.toLocaleString()})`;
-              } else {
-                document.getElementById('ban-duration-text').innerText = "Permanent";
-              }
+            document.getElementById('modal-ban-notice').style.display = 'flex';
+            return;
+          }
 
-              document.getElementById('modal-ban-notice').style.display = 'flex';
-              return;
-            }
-
-            document.getElementById('account-container').style.display = 'none';
-            document.getElementById('btn-logout').style.display = 'inline-flex';
-            document.getElementById('user-badge').style.display = 'flex';
-            document.getElementById('user-display-name').innerText = data.username || "Player";
-            if (data.photoURL) {
-              document.getElementById('user-avatar').src = data.photoURL;
-            }
+          document.getElementById('account-container').style.display = 'none';
+          document.getElementById('btn-logout').style.display = 'inline-flex';
+          document.getElementById('user-badge').style.display = 'flex';
+          document.getElementById('user-display-name').innerText = data.username || "Player";
+          if (data.photoURL) {
+            document.getElementById('user-avatar').src = data.photoURL;
+          } else {
+            document.getElementById('user-avatar').src = "https://via.placeholder.com/40";
           }
         } catch(e) {
           console.error("Error loading user session:", e);
