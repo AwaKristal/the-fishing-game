@@ -4,25 +4,18 @@
   "display": "standalone",
   "name": "The Fishing Game",
   "orientation": "any",
-  "scope": "/",
-  "short_name": "The Fishing Game",
-  "start_url": "/",
+  "scope": "/the-fishing-game/",
+  "short_name": "Fishing Game",
+  "start_url": "/the-fishing-game/",
   "theme_color": "#ffffff",
+  "description": "The revival of my old game i made in school with paper about fishing!",
+  "id": "/the-fishing-game/",
   "icons": [
     {
-      "src": "https://i.postimg.cc/rsFhhvFP/icon.png",
+      "src": "icon.png",
+      "sizes": "512x512",
       "type": "image/png",
-      "sizes": "64x64",
-      "isSquare": true,
-      "isPng": true,
-      "isWebp": false,
-      "isJpg": false,
-      "width": 64,
-      "is512x512": false,
-      "is256x256": false,
-      "is192x192": false
+      "purpose": "any maskable"
     }
-  ],
-  "description": "The revival of my old game i made in school with paper about fishing!",
-  "id": "/the-fishing-game/"
+  ]
 }
