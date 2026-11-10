@@ -1336,7 +1336,7 @@
     let currentIndexFish = 0;
     let isLimitedMode = false;
     let selectedFishToMarket = null;
-    let selectedFishToBotSell = null; // Para Bot Sell con cantidad
+    let selectedFishToBotSell = null;
     let adminSelectedFishToRemove = "";
     let isCurrentBanPerma = true;
     let verificationTimerInterval = null;
@@ -1833,7 +1833,6 @@
       }
     }
 
-    // Funciones para Bot Sell con selección de cantidad (Soluciona el bug de venta doble)
     function promptBotSell(fishName, maxAvailable, fishValue) {
       const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName);
       if (fishObj && fishObj.isLimited) {
@@ -1879,7 +1878,6 @@
           let fishes = doc.data().fishes || [];
           let tanksMap = doc.data().aquariumTanksMap || {};
 
-          // Calcular cuántos de este tipo están protegidos en acuarios
           let totalDisplayed = 0;
           Object.values(tanksMap).forEach(roomTanks => {
             if (Array.isArray(roomTanks)) {
@@ -1892,7 +1890,6 @@
             throw new Error(`You cannot sell ${qtyInput} ${fishName}(s) because ${totalDisplayed} of them are protected in your Aquarium rooms!`);
           }
 
-          // Remover la cantidad exacta de forma segura
           let removed = 0;
           for (let i = fishes.length - 1; i >= 0 && removed < qtyInput; i--) {
             if (fishes[i].name === fishName) {
@@ -2454,10 +2451,11 @@
           let chosenPool = standardFishes;
 
           if (usedBaitThisCast) {
-            if (rand < 0.03) {
+            // Actualizado al 7% (0.07) según tu solicitud
+            if (rand < 0.07) {
               const divineMythic = standardFishes.filter(f => f.rarity === 'Divine' || f.rarity === 'Mythic');
               if (divineMythic.length > 0) chosenPool = divineMythic;
-            } else if (rand < 0.15) {
+            } else if (rand < 0.20) {
               const rareEpicLegendary = standardFishes.filter(f => f.rarity === 'Rare' || f.rarity === 'Epic' || f.rarity === 'Legendary');
               if (rareEpicLegendary.length > 0) chosenPool = rareEpicLegendary;
             }
@@ -3006,7 +3004,7 @@
               createdAtMs = data.createdAt.toDate ? data.createdAt.toDate().getTime() : new Date(data.createdAt).getTime();
             }
 
-            const deletionTimeMs = createdAtMs + (3 * 24 * 60 * 60 * 1000); // 3 days limit
+            const deletionTimeMs = createdAtMs + (3 * 24 * 60 * 60 * 1000);
 
             const updateTimerDisplay = () => {
               const now = Date.now();
@@ -3317,7 +3315,9 @@
       `;
 
       newsCounter.textContent = `${currentNewsIndex + 1} / ${newsList.length}`;
+      // Botón Prev se deshabilita si estamos en la primera noticia (índice 0)
       prevBtn.disabled = (currentNewsIndex === 0);
+      // Botón Next se deshabilita si estamos en la última noticia
       nextBtn.disabled = (currentNewsIndex === newsList.length - 1);
     }
 
