@@ -1833,19 +1833,48 @@
       }
     }
 
-    function promptBotSell(fishName, maxAvailable, fishValue) {
+    async function promptBotSell(fishName, maxAvailable, fishValue) {
       const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName);
       if (fishObj && fishObj.isLimited) {
         showToast("Limited edition fishes cannot be sold!");
         return;
       }
 
-      selectedFishToBotSell = { name: fishName, maxAvailable: maxAvailable, value: fishValue };
-      document.getElementById('prompt-botsell-name-label').innerText = `Fish: ${fishName}`;
-      document.getElementById('prompt-botsell-max-label').innerText = maxAvailable;
-      document.getElementById('botsell-qty-input').value = 1;
-      document.getElementById('botsell-qty-input').max = maxAvailable;
-      document.getElementById('modal-botsell-prompt').style.display = 'flex';
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const doc = await db.collection('jugadores').doc(user.uid).get();
+        if (doc.exists) {
+          const data = doc.data();
+          let tanksMap = data.aquariumTanksMap || {};
+          let displayedInTanks = 0;
+          Object.values(tanksMap).forEach(roomTanks => {
+            if (Array.isArray(roomTanks)) {
+              displayedInTanks += roomTanks.filter(t => t === fishName).length;
+            }
+          });
+
+          // Obtener también cuántos están en el market listados para descontarlos del total disponible para venta al bot
+          const marketSnap = await db.collection('marketListings').where('sellerUid', '==', user.uid).where('fishName', '==', fishName).get();
+          let listedInMarket = marketSnap.size;
+
+          let availableToSell = maxAvailable - displayedInTanks - listedInMarket;
+          if (availableToSell <= 0) {
+            showToast("All your fishes of this type are currently protected in your Aquarium or listed on the Market!");
+            return;
+          }
+
+          selectedFishToBotSell = { name: fishName, maxAvailable: availableToSell, value: fishValue };
+          document.getElementById('prompt-botsell-name-label').innerText = `Fish: ${fishName} (Available: ${availableToSell})`;
+          document.getElementById('prompt-botsell-max-label').innerText = availableToSell;
+          document.getElementById('botsell-qty-input').value = 1;
+          document.getElementById('botsell-qty-input').max = availableToSell;
+          document.getElementById('modal-botsell-prompt').style.display = 'flex';
+        }
+      } catch (err) {
+        showToast("Error checking fish availability.");
+      }
     }
 
     async function confirmBotSell() {
@@ -1859,7 +1888,7 @@
       }
 
       if (qtyInput > selectedFishToBotSell.maxAvailable) {
-        showToast("You don't have that many fishes to sell!");
+        showToast("You don't have that many free fishes to sell!");
         return;
       }
 
@@ -1885,9 +1914,12 @@
             }
           });
 
+          let marketQuerySnap = await db.collection('marketListings').where('sellerUid', '==', user.uid).where('fishName', '==', fishName).get();
+          let totalListed = marketQuerySnap.size;
+
           let totalOwned = fishes.filter(f => f.name === fishName).length;
-          if (totalOwned - qtyInput < totalDisplayed) {
-            throw new Error(`You cannot sell ${qtyInput} ${fishName}(s) because ${totalDisplayed} of them are protected in your Aquarium rooms!`);
+          if (totalOwned - qtyInput < totalDisplayed + totalListed) {
+            throw new Error(`You cannot sell ${qtyInput} ${fishName}(s) because they are protected in your Aquarium or listed on the Market!`);
           }
 
           let removed = 0;
@@ -2176,7 +2208,7 @@
       const user = auth.currentUser;
       if (!user) return;
 
-      db.collection('jugadores').doc(user.uid).get().then(doc => {
+      db.collection('jugadores').doc(user.uid).get().then(async doc => {
         if (doc.exists) {
           const data = doc.data();
           const tanksCount = data.miniTanksCount || 0;
@@ -2200,7 +2232,16 @@
       });
     }
 
-    function openSelectFishModal(fishes) {
+    async function openSelectFishModal(fishes) {
+      const user = auth.currentUser;
+      let marketListedFishes = [];
+      if (user) {
+        const marketSnap = await db.collection('marketListings').where('sellerUid', '==', user.uid).get();
+        marketSnap.forEach(doc => {
+          marketListedFishes.push(doc.data().fishName);
+        });
+      }
+
       const listEl = document.getElementById('select-fish-list');
       if (!fishes || fishes.length === 0) {
         listEl.innerHTML = '<p style="color:#64748b; text-align:center; margin:10px 0; grid-column:1/-1;">You have no fish in your inventory!</p>';
@@ -2214,12 +2255,19 @@
         let html = '';
         Object.entries(fishCounts).forEach(([fishName, count]) => {
           const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === fishName) || ALLOWED_FISH_TYPES[0];
+          
+          // Verificar si está listado en el market
+          const isListed = marketListedFishes.includes(fishName);
+
           html += `
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; position: relative; cursor: pointer;" onclick="assignFishToShelf('${fishName}')">
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; position: relative; ${isListed ? 'opacity: 0.6;' : 'cursor: pointer;'}" ${isListed ? '' : `onclick="assignFishToShelf('${fishName}')"`}>
               <span style="position: absolute; top: 6px; right: 8px; background: #3498db; color: white; font-size: 0.75rem; font-weight: bold; padding: 1px 6px; border-radius: 10px;">x${count}</span>
               <img src="${fishObj.img}" style="width: 50px; height: 50px; object-fit: contain; margin: 8px 0;">
               <span style="font-size: 0.85rem; font-weight: bold; text-align: center; margin-bottom: 8px; color: #1e293b;">${fishName}</span>
-              <button type="button" class="modal-action-btn" style="background:#27ae60; padding: 4px; font-size: 0.7rem; width: 100%;">Select</button>
+              ${isListed ? 
+                `<span style="font-size: 0.65rem; color: #c0392b; font-weight: bold; text-align: center; width: 100%;">On Market Offer</span>` :
+                `<button type="button" class="modal-action-btn" style="background:#27ae60; padding: 4px; font-size: 0.7rem; width: 100%;">Select</button>`
+              }
             </div>
           `;
         });
@@ -2233,6 +2281,13 @@
       if (!user) return;
 
       try {
+        // Bug Fix 1: Validar que el pez no esté puesto en una oferta del market
+        const marketSnap = await db.collection('marketListings').where('sellerUid', '==', user.uid).where('fishName', '==', fishName).get();
+        if (!marketSnap.empty) {
+          showToast(`You cannot put ${fishName} in a tank because it is currently listed on the Market!`);
+          return;
+        }
+
         const docRef = db.collection('jugadores').doc(user.uid);
         const doc = await docRef.get();
         if (doc.exists) {
@@ -2451,7 +2506,6 @@
           let chosenPool = standardFishes;
 
           if (usedBaitThisCast) {
-            // Actualizado al 7% (0.07) según tu solicitud
             if (rand < 0.07) {
               const divineMythic = standardFishes.filter(f => f.rarity === 'Divine' || f.rarity === 'Mythic');
               if (divineMythic.length > 0) chosenPool = divineMythic;
@@ -3315,9 +3369,7 @@
       `;
 
       newsCounter.textContent = `${currentNewsIndex + 1} / ${newsList.length}`;
-      // Botón Prev se deshabilita si estamos en la primera noticia (índice 0)
       prevBtn.disabled = (currentNewsIndex === 0);
-      // Botón Next se deshabilita si estamos en la última noticia
       nextBtn.disabled = (currentNewsIndex === newsList.length - 1);
     }
 
@@ -3463,8 +3515,13 @@
         return;
       }
 
+      // Bug Fix 2: Validar que el pez exista en ALLOWED_FISH_TYPES (comparación insensible a mayúsculas/minúsculas)
       const matchFish = ALLOWED_FISH_TYPES.find(f => f.name.toLowerCase() === fishNameInput.toLowerCase());
-      const exactFishName = matchFish ? matchFish.name : fishNameInput;
+      if (!matchFish) {
+        showToast(`Error: The fish "${fishNameInput}" does not exist in the game database!`);
+        return;
+      }
+      const exactFishName = matchFish.name;
 
       try {
         const targetUid = await getUidByUsername(username);
