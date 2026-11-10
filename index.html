@@ -2774,6 +2774,10 @@
 
       try {
         await auth.signInWithEmailAndPassword(email, pass);
+
+        // <-- AGREGA ESTA LÍNEA AQUÍ PARA CERRAR EL MODAL AUTOMÁTICAMENTE -->
+        closeAllModals();
+        
         // Ban check is handled in auth state observer
         grecaptcha.reset(recaptchaLoginId);
       } catch (err) {
