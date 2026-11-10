@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -623,7 +623,7 @@
         <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account">
       </button>
     </div>
-    <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto; padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">🚪 Log out</button>
+    <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto; padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">🚪 Cerrar sesión</button>
   </div>
 
   <main class="main-container" id="main-menu-container">
@@ -645,19 +645,19 @@
   </main>
 
   <div id="game-screen">
-    <img src="https://i.postimg.cc/bNcMt94Y/backpack.png" alt="Backpack" class="backpack-on-map" onclick="openModal('modal-backpack')" title="Open Backpack">
+    <img src="https://i.postimg.cc/bNcMt94Y/backpack.png" alt="Backpack" class="backpack-on-map" onclick="openModal('modal-backpack')" title="Abrir Mochila">
 
     <div class="game-hud">
       <div class="hud-box" id="hud-coins">💰 0</div>
-      <div class="hud-box" id="hud-fish">🐟 0 Fishes</div>
+      <div class="hud-box" id="hud-fish">🐟 0 Peces</div>
     </div>
 
-    <button class="exit-game-btn" onclick="exitGame()">🚪 Exit</button>
-    <button id="cast-btn" class="cast-line-btn" onclick="castLine()">🎣 Cast Line!</button>
+    <button class="exit-game-btn" onclick="exitGame()">🚪 Salir</button>
+    <button id="cast-btn" class="cast-line-btn" onclick="castLine()">🎣 ¡Lanzar caña!</button>
 
     <div id="fishing-minigame-overlay">
       <div class="minigame-container">
-        <div class="minigame-title">🎣 CATCH THE FISH!</div>
+        <div class="minigame-title">🎣 ¡ATRAPA EL PEZ!</div>
         
         <div class="track-bar">
           <div id="minigame-green-zone" class="green-zone"></div>
@@ -668,7 +668,7 @@
           <div id="minigame-progress-fill" class="progress-fill"></div>
         </div>
 
-        <div class="minigame-hint">HOLD click, Space, W or Up Arrow!</div>
+        <div class="minigame-hint">¡MANTÉN presionado el click, Espacio, W o Flecha Arriba!</div>
       </div>
     </div>
   </div>
@@ -689,83 +689,83 @@
     <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
   </button>
 
-  <!-- Ban Notification Modal -->
+  <!-- Modal de baneo -->
   <div id="modal-ban-notice" class="modal-overlay" style="z-index: 3000;">
     <div class="modal-card" style="max-width: 400px; text-align: center; border: 3px solid #e74c3c;">
-      <h2 style="color: #e74c3c; margin-top: 0;">🚫 ACCESS DENIED</h2>
-      <p style="font-size: 1.05rem; font-weight: bold;" id="ban-type-label">Your account has been banned.</p>
+      <h2 style="color: #e74c3c; margin-top: 0;">🚫 ACCESO DENEGADO</h2>
+      <p style="font-size: 1.05rem; font-weight: bold;" id="ban-type-label">Tu cuenta ha sido suspendida.</p>
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1; margin: 15px 0; text-align: left;">
-        <p style="margin: 0 0 8px 0; font-size: 0.9rem;"><strong>📌 Reason:</strong> <span id="ban-reason-text" style="color: #c0392b;">No reason specified</span></p>
-        <p style="margin: 0; font-size: 0.9rem;"><strong>⏳ Duration:</strong> <span id="ban-duration-text" style="color: #2980b9;">Permanent</span></p>
+        <p style="margin: 0 0 8px 0; font-size: 0.9rem;"><strong>📌 Razón:</strong> <span id="ban-reason-text" style="color: #c0392b;">Sin razón especificada</span></p>
+        <p style="margin: 0; font-size: 0.9rem;"><strong>⏳ Duración:</strong> <span id="ban-duration-text" style="color: #2980b9;">Permanente</span></p>
       </div>
-      <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="handleBanDismiss()">Acknowledge & Logout</button>
+      <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="handleBanDismiss()">Aceptar y Cerrar Sesión</button>
     </div>
   </div>
 
-  <!-- Admin Ban Reason Prompt Modal -->
+  <!-- Prompt de baneo administrativo -->
   <div id="modal-admin-ban-prompt" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 350px;">
       <button class="modal-close" onclick="document.getElementById('modal-admin-ban-prompt').style.display='none'">✖</button>
-      <h3 id="admin-ban-prompt-title">🔨 Ban User</h3>
+      <h3 id="admin-ban-prompt-title">🔨 Banear Usuario</h3>
       
       <div id="admin-ban-duration-group" style="display: none; margin-bottom: 12px;">
-        <label style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; display: block;">Temporary Ban Duration</label>
+        <label style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; display: block;">Duración del baneo temporal</label>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
           <div class="form-group" style="margin-bottom: 0;">
-            <label style="font-size: 0.75rem;">Days</label>
+            <label style="font-size: 0.75rem;">Días</label>
             <input type="number" id="tempBanDaysInput" placeholder="0" value="0" min="0">
           </div>
           <div class="form-group" style="margin-bottom: 0;">
-            <label style="font-size: 0.75rem;">Hours</label>
+            <label style="font-size: 0.75rem;">Horas</label>
             <input type="number" id="tempBanHoursInput" placeholder="0" value="24" min="0">
           </div>
           <div class="form-group" style="margin-bottom: 0;">
-            <label style="font-size: 0.75rem;">Minutes</label>
+            <label style="font-size: 0.75rem;">Minutos</label>
             <input type="number" id="tempBanMinutesInput" placeholder="0" value="0" min="0">
           </div>
           <div class="form-group" style="margin-bottom: 0;">
-            <label style="font-size: 0.75rem;">Seconds</label>
+            <label style="font-size: 0.75rem;">Segundos</label>
             <input type="number" id="tempBanSecondsInput" placeholder="0" value="0" min="0">
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <label>Reason for Ban</label>
-        <textarea id="adminBanReasonInput" placeholder="Enter reason for the ban..." rows="3" style="resize:none;" required></textarea>
+        <label>Razón del baneo</label>
+        <textarea id="adminBanReasonInput" placeholder="Ingresa la razón..." rows="3" style="resize:none;" required></textarea>
       </div>
-      <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="confirmAdminBanAction()">Confirm Ban</button>
+      <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="confirmAdminBanAction()">Confirmar Baneo</button>
     </div>
   </div>
 
   <div id="modal-market" class="modal-overlay">
     <div class="modal-card" style="max-width: 650px;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>🏛️ Player Market & Sell</h2>
+      <h2>🏛️ Mercado Comunitario y Venta</h2>
       
       <div class="tab-container">
-        <button id="tab-market-buy-btn" class="tab-btn active" onclick="switchMarketTab('buy')">🛒 Player Market</button>
-        <button id="tab-market-sell-btn" class="tab-btn" onclick="switchMarketTab('sell')">💰 Sell My Fish</button>
+        <button id="tab-market-buy-btn" class="tab-btn active" onclick="switchMarketTab('buy')">🛒 Mercado</button>
+        <button id="tab-market-sell-btn" class="tab-btn" onclick="switchMarketTab('sell')">💰 Vender Peces</button>
       </div>
 
       <div id="market-buy-section">
-        <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px;">Buy fish offered by real players in the community market:</p>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px;">Compra peces ofrecidos por otros jugadores:</p>
         <div id="market-listings-container" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-          <p style="color:#64748b; text-align:center;">Loading market offers...</p>
+          <p style="color:#64748b; text-align:center;">Cargando ofertas del mercado...</p>
         </div>
       </div>
 
       <div id="market-sell-section" style="display: none;">
-        <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px;">Select a fish from your backpack to sell:</p>
+        <p style="font-size:0.85rem; color:#64748b; margin-bottom:10px;">Selecciona un pez de tu mochila para vender:</p>
         <div id="market-my-fishes-container" style="max-height: 280px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px;">
-          <p style="color:#64748b; text-align:center; grid-column: 1/-1;">Loading your fishes...</p>
+          <p style="color:#64748b; text-align:center; grid-column: 1/-1;">Cargando tus peces...</p>
         </div>
       </div>
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
-      <h3 style="font-size: 1rem; color: #1e3a8a; margin-bottom: 5px;">📋 My Active Market Listings (Cancel & Retrieve)</h3>
+      <h3 style="font-size: 1rem; color: #1e3a8a; margin-bottom: 5px;">📋 Mis ofertas activas (Cancelar y Recuperar)</h3>
       <div id="market-my-active-listings" style="max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;">
-        <p style="font-size: 0.8rem; color:#64748b; text-align:center;">Loading your active listings...</p>
+        <p style="font-size: 0.8rem; color:#64748b; text-align:center;">Cargando tus ofertas...</p>
       </div>
     </div>
   </div>
@@ -773,13 +773,13 @@
   <div id="modal-market-price-prompt" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 320px;">
       <button class="modal-close" onclick="document.getElementById('modal-market-price-prompt').style.display='none'">✖</button>
-      <h3>🏷️ Set Market Price</h3>
-      <p style="font-size:0.85rem; color:#64748b;" id="prompt-fish-name-label">Fish: Opah</p>
+      <h3>🏷️ Fijar Precio en Mercado</h3>
+      <p style="font-size:0.85rem; color:#64748b;" id="prompt-fish-name-label">Pez: Opah</p>
       <div class="form-group">
-        <label>Price in Coins (💰)</label>
-        <input type="number" id="market-sell-price-input" min="1" placeholder="e.g. 50">
+        <label>Precio en Monedas (💰)</label>
+        <input type="number" id="market-sell-price-input" min="1" placeholder="ej. 50">
       </div>
-      <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="confirmMarketSell()">Post to Market</button>
+      <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="confirmMarketSell()">Publicar en Mercado</button>
     </div>
   </div>
 
@@ -787,52 +787,52 @@
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
       <div class="tab-container">
-        <button id="tab-login-btn" class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
-        <button id="tab-register-btn" class="tab-btn" onclick="switchAuthTab('register')">Register</button>
+        <button id="tab-login-btn" class="tab-btn active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+        <button id="tab-register-btn" class="tab-btn" onclick="switchAuthTab('register')">Registrarse</button>
       </div>
 
       <form id="form-login" onsubmit="handleLogin(event)">
         <div class="form-group">
-          <label>Email Address</label>
+          <label>Correo Electrónico</label>
           <input type="email" id="login-email" autocomplete="email" required>
         </div>
         <div class="form-group">
-          <label>Password</label>
+          <label>Contraseña</label>
           <input type="password" id="login-password" autocomplete="current-password" required>
         </div>
         <div class="form-group">
           <div id="recaptcha-login"></div>
         </div>
-        <button type="submit" class="modal-action-btn">Sign In</button>
-        <p style="font-size:0.85rem; text-align:center; margin-top:10px; cursor:pointer; color:#1e3a8a;" onclick="openModal('modal-forgot')">Forgot password?</p>
-        <p style="font-size:0.9rem; text-align:center; margin-top:10px; cursor:pointer; color:#2ecc71; font-weight:bold;" onclick="openModal('modal-resend-verification')">📧 Resend Verification Email</p>
+        <button type="submit" class="modal-action-btn">Ingresar</button>
+        <p style="font-size:0.85rem; text-align:center; margin-top:10px; cursor:pointer; color:#1e3a8a;" onclick="openModal('modal-forgot')">¿Olvidaste tu contraseña?</p>
+        <p style="font-size:0.9rem; text-align:center; margin-top:10px; cursor:pointer; color:#2ecc71; font-weight:bold;" onclick="openModal('modal-resend-verification')">📧 Reenviar correo de verificación</p>
       </form>
 
       <form id="form-register" onsubmit="handleRegister(event)" style="display:none;" autocomplete="on">
         <div class="form-group">
-          <label>Username</label>
+          <label>Nombre de Usuario</label>
           <input type="text" id="reg-username" autocomplete="given-name" name="new-username" required maxlength="20">
         </div>
         <div class="form-group">
-          <label>Email Address</label>
+          <label>Correo Electrónico</label>
           <input type="email" id="reg-email" autocomplete="email" name="new-email" required>
         </div>
         <div class="form-group">
-          <label>Password</label>
+          <label>Contraseña</label>
           <input type="password" id="reg-password" autocomplete="new-password" name="new-password" required minlength="6">
         </div>
         <div class="form-group">
-          <label>Bio / Description</label>
-          <textarea id="reg-bio" placeholder="Tell us something about you..." maxlength="150" style="resize:none; height:60px;"></textarea>
+          <label>Biografía / Descripción</label>
+          <textarea id="reg-bio" placeholder="Cuéntanos algo sobre ti..." maxlength="150" style="resize:none; height:60px;"></textarea>
         </div>
         <div class="form-group">
-          <label>Profile Picture (Max 1MB)</label>
+          <label>Foto de Perfil (Máx 1MB)</label>
           <input type="file" id="reg-avatar" accept="image/*">
         </div>
         <div class="form-group">
           <div id="recaptcha-register"></div>
         </div>
-        <button type="submit" class="modal-action-btn">Create Account</button>
+        <button type="submit" class="modal-action-btn">Crear Cuenta</button>
       </form>
     </div>
   </div>
@@ -840,86 +840,86 @@
   <div id="modal-resend-verification" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>📧 Resend Verification Email</h2>
-      <p style="font-size:0.9rem; color:#64748b;">Enter your login credentials to send a fresh verification link to your email.</p>
+      <h2>📧 Reenviar Verificación</h2>
+      <p style="font-size:0.9rem; color:#64748b;">Ingresa tus credenciales para enviar un nuevo enlace a tu correo.</p>
       
       <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="resend-email" placeholder="Your account email" required>
+        <label>Correo Electrónico</label>
+        <input type="email" id="resend-email" placeholder="Tu correo" required>
       </div>
       <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="resend-password" placeholder="Your password" required>
+        <label>Contraseña</label>
+        <input type="password" id="resend-password" placeholder="Tu contraseña" required>
       </div>
-      <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="handleResendVerification()">Send Verification Email</button>
+      <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="handleResendVerification()">Enviar enlace</button>
     </div>
   </div>
 
   <div id="modal-forgot" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>📬 Recover Password</h2>
-      <p style="font-size:0.9rem; color:#64748b;">Enter your account email to receive a password reset link.</p>
+      <h2>📬 Recuperar Contraseña</h2>
+      <p style="font-size:0.9rem; color:#64748b;">Ingresa tu correo para recibir instrucciones de recuperación.</p>
       
       <div class="form-group">
-        <label>Email Address</label>
-        <input type="email" id="forgot-email" placeholder="Your account email" required>
+        <label>Correo Electrónico</label>
+        <input type="email" id="forgot-email" placeholder="Tu correo" required>
       </div>
-      <button type="button" class="modal-action-btn" onclick="handleForgotPassword()">Send Reset Link</button>
+      <button type="button" class="modal-action-btn" onclick="handleForgotPassword()">Enviar enlace de recuperación</button>
     </div>
   </div>
 
   <div id="modal-profile" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>👤 Player Profile</h2>
+      <h2>👤 Perfil de Jugador</h2>
       <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
         <img id="profile-modal-avatar" src="https://via.placeholder.com/60" alt="Avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid #1e3a8a;">
         <div>
           <h3 id="profile-modal-name" style="margin:0; font-size:1.2rem;">Username</h3>
-          <p id="verification-status" style="margin:3px 0; font-size:0.8rem; color:#e74c3c;">⚠️ Email not verified</p>
-          <p style="margin:5px 0 0 0; font-size:0.9rem; color:#64748b;">💰 Coins: <span id="profile-coins">0</span> | 🐟 Fish: <span id="profile-fish-count">0</span></p>
+          <p id="verification-status" style="margin:3px 0; font-size:0.8rem; color:#e74c3c;">⚠️ Correo no verificado</p>
+          <p style="margin:5px 0 0 0; font-size:0.9rem; color:#64748b;">💰 Monedas: <span id="profile-coins">0</span> | 🐟 Peces: <span id="profile-fish-count">0</span></p>
         </div>
       </div>
 
       <div class="form-group">
-        <label>Bio / Description</label>
+        <label>Biografía</label>
         <p id="profile-bio-display" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin: 0; min-height: 45px; color: #1e293b; border: 1px solid #cbd5e1; word-break: break-all; font-size: 0.9rem;"></p>
       </div>
 
       <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-        <button type="button" class="modal-action-btn" style="background: #2980b9; flex: 1;" onclick="openMyAquarium()">🐠 See Aquarium</button>
-        <button type="button" class="modal-action-btn" style="background: #f39c12; flex: 1;" onclick="toggleEditProfileSection()">✏️ Edit Profile</button>
+        <button type="button" class="modal-action-btn" style="background: #2980b9; flex: 1;" onclick="openMyAquarium()">🐠 Ver Acuario</button>
+        <button type="button" class="modal-action-btn" style="background: #f39c12; flex: 1;" onclick="toggleEditProfileSection()">✏️ Editar Perfil</button>
       </div>
 
       <div id="profile-edit-section" style="display: none; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; margin-bottom: 15px;">
-        <h4 style="margin: 0 0 10px 0; color: #1e3a8a;">⚙️ Edit Profile Details</h4>
+        <h4 style="margin: 0 0 10px 0; color: #1e3a8a;">⚙️ Configurar Perfil</h4>
         <div class="form-group">
-          <label>Change Username</label>
-          <input type="text" id="profile-edit-username" placeholder="New username..." maxlength="20">
+          <label>Cambiar Nombre de Usuario</label>
+          <input type="text" id="profile-edit-username" placeholder="Nuevo nombre..." maxlength="20">
         </div>
         <div class="form-group">
-          <label>Current Password (Required to change username)</label>
-          <input type="password" id="profile-current-password" placeholder="Enter password to confirm name change">
+          <label>Contraseña Actual (Requerido para cambiar nombre)</label>
+          <input type="password" id="profile-current-password" placeholder="Contraseña para confirmar">
         </div>
         <div class="form-group">
-          <label>Bio / Description</label>
-          <textarea id="profile-edit-bio" placeholder="Write your new description..." maxlength="150" style="resize:none; height:60px;"></textarea>
+          <label>Biografía</label>
+          <textarea id="profile-edit-bio" placeholder="Escribe tu nueva biografía..." maxlength="150" style="resize:none; height:60px;"></textarea>
         </div>
         <div class="form-group">
-          <label>Change Profile Picture (Max 1MB)</label>
+          <label>Nueva Foto de Perfil (Máx 1MB)</label>
           <input type="file" id="profile-edit-avatar" accept="image/*">
         </div>
-        <button type="button" class="modal-action-btn" onclick="updateProfileData()">Save Changes</button>
+        <button type="button" class="modal-action-btn" onclick="updateProfileData()">Guardar Cambios</button>
       </div>
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
-      <h3>🔍 Search Player</h3>
+      <h3>🔍 Buscar Jugador</h3>
       <form autocomplete="off" onsubmit="event.preventDefault(); handleUserSearch();">
         <div class="form-group">
-          <input type="text" id="searchUsernameInput" autocomplete="off" name="search_player_unique_field" placeholder="Enter username...">
+          <input type="text" id="searchUsernameInput" autocomplete="off" name="search_player_unique_field" placeholder="Ingresa nombre exacto...">
         </div>
-        <button type="submit" class="modal-action-btn">Search User</button>
+        <button type="submit" class="modal-action-btn">Buscar</button>
       </form>
       <div id="searchResult" style="margin-top: 10px; display:none;"></div>
     </div>
@@ -928,55 +928,55 @@
   <div id="modal-view-profile" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="openModal('modal-profile')">✖</button>
-      <h2>👤 Player Info</h2>
+      <h2>👤 Información de Jugador</h2>
       <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
         <img id="view-profile-avatar" src="https://via.placeholder.com/60" alt="Avatar" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid #1e3a8a;">
         <div>
           <h3 id="view-profile-name" style="margin:0; font-size:1.2rem;">Username</h3>
-          <p style="margin:5px 0 0 0; font-size:0.9rem; color:#64748b;">💰 Coins: <span id="view-profile-coins">0</span> | 🐟 Fish: <span id="view-profile-fish-count">0</span></p>
+          <p style="margin:5px 0 0 0; font-size:0.9rem; color:#64748b;">💰 Monedas: <span id="view-profile-coins">0</span> | 🐟 Peces: <span id="view-profile-fish-count">0</span></p>
         </div>
       </div>
       <div class="form-group">
-        <label>Bio / Description</label>
+        <label>Biografía</label>
         <p id="view-profile-bio" style="background: #f8fafc; padding: 10px; border-radius: 8px; margin: 0; min-height: 50px; color: #1e293b; border: 1px solid #cbd5e1; word-break: break-all;"></p>
       </div>
 
-      <button type="button" class="modal-action-btn" style="background: #2980b9; margin-top: 5px;" onclick="openOtherAquarium()">🐠 See Aquarium</button>
+      <button type="button" class="modal-action-btn" style="background: #2980b9; margin-top: 5px;" onclick="openOtherAquarium()">🐠 Ver Acuario</button>
     </div>
   </div>
 
   <div id="modal-aquarium" class="modal-overlay">
     <div class="modal-card" style="max-width: 680px; padding: 15px; background: #ffffff; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
-      <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 3px; font-size: 1.3rem;">🐠 Aquarium</h2>
-      <p style="font-size: 0.8rem; color: #64748b; text-align: center; margin-top:0; margin-bottom: 10px;" id="aquarium-subtitle">Viewing aquarium...</p>
+      <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 3px; font-size: 1.3rem;">🐠 Acuario</h2>
+      <p style="font-size: 0.8rem; color: #64748b; text-align: center; margin-top:0; margin-bottom: 10px;" id="aquarium-subtitle">Visualizando acuario...</p>
       
       <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 10px;">
-        <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(-1)">◀ Prev Room</button>
-        <span id="aquarium-room-indicator" style="font-weight: bold; font-size: 0.95rem; color: #d97706;">Room 1</span>
-        <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(1)">Next Room ▶</button>
+        <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(-1)">◀ Sala Anterior</button>
+        <span id="aquarium-room-indicator" style="font-weight: bold; font-size: 0.95rem; color: #d97706;">Sala 1</span>
+        <button class="modal-action-btn" style="width: auto; padding: 4px 10px; font-size: 0.8rem;" onclick="changeAquariumRoom(1)">Sala Siguiente ▶</button>
       </div>
 
       <div style="position: relative; width: 100%; aspect-ratio: 16 / 10; max-height: 420px; background-image: url('https://i.postimg.cc/3xDP6rVy/aquarium.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; border-radius: 10px; border: 2px solid #cbd5e1; overflow: hidden; margin-bottom: 12px;">
         
         <div style="position: absolute; top: 3.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
-          <div id="shelf-top-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(0)" title="Click to manage slot 1"></div>
-          <div id="shelf-top-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(1)" title="Click to manage slot 2"></div>
-          <div id="shelf-top-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(2)" title="Click to manage slot 3"></div>
-          <div id="shelf-top-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(3)" title="Click to manage slot 4"></div>
+          <div id="shelf-top-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(0)" title="Gestionar espacio 1"></div>
+          <div id="shelf-top-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(1)" title="Gestionar espacio 2"></div>
+          <div id="shelf-top-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(2)" title="Gestionar espacio 3"></div>
+          <div id="shelf-top-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(3)" title="Gestionar espacio 4"></div>
         </div>
 
         <div style="position: absolute; bottom: 8.5%; left: 3%; right: 3%; display: flex; justify-content: space-between; pointer-events: none; height: 42%;">
-          <div id="shelf-bot-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(4)" title="Click to manage slot 5"></div>
-          <div id="shelf-bot-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(5)" title="Click to manage slot 6"></div>
-          <div id="shelf-bot-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(6)" title="Click to manage slot 7"></div>
-          <div id="shelf-bot-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(7)" title="Click to manage slot 8"></div>
+          <div id="shelf-bot-0" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(4)" title="Gestionar espacio 5"></div>
+          <div id="shelf-bot-1" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(5)" title="Gestionar espacio 6"></div>
+          <div id="shelf-bot-2" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(6)" title="Gestionar espacio 7"></div>
+          <div id="shelf-bot-3" style="width: 23%; height: 100%; pointer-events: auto; cursor: pointer; display: flex; justify-content: center; align-items: flex-end; position: relative; overflow: hidden;" onclick="handleShelfClick(7)" title="Gestionar espacio 8"></div>
         </div>
 
       </div>
 
       <div id="aquarium-owner-controls" style="display: none; background: #f8fafc; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid #cbd5e1;">
-        <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #27ae60; font-weight: bold;">💡 Each slot requires a Mini Tank! Buy tanks in Bob's Shop if you need more.</p>
+        <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #27ae60; font-weight: bold;">💡 ¡Cada espacio requiere 1 Tanque Mini! Compra más en la tienda si lo necesitas.</p>
       </div>
     </div>
   </div>
@@ -984,21 +984,21 @@
   <div id="modal-select-fish" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 440px;">
       <button class="modal-close" onclick="document.getElementById('modal-select-fish').style.display='none'">✖</button>
-      <h3 style="margin-top:0;">🐟 Select a Fish for Tank</h3>
-      <p style="font-size:0.85rem; color:#64748b;">Choose a fish from your inventory:</p>
+      <h3 style="margin-top:0;">🐟 Seleccionar Pez para el Tanque</h3>
+      <p style="font-size:0.85rem; color:#64748b;">Elige un pez de tu inventario:</p>
       <div id="select-fish-list" style="max-height: 240px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 10px;"></div>
-      <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="removeFishFromShelf()">🗑️ Remove Tank / Fish</button>
+      <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="removeFishFromShelf()">🗑️ Quitar Tanque / Pez</button>
     </div>
   </div>
 
   <div id="modal-index" class="modal-overlay">
     <div class="modal-card" style="max-width: 440px; text-align: center;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>📖 Fish Index</h2>
-      <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">Discover all the fish species available in the game.</p>
+      <h2>📖 Índice de Peces</h2>
+      <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">Descubre todas las especies disponibles.</p>
       
       <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-        <button id="index-toggle-mode-btn" class="modal-action-btn" style="width: auto; padding: 6px 14px; background: #8e44ad; font-size: 0.85rem;" onclick="toggleIndexMode()">⭐ Limited</button>
+        <button id="index-toggle-mode-btn" class="modal-action-btn" style="width: auto; padding: 6px 14px; background: #8e44ad; font-size: 0.85rem;" onclick="toggleIndexMode()">⭐ Limitados</button>
         <div style="flex: 1; text-align: left;">
           <select id="index-rarity-select" onchange="onRarityFilterChange()" style="padding: 8px; font-weight: bold;">
             <option value="Common">Common</option>
@@ -1012,8 +1012,8 @@
         
         <img id="index-fish-img" src="" alt="Fish" style="width: 110px; height: 110px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));">
         
-        <h3 id="index-fish-name" style="margin: 0 0 5px 0; font-size: 1.2rem; color: #1e3a8a;">Fish Name</h3>
-        <p id="index-fish-desc" style="font-size: 0.9rem; color: #475569; margin: 0 0 15px 0; padding: 0 10px; min-height: 40px;">Description goes here...</p>
+        <h3 id="index-fish-name" style="margin: 0 0 5px 0; font-size: 1.2rem; color: #1e3a8a;">Nombre del Pez</h3>
+        <p id="index-fish-desc" style="font-size: 0.9rem; color: #475569; margin: 0 0 15px 0; padding: 0 10px; min-height: 40px;">Descripción...</p>
         
         <div style="display: flex; justify-content: space-between; width: 100%; position: absolute; top: 50%; transform: translateY(-50%); padding: 0 10px; pointer-events: none;">
           <button onclick="changeIndexFish(-1)" style="pointer-events: auto; background: rgba(255, 255, 255, 0.9); border: 1px solid #cbd5e1; color: #1e3a8a; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">◀</button>
@@ -1027,13 +1027,13 @@
   <div id="modal-news" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>📰 Game News</h2>
-      <div id="newsFeed">Loading news...</div>
+      <h2>📰 Noticias del Juego</h2>
+      <div id="newsFeed">Cargando noticias...</div>
       
       <div class="news-controls" id="newsControls" style="display: none;">
-        <button id="prevNewsBtn" class="modal-action-btn" onclick="changeNews(-1)">◀ Prev</button>
+        <button id="prevNewsBtn" class="modal-action-btn" onclick="changeNews(-1)">◀ Anterior</button>
         <span class="news-counter" id="newsCounter">0 / 0</span>
-        <button id="nextNewsBtn" class="modal-action-btn" onclick="changeNews(1)">Next ▶</button>
+        <button id="nextNewsBtn" class="modal-action-btn" onclick="changeNews(1)">Siguiente ▶</button>
       </div>
     </div>
   </div>
@@ -1043,52 +1043,55 @@
       <button class="modal-close" onclick="closeAllModals()">✖</button>
       
       <div style="position: absolute; top: 15px; right: 45px; background: #e2e8f0; padding: 4px 10px; border-radius: 12px; font-weight: bold; color: #1e3a8a; font-size: 0.85rem; border: 1px solid #cbd5e1;">
-        💰 Coins: <span id="shop-user-coins">0</span>
+        💰 Monedas: <span id="shop-user-coins">0</span>
       </div>
 
-      <h2 style="margin-top: 0;">🛒 Bob's Fishing Shop</h2>
+      <h2 style="margin-top: 0;">🛒 Tienda de Bob</h2>
 
       <img src="https://i.postimg.cc/NMtYbvzw/shop.png" alt="Bob Shop" style="width: 140px; height: auto; margin: 10px 0; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));">
-      <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">"Welcome! Redeem your promo codes or buy upgrades!"</p>
+      <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">"¡Bienvenido! Canjea códigos o compra mejoras para tu pesca"</p>
 
       <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; text-align: left;">
-        <h3 style="margin-top:0; font-size: 1.1rem; color: #2ecc71; text-align: center;">🎁 Redeem Promo Code</h3>
+        <h3 style="margin-top:0; font-size: 1.1rem; color: #2ecc71; text-align: center;">🎁 Canjear Código</h3>
         <form autocomplete="off" onsubmit="event.preventDefault(); redeemCode();">
           <div class="form-group" style="margin-bottom: 8px;">
-            <input type="text" id="redeemCodeInput" autocomplete="off" name="redeem_code_field" placeholder="Enter promo code..." style="text-align: center; text-transform: uppercase;">
+            <input type="text" id="redeemCodeInput" autocomplete="off" name="redeem_code_field" placeholder="Ingresa tu código..." style="text-align: center; text-transform: uppercase;">
           </div>
-          <button type="submit" class="modal-action-btn" style="background:#27ae60;">Claim Code</button>
+          <button type="submit" class="modal-action-btn" style="background:#27ae60;">Reclamar Código</button>
         </form>
       </div>
 
+      <!-- Tanque Mini ahora cuesta 500 -->
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
         <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
           <img src="https://i.postimg.cc/DZs0wKSx/tanque-mini.png" alt="Mini Tank" style="width: 40px; height: 40px; object-fit: contain;">
           <div>
-            <strong>Mini Tank</strong><br><span style="font-size: 0.8rem; color: #64748b;">Required to place a fish in an aquarium slot</span>
+            <strong>Tanque Mini</strong><br><span style="font-size: 0.8rem; color: #64748b;">Necesario para colocar un pez en el acuario</span>
           </div>
         </div>
-        <button id="buy-tank-btn" class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #2ecc71;" onclick="buyMiniTank()">75 💰</button>
+        <button id="buy-tank-btn" class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #2ecc71;" onclick="buyMiniTank()">500 💰</button>
       </div>
 
+      <!-- Worm Bait ahora cuesta 250 -->
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
         <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
           <img src="https://i.postimg.cc/KYgqH6Sn/worm-bait.png" alt="Worm Bait" style="width: 40px; height: 40px; object-fit: contain;">
           <div>
-            <strong>Worm Bait</strong><br><span style="font-size: 0.8rem; color: #64748b;">Increases chance for rare/epic/divine fish</span>
+            <strong>Cebo de Gusano</strong><br><span style="font-size: 0.8rem; color: #64748b;">Aumenta ligeramente la suerte en tu próxima pesca</span>
           </div>
         </div>
-        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #2ecc71;" onclick="buyWormBait()">25 💰</button>
+        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #2ecc71;" onclick="buyWormBait()">250 💰</button>
       </div>
 
+      <!-- Aquarium Room ahora cuesta 2000 -->
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #cbd5e1;">
         <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
           <img src="https://i.postimg.cc/qMyRXL7Z/add.png" alt="Extra Aquarium Room" style="width: 40px; height: 40px; object-fit: contain;">
           <div>
-            <strong>Extra Aquarium Room</strong><br><span style="font-size: 0.8rem; color: #64748b;">Unlock a brand new aquarium room with 8 slots</span>
+            <strong>Sala de Acuario Extra</strong><br><span style="font-size: 0.8rem; color: #64748b;">Desbloquea una nueva sala de 8 espacios</span>
           </div>
         </div>
-        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #2ecc71;" onclick="buyAquariumRoom()">1000 💰</button>
+        <button class="modal-action-btn" style="width: auto; padding: 6px 12px; background: #2ecc71;" onclick="buyAquariumRoom()">2000 💰</button>
       </div>
     </div>
   </div>
@@ -1096,23 +1099,23 @@
   <div id="modal-backpack" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>🎒 Player Backpack</h2>
-      <p style="font-size: 0.9rem; color: #64748b;">Your items and caught fish:</p>
+      <h2>🎒 Mochila</h2>
+      <p style="font-size: 0.9rem; color: #64748b;">Tus objetos y peces capturados:</p>
       
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
-        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #1e3a8a;">🎒 Items Owned</h3>
-        <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Mini Tanks Bought: 0</p>
-        <p id="backpack-rooms-count" style="margin: 3px 0; font-size: 0.85rem;">Aquarium Rooms Owned: 1</p>
+        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #1e3a8a;">🎒 Objetos</h3>
+        <p id="backpack-tanks-count" style="margin: 3px 0; font-size: 0.85rem;">Tanques Mini Comprados: 0</p>
+        <p id="backpack-rooms-count" style="margin: 3px 0; font-size: 0.85rem;">Salas de Acuario: 1</p>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px solid #cbd5e1; padding-top: 8px;">
-          <span id="backpack-baits-count" style="font-size: 0.85rem; font-weight: bold; color: #27ae60;">Worm Baits: 0</span>
-          <button type="button" class="modal-action-btn" style="width: auto; padding: 5px 12px; background: #2ecc71; font-size: 0.8rem;" onclick="toggleUseWormBait()" id="backpack-bait-toggle-btn">Equip Bait</button>
+          <span id="backpack-baits-count" style="font-size: 0.85rem; font-weight: bold; color: #27ae60;">Cebos: 0</span>
+          <button type="button" class="modal-action-btn" style="width: auto; padding: 5px 12px; background: #2ecc71; font-size: 0.8rem;" onclick="toggleUseWormBait()" id="backpack-bait-toggle-btn">Equipar Cebo</button>
         </div>
       </div>
 
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
-        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #27ae60;">🐟 Caught Fishes</h3>
+        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #27ae60;">🐟 Peces Capturados</h3>
         <div id="backpack-fish-list" style="max-height: 180px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; font-size: 0.85rem; color: #64748b; padding-top: 5px;">
-          No fish caught yet. Go fishing!
+          Aún no has pescado nada. ¡Sal a pescar!
         </div>
       </div>
     </div>
@@ -1121,48 +1124,48 @@
   <div id="modal-achievements" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>🏆 Achievements</h2>
-      <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Unlock achievements as you progress in the game!</p>
+      <h2>🏆 Logros</h2>
+      <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">¡Desbloquea logros conforme progresas!</p>
       
       <div id="achievements-list" style="display: flex; flex-direction: column; gap: 10px;">
         <div id="ach-catch-first" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
           <div style="font-size: 2rem;">🏆</div>
           <div>
-            <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">Catch!</h4>
-            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">That was easy.</p>
-            <span style="font-size: 0.75rem; color: #64748b;">Catch your first fish.</span>
+            <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">¡Captura!</h4>
+            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">Eso fue fácil.</p>
+            <span style="font-size: 0.75rem; color: #64748b;">Atrapa tu primer pez.</span>
           </div>
-          <div id="ach-catch-first-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
+          <div id="ach-catch-first-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Bloqueado</div>
         </div>
 
         <div id="ach-glu-glu" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
           <div style="font-size: 2rem;">🏆</div>
           <div>
-            <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">Glu glu tank</h4>
-            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">Amazing!</p>
-            <span style="font-size: 0.75rem; color: #64748b;">Buy a fish tank.</span>
+            <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">Glu glu tanque</h4>
+            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">¡Increíble!</p>
+            <span style="font-size: 0.75rem; color: #64748b;">Compra un tanque de peces.</span>
           </div>
-          <div id="ach-glu-glu-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
+          <div id="ach-glu-glu-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Bloqueado</div>
         </div>
 
         <div id="ach-worm" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
           <div style="font-size: 2rem;">🏆</div>
           <div>
-            <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">Not hungry anymore</h4>
-            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">That was a good worm!.</p>
-            <span style="font-size: 0.75rem; color: #64748b;">Use a bait to catch a fish.</span>
+            <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">Ya no tengo hambre</h4>
+            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">¡Qué buen gusano!</p>
+            <span style="font-size: 0.75rem; color: #64748b;">Usa un cebo para atrapar un pez.</span>
           </div>
-          <div id="ach-worm-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
+          <div id="ach-worm-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Bloqueado</div>
         </div>
 
         <div id="ach-divine" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px; opacity: 0.5;">
           <div style="font-size: 2rem;">🏆</div>
           <div>
             <h4 style="margin: 0 0 3px 0; font-size: 1rem; color: #1e3a8a;">Divine i say</h4>
-            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">Beautiful.</p>
-            <span style="font-size: 0.75rem; color: #64748b;">Catch a divine rarity fish.</span>
+            <p style="margin: 0 0 3px 0; font-size: 0.85rem; color: #1f2937; font-weight: bold;">Hermoso.</p>
+            <span style="font-size: 0.75rem; color: #64748b;">Atrapa un pez de rareza Divina.</span>
           </div>
-          <div id="ach-divine-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Locked</div>
+          <div id="ach-divine-status" style="margin-left: auto; font-weight: bold; color: #e74c3c; font-size: 0.85rem;">🔒 Bloqueado</div>
         </div>
       </div>
     </div>
@@ -1171,135 +1174,134 @@
   <div id="modal-admin" class="modal-overlay">
     <div class="modal-card">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>⚙️ Admin Control Panel</h2>
+      <h2>⚙️ Panel de Control Admin</h2>
       
       <form autocomplete="off" onsubmit="return false;">
         <div class="form-group">
-          <label>Target Username</label>
-          <input type="text" id="adminTargetUsername" autocomplete="off" name="admin_target_unique_field" placeholder="Exact username..." oninput="loadTargetUserInventoryForAdmin()">
+          <label>Nombre de Usuario Objetivo</label>
+          <input type="text" id="adminTargetUsername" autocomplete="off" name="admin_target_unique_field" placeholder="Nombre exacto..." oninput="loadTargetUserInventoryForAdmin()">
         </div>
       </form>
 
-      <!-- Target User Stats Info Box -->
       <div id="admin-user-stats-box" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 0.9rem; display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-weight: bold; color: #1e3a8a;">📊 User Overview:</span>
-        <span id="admin-stat-coins">💰 Coins: 0</span>
-        <span id="admin-stat-tanks">🐠 Mini Tanks: 0</span>
-        <span id="admin-stat-rooms">🏰 Aquarium Rooms: 1</span>
-        <span id="admin-stat-baits">🪱 Worm Baits: 0</span>
+        <span style="font-weight: bold; color: #1e3a8a;">📊 Resumen del Usuario:</span>
+        <span id="admin-stat-coins">💰 Monedas: 0</span>
+        <span id="admin-stat-tanks">🐠 Tanques Mini: 0</span>
+        <span id="admin-stat-rooms">🏰 Salas de Acuario: 1</span>
+        <span id="admin-stat-baits">🪱 Cebos: 0</span>
       </div>
 
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-        <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="openBanPrompt(true)">Perma Ban</button>
-        <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="adminUnbanUser()">Unban</button>
-        <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="openBanPrompt(false)">Temp Ban</button>
-      </div>
-
-      <div class="form-group">
-        <label>Coins Amount</label>
-        <input type="number" id="adminCoinsAmount" placeholder="Amount">
-      </div>
-      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyCoins(1)">Give Coins</button>
-        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyCoins(-1)">Remove Coins</button>
+        <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="openBanPrompt(true)">Baneo Perma</button>
+        <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="adminUnbanUser()">Desbanear</button>
+        <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="openBanPrompt(false)">Baneo Temp</button>
       </div>
 
       <div class="form-group">
-        <label>Mini Tanks Amount</label>
-        <input type="number" id="adminTanksAmount" placeholder="Tanks amount" value="1" min="1">
+        <label>Cantidad de Monedas</label>
+        <input type="number" id="adminCoinsAmount" placeholder="Cantidad">
       </div>
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyTanks(1)">Give Tanks</button>
-        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyTanks(-1)">Remove Tanks</button>
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyCoins(1)">Dar Monedas</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyCoins(-1)">Quitar Monedas</button>
       </div>
 
       <div class="form-group">
-        <label>Aquarium Rooms Amount</label>
-        <input type="number" id="adminRoomsAmount" placeholder="Rooms amount" value="1" min="1">
+        <label>Cantidad de Tanques Mini</label>
+        <input type="number" id="adminTanksAmount" placeholder="Cantidad" value="1" min="1">
       </div>
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyRooms(1)">Give Rooms</button>
-        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyRooms(-1)">Remove Rooms</button>
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyTanks(1)">Dar Tanques</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyTanks(-1)">Quitar Tanques</button>
       </div>
 
       <div class="form-group">
-        <label>Worm Baits Amount</label>
-        <input type="number" id="adminBaitsAmount" placeholder="Baits amount" value="1" min="1">
+        <label>Cantidad de Salas de Acuario</label>
+        <input type="number" id="adminRoomsAmount" placeholder="Cantidad" value="1" min="1">
       </div>
       <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyBaits(1)">Give Baits</button>
-        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyBaits(-1)">Remove Baits</button>
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyRooms(1)">Dar Salas</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyRooms(-1)">Quitar Salas</button>
+      </div>
+
+      <div class="form-group">
+        <label>Cantidad de Cebos</label>
+        <input type="number" id="adminBaitsAmount" placeholder="Cantidad" value="1" min="1">
+      </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+        <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="adminModifyBaits(1)">Dar Cebos</button>
+        <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="adminModifyBaits(-1)">Quitar Cebos</button>
       </div>
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
-      <h3>🐟 Add Fish to User</h3>
+      <h3>🐟 Dar Pez al Usuario</h3>
       <div class="form-group">
-        <label>Fish Name (e.g. Legacy Fish, Divine Fish, Opah)</label>
-        <input type="text" id="adminAddFishName" placeholder="Fish name...">
+        <label>Nombre del Pez</label>
+        <input type="text" id="adminAddFishName" placeholder="Nombre exacto...">
       </div>
-      <button type="button" class="modal-action-btn" style="background:#27ae60; margin-bottom: 15px;" onclick="adminAddFishToUser()">Add Fish</button>
+      <button type="button" class="modal-action-btn" style="background:#27ae60; margin-bottom: 15px;" onclick="adminAddFishToUser()">Añadir Pez</button>
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
-      <h3>🗑️ Remove Fish from User Inventory</h3>
+      <h3>🗑️ Quitar Pez del Inventario</h3>
       <div id="admin-target-fishes-list" style="max-height: 140px; overflow-y: auto; background: #f8fafc; padding: 8px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #cbd5e1;">
-        <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view fishes...</p>
+        <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Selecciona un usuario arriba para ver sus peces...</p>
       </div>
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
-      <h3>🎟️ Promo Codes Management</h3>
+      <h3>🎟️ Gestión de Códigos Promocionales</h3>
       <div class="form-group">
-        <label>Code Name</label>
-        <input type="text" id="adminPromoCode" autocomplete="off" placeholder="e.g. FISHING2026">
+        <label>Código</label>
+        <input type="text" id="adminPromoCode" autocomplete="off" placeholder="ej. PESCA2026">
       </div>
       <div class="form-group">
-        <label>Coins Reward</label>
-        <input type="number" id="adminPromoCoins" placeholder="Coins amount">
+        <label>Recompensa en Monedas</label>
+        <input type="number" id="adminPromoCoins" placeholder="Monedas">
       </div>
       <div class="form-group">
-        <label>Worm Baits Reward (Optional)</label>
-        <input type="number" id="adminPromoBaits" placeholder="Baits amount (e.g. 5)" min="0">
+        <label>Recompensa en Cebos (Opcional)</label>
+        <input type="number" id="adminPromoBaits" placeholder="Cantidad" min="0">
       </div>
       <div class="form-group">
-        <label>Bonus Fish Reward (Optional - exact fish name)</label>
-        <input type="text" id="adminPromoFish" placeholder="e.g. Legacy Fish or leave blank">
+        <label>Pez de Bono (Opcional)</label>
+        <input type="text" id="adminPromoFish" placeholder="Nombre del pez">
       </div>
-      <button type="button" class="modal-action-btn" style="background:#2980b9; margin-bottom: 10px;" onclick="adminCreateCode()">Create Code</button>
+      <button type="button" class="modal-action-btn" style="background:#2980b9; margin-bottom: 10px;" onclick="adminCreateCode()">Crear Código</button>
       
       <div style="margin-top: 10px;">
-        <label style="font-size:0.9rem; color:#64748b; margin-bottom: 5px; display:block;">Active Codes List:</label>
+        <label style="font-size:0.9rem; color:#64748b; margin-bottom: 5px; display:block;">Códigos Activos:</label>
         <div id="adminCodesList" style="max-height: 120px; overflow-y: auto; background: #f8fafc; padding: 5px; border-radius: 8px; border: 1px solid #cbd5e1;">
-          <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Loading codes...</p>
+          <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Cargando códigos...</p>
         </div>
       </div>
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
-      <h3>📢 Post News</h3>
+      <h3>📢 Publicar Noticia</h3>
       <div class="form-group">
-        <label>Title</label>
-        <input type="text" id="newsTitle" placeholder="News title">
+        <label>Título</label>
+        <input type="text" id="newsTitle" placeholder="Título de la noticia">
       </div>
       <div class="form-group">
-        <label>Content</label>
-        <textarea id="newsContent" placeholder="News body..." rows="3" style="resize:none;"></textarea>
+        <label>Contenido</label>
+        <textarea id="newsContent" placeholder="Cuerpo de la noticia..." rows="3" style="resize:none;"></textarea>
       </div>
       <div class="form-group">
-        <label>Image (Max 1MB)</label>
+        <label>Imagen (Máx 1MB)</label>
         <input type="file" id="newsImage" accept="image/*">
       </div>
-      <button type="button" class="modal-action-btn" onclick="adminPostNews()">Publish News</button>
+      <button type="button" class="modal-action-btn" onclick="adminPostNews()">Publicar Noticia</button>
     </div>
   </div>
 
   <div id="modal-admin-remove-fish" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 300px;">
       <button class="modal-close" onclick="document.getElementById('modal-admin-remove-fish').style.display='none'">✖</button>
-      <h3>🗑️ Remove Fish Quantity</h3>
-      <p style="font-size:0.85rem; color:#64748b;" id="admin-remove-fish-name-label">Fish: Goldfish</p>
+      <h3>🗑️ Cantidad a Eliminar</h3>
+      <p style="font-size:0.85rem; color:#64748b;" id="admin-remove-fish-name-label">Pez</p>
       <div class="form-group">
-        <label>Quantity to remove</label>
-        <input type="number" id="admin-remove-fish-qty-input" min="1" value="1" placeholder="Quantity">
+        <label>Cantidad</label>
+        <input type="number" id="admin-remove-fish-qty-input" min="1" value="1" placeholder="Cantidad">
       </div>
-      <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="confirmAdminRemoveFish()">Delete</button>
+      <button type="button" class="modal-action-btn" style="background:#c0392b;" onclick="confirmAdminRemoveFish()">Eliminar</button>
     </div>
   </div>
 
@@ -1334,28 +1336,35 @@
     let pendingCaughtFish = null;
     let usedBaitThisCast = false;
 
+    // Lista de peces con valores reducidos y ponderación estricta para drop rates muy divididos
     const ALLOWED_FISH_TYPES = [
-      { name: "Opah", value: 25, rarity: "Common", desc: "A large, colorful deep-water fish known for its distinct round body.", img: "https://i.postimg.cc/sxhg04JM/opah.png" },
-      { name: "Clownfish", value: 20, rarity: "Common", desc: "A small, vibrant orange fish with white stripes.", img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" },
-      { name: "Guppy", value: 10, rarity: "Common", desc: "A tiny, active freshwater fish featuring a colorful tail fin.", img: "https://i.postimg.cc/VkcRfY5g/guppy.png" },
-      { name: "Tilapia", value: 22, rarity: "Common", desc: "A sturdy cichlid fish found in warm regions.", img: "https://i.postimg.cc/zXTCP9pD/tilapia.png" },
-      { name: "Goldfish", value: 15, rarity: "Common", desc: "A classic golden freshwater companion.", img: "https://i.postimg.cc/nLSBDZV3/goldfish.png" },
-      { name: "Cod", value: 18, rarity: "Common", desc: "A standard ocean fish found in cold northern waters.", img: "https://i.postimg.cc/rp8x6Fgw/cod.png" },
-      { name: "Carp", value: 45, rarity: "Rare", desc: "A large freshwater fish celebrated for its strength.", img: "https://i.postimg.cc/N0gmhfb0/carp.png" },
-      { name: "Neon Tetra", value: 50, rarity: "Rare", desc: "A glowing tropical fish with iridescent stripes.", img: "https://i.postimg.cc/TPRg8YQ2/neon-tetra.png" },
-      { name: "Salmon", value: 55, rarity: "Rare", desc: "A migratory swimmer traveling upstream through rivers.", img: "https://i.postimg.cc/bvzkXNLz/salmon.png" },
-      { name: "Surgeonfish", value: 60, rarity: "Rare", desc: "A bright blue marine swimmer with defensive spines.", img: "https://i.postimg.cc/BvqHWQNS/surgeonfish.png" },
-      { name: "Barreleye Fish", value: 80, rarity: "Epic", desc: "A deep-sea fish with a transparent fluid-filled head.", img: "https://i.postimg.cc/cLC5QKF2/barreleye-fish.png" },
-      { name: "Basking Shark", value: 95, rarity: "Divine", desc: "A massive filter-feeding shark gliding peacefully.", img: "https://i.postimg.cc/nhrwvs3R/basking-shark.png" },
-      { name: "Bluefin Tuna", value: 110, rarity: "Rare", desc: "A powerful and fast ocean predator.", img: "https://i.postimg.cc/6pPbz9SC/bluefin-tuna.png" },
-      { name: "Electric Eel", value: 130, rarity: "Epic", desc: "A serpentine fish capable of generating high voltage.", img: "https://i.postimg.cc/kgHYwnZX/electric-eel.png" },
-      { name: "Leafy Seadragon", value: 145, rarity: "Mythic", desc: "A master of camouflage adorned with leaf-like appendages.", img: "https://i.postimg.cc/rwsYSdfb/leafy-seadragon.png" },
-      { name: "Manta ray", value: 160, rarity: "Legendary", desc: "A graceful giant gliding through tropical waters.", img: "https://i.postimg.cc/mgnpVbqk/mantaray.png" },
-      { name: "Coelacanth", value: 250, rarity: "Epic", desc: "A rare prehistoric 'living fossil' fish.", img: "https://i.postimg.cc/SxRtWXZs/coelacanth.png" },
-      { name: "Great White Shark", value: 320, rarity: "Legendary", desc: "The undisputed king of ocean predators.", img: "https://i.postimg.cc/4x02wJMf/great-white-shark.png" },
-      { name: "Megamouth Shark", value: 450, rarity: "Mythic", desc: "An elusive deep-water giant with glowing lips.", img: "https://i.postimg.cc/WbXHFmwx/megamouth-shark.png" },
-      { name: "Oarfish", value: 600, rarity: "Divine", desc: "A magnificent serpent-like creature of ancient myth.", img: "https://i.postimg.cc/Z5nDr9fZ/oarfish.png" },
-      { name: "Legacy Fish", value: 1000, rarity: "Legacy", isLimited: true, desc: "A legendary collector species from ancient waters.", img: "https://i.postimg.cc/J79pfZXs/legacy-fish.png" }
+      { name: "Opah", value: 8, rarity: "Common", weight: 35, desc: "Un pez grande y colorido de aguas profundas con cuerpo redondo.", img: "https://i.postimg.cc/sxhg04JM/opah.png" },
+      { name: "Clownfish", value: 6, rarity: "Common", weight: 35, desc: "Un pequeño pez anaranjado brillante con rayas blancas.", img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" },
+      { name: "Guppy", value: 3, rarity: "Common", weight: 40, desc: "Un diminuto y activo pez de agua dulce.", img: "https://i.postimg.cc/VkcRfY5g/guppy.png" },
+      { name: "Tilapia", value: 7, rarity: "Common", weight: 35, desc: "Un pez cíclido resistente de regiones cálidas.", img: "https://i.postimg.cc/zXTCP9pD/tilapia.png" },
+      { name: "Goldfish", value: 5, rarity: "Common", weight: 40, desc: "El clásico pez dorado de compañía.", img: "https://i.postimg.cc/nLSBDZV3/goldfish.png" },
+      { name: "Cod", value: 6, rarity: "Common", weight: 35, desc: "Un pez oceánico estándar de aguas frías.", img: "https://i.postimg.cc/rp8x6Fgw/cod.png" },
+      
+      { name: "Carp", value: 15, rarity: "Rare", weight: 15, desc: "Un pez de agua dulce fuerte y robusto.", img: "https://i.postimg.cc/N0gmhfb0/carp.png" },
+      { name: "Neon Tetra", value: 18, rarity: "Rare", weight: 12, desc: "Un pez tropical brillante con rayas iridiscentes.", img: "https://i.postimg.cc/TPRg8YQ2/neon-tetra.png" },
+      { name: "Salmon", value: 20, rarity: "Rare", weight: 12, desc: "Un nadador migratorio que sube por los ríos.", img: "https://i.postimg.cc/bvzkXNLz/salmon.png" },
+      { name: "Surgeonfish", value: 22, rarity: "Rare", weight: 10, desc: "Un pez marino azul con espinas defensivas.", img: "https://i.postimg.cc/BvqHWQNS/surgeonfish.png" },
+      { name: "Bluefin Tuna", value: 35, rarity: "Rare", weight: 8, desc: "Un poderoso y veloz depredador oceánico.", img: "https://i.postimg.cc/6pPbz9SC/bluefin-tuna.png" },
+
+      { name: "Barreleye Fish", value: 55, rarity: "Epic", weight: 4, desc: "Un pez abisal con cabeza transparente.", img: "https://i.postimg.cc/cLC5QKF2/barreleye-fish.png" },
+      { name: "Electric Eel", value: 75, rarity: "Epic", weight: 3, desc: "Una criatura serpenteante capaz de generar alto voltaje.", img: "https://i.postimg.cc/kgHYwnZX/electric-eel.png" },
+      { name: "Coelacanth", value: 110, rarity: "Epic", weight: 2, desc: "Un fósil viviente prehistórico muy codiciado.", img: "https://i.postimg.cc/SxRtWXZs/coelacanth.png" },
+
+      { name: "Manta ray", value: 150, rarity: "Legendary", weight: 1.0, desc: "Un gigante elegante que planea en aguas tropicales.", img: "https://i.postimg.cc/mgnpVbqk/mantaray.png" },
+      { name: "Great White Shark", value: 220, rarity: "Legendary", weight: 0.6, desc: "El indiscutible rey de los depredadores del océano.", img: "https://i.postimg.cc/4x02wJMf/great-white-shark.png" },
+
+      { name: "Leafy Seadragon", value: 350, rarity: "Mythic", weight: 0.2, desc: "Un maestro del camuflaje con apéndices en forma de hoja.", img: "https://i.postimg.cc/rwsYSdfb/leafy-seadragon.png" },
+      { name: "Megamouth Shark", value: 500, rarity: "Mythic", weight: 0.1, desc: "Un esquivo gigante de aguas profundas con labios brillantes.", img: "https://i.postimg.cc/WbXHFmwx/megamouth-shark.png" },
+
+      { name: "Basking Shark", value: 750, rarity: "Divine", weight: 0.03, desc: "Un enorme tiburón filtrador que nada pacíficamente.", img: "https://i.postimg.cc/nhrwvs3R/basking-shark.png" },
+      { name: "Oarfish", value: 1200, rarity: "Divine", weight: 0.01, desc: "Una magnífica criatura serpentina de los mitos antiguos.", img: "https://i.postimg.cc/Z5nDr9fZ/oarfish.png" },
+
+      { name: "Legacy Fish", value: 2000, rarity: "Legacy", isLimited: true, weight: 0, desc: "Una especie coleccionable legendaria de aguas ancestrales.", img: "https://i.postimg.cc/J79pfZXs/legacy-fish.png" }
     ];
 
     function onloadCallback() {
@@ -1395,7 +1404,6 @@
       setTimeout(() => toast.remove(), 4000);
     }
 
-    // Helper function for username validation
     function validateUsernameFormat(username) {
       if (username.length > 20) {
         return "El nombre de usuario no puede tener más de 20 caracteres.";
@@ -1405,7 +1413,7 @@
       }
       const regex = /^[a-zA-Z0-9_]+$/;
       if (!regex.test(username)) {
-        return "Caracteres prohibidos: no se permiten letras con acentos, la letra Ñ/ñ, ni caracteres especiales (excepto '_').";
+        return "Caracteres prohibidos: no se permiten acentos, letras Ñ ni caracteres especiales (excepto '_').";
       }
       return null;
     }
@@ -1449,7 +1457,7 @@
           document.getElementById('shop-user-coins').innerText = data.coins || 0;
         }
       } catch (err) {
-        console.error("Error updating shop coins:", err);
+        console.error("Error al actualizar monedas:", err);
       }
     }
 
@@ -1483,7 +1491,7 @@
         modeBtn.innerText = " Normal";
         modeBtn.style.background = "#27ae60";
       } else {
-        modeBtn.innerText = "⭐ Limited";
+        modeBtn.innerText = "⭐ Limitados";
         modeBtn.style.background = "#8e44ad";
       }
 
@@ -1538,8 +1546,8 @@
       const filteredFishes = getFilteredIndexFishes();
       if (filteredFishes.length === 0) {
         document.getElementById('index-fish-img').src = "";
-        document.getElementById('index-fish-name').innerText = "No fish found";
-        document.getElementById('index-fish-desc').innerText = "No fishes available for this rarity yet.";
+        document.getElementById('index-fish-name').innerText = "No encontrado";
+        document.getElementById('index-fish-desc').innerText = "No hay peces disponibles para esta rareza.";
         document.getElementById('index-rarity').innerText = "-";
         document.getElementById('index-counter').innerText = "0 / 0";
         return;
@@ -1582,25 +1590,25 @@
           if (fishesCount > 0 && !achievements.catchFirst) {
             achievements.catchFirst = true;
             updated = true;
-            showToast("🏆 Achievement Unlocked: Catch! (That was easy.)");
+            showToast("🏆 Logro desbloqueado: ¡Captura! (Eso fue fácil.)");
           }
 
           if (tankBought && !achievements.gluGluTank) {
             achievements.gluGluTank = true;
             updated = true;
-            showToast("🏆 Achievement Unlocked: Glu glu tank! (Amazing!)");
+            showToast("🏆 Logro desbloqueado: Glu glu tanque! (¡Increíble!)");
           }
 
           if (usedBait && !achievements.wormBaitAch) {
             achievements.wormBaitAch = true;
             updated = true;
-            showToast("🏆 Achievement Unlocked: Not Hungry Anymore (That was a good worm!.)");
+            showToast("🏆 Logro desbloqueado: Ya no tengo hambre (¡Qué buen gusano!)");
           }
 
           if (caughtDivine && !achievements.divineAch) {
             achievements.divineAch = true;
             updated = true;
-            showToast("🏆 Achievement Unlocked: Divine i say (Beautiful.)");
+            showToast("🏆 Logro desbloqueado: Divine i say (Hermoso.)");
           }
 
           if (updated) {
@@ -1608,7 +1616,7 @@
           }
         }
       } catch (err) {
-        console.error("Error checking achievements:", err);
+        console.error("Error al comprobar logros:", err);
       }
     }
 
@@ -1626,39 +1634,39 @@
           const achStatus1 = document.getElementById('ach-catch-first-status');
           if (achievements.catchFirst) {
             achItem1.style.opacity = '1'; achItem1.style.borderColor = '#2ecc71';
-            achStatus1.innerHTML = '✅ Completed'; achStatus1.style.color = '#2ecc71';
+            achStatus1.innerHTML = '✅ Completado'; achStatus1.style.color = '#2ecc71';
           }
 
           const achItem2 = document.getElementById('ach-glu-glu');
           const achStatus2 = document.getElementById('ach-glu-glu-status');
           if (achievements.gluGluTank) {
             achItem2.style.opacity = '1'; achItem2.style.borderColor = '#2ecc71';
-            achStatus2.innerHTML = '✅ Completed'; achStatus2.style.color = '#2ecc71';
+            achStatus2.innerHTML = '✅ Completado'; achStatus2.style.color = '#2ecc71';
           }
 
           const achItem3 = document.getElementById('ach-worm');
           const achStatus3 = document.getElementById('ach-worm-status');
           if (achievements.wormBaitAch) {
             achItem3.style.opacity = '1'; achItem3.style.borderColor = '#2ecc71';
-            achStatus3.innerHTML = '✅ Completed'; achStatus3.style.color = '#2ecc71';
+            achStatus3.innerHTML = '✅ Completado'; achStatus3.style.color = '#2ecc71';
           }
 
           const achItem4 = document.getElementById('ach-divine');
           const achStatus4 = document.getElementById('ach-divine-status');
           if (achievements.divineAch) {
             achItem4.style.opacity = '1'; achItem4.style.borderColor = '#2ecc71';
-            achStatus4.innerHTML = '✅ Completed'; achStatus4.style.color = '#2ecc71';
+            achStatus4.innerHTML = '✅ Completado'; achStatus4.style.color = '#2ecc71';
           }
         }
       } catch (err) {
-        console.error("Error loading achievements UI:", err);
+        console.error("Error al cargar interfaz de logros:", err);
       }
     }
 
     function openMarketModal() {
       const user = auth.currentUser;
       if (!user) {
-        showToast("⚠️ You must be logged in to access the market.");
+        showToast("⚠️ Debes iniciar sesión para usar el mercado.");
         openModal('modal-account');
         return;
       }
@@ -1693,12 +1701,12 @@
 
     async function loadMarketListings() {
       const container = document.getElementById('market-listings-container');
-      container.innerHTML = '<p style="color:#64748b; text-align:center;">Loading market offers...</p>';
+      container.innerHTML = '<p style="color:#64748b; text-align:center;">Cargando ofertas del mercado...</p>';
 
       try {
         const snapshot = await db.collection('marketListings').orderBy('createdAt', 'desc').get();
         if (snapshot.empty) {
-          container.innerHTML = '<p style="color:#64748b; text-align:center;">No player offers right now.</p>';
+          container.innerHTML = '<p style="color:#64748b; text-align:center;">No hay ofertas de jugadores ahora mismo.</p>';
           return;
         }
 
@@ -1714,13 +1722,13 @@
                 <img src="${fishObj.img}" style="width: 35px; height: 35px; object-fit: contain;">
                 <div>
                   <strong>🐟 ${item.fishName}</strong><br>
-                  <span style="font-size:0.75rem; color:#64748b;">Seller: ${item.sellerName} | Price: 💰 ${item.price}</span>
+                  <span style="font-size:0.75rem; color:#64748b;">Vendedor: ${item.sellerName} | Precio: 💰 ${item.price}</span>
                 </div>
               </div>
               <div>
                 ${isMyListing ? 
-                  `<span style="font-size:0.75rem; color:#d97706; font-weight:bold;">Your Listing</span>` : 
-                  `<button type="button" class="modal-action-btn" style="background:#27ae60; padding: 6px 12px; font-size: 0.8rem;" onclick="buyMarketItem('${doc.id}', '${item.sellerUid}', ${item.price}, '${item.fishName}')">Buy (${item.price} 💰)</button>`
+                  `<span style="font-size:0.75rem; color:#d97706; font-weight:bold;">Tu oferta</span>` : 
+                  `<button type="button" class="modal-action-btn" style="background:#27ae60; padding: 6px 12px; font-size: 0.8rem;" onclick="buyMarketItem('${doc.id}', '${item.sellerUid}', ${item.price}, '${item.fishName}')">Comprar (${item.price} 💰)</button>`
                 }
               </div>
             </div>
@@ -1728,7 +1736,7 @@
         });
         container.innerHTML = html;
       } catch (err) {
-        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading market.</p>';
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error al cargar el mercado.</p>';
       }
     }
 
@@ -1736,14 +1744,14 @@
       const user = auth.currentUser;
       if (!user) return;
       const container = document.getElementById('market-my-fishes-container');
-      container.innerHTML = '<p style="color:#64748b; text-align:center; grid-column: 1/-1;">Loading your fishes...</p>';
+      container.innerHTML = '<p style="color:#64748b; text-align:center; grid-column: 1/-1;">Cargando tus peces...</p>';
 
       try {
         const doc = await db.collection('jugadores').doc(user.uid).get();
         if (doc.exists) {
           const fishes = doc.data().fishes || [];
           if (fishes.length === 0) {
-            container.innerHTML = '<p style="color:#64748b; text-align:center; grid-column: 1/-1;">You have no fish to sell!</p>';
+            container.innerHTML = '<p style="color:#64748b; text-align:center; grid-column: 1/-1;">¡No tienes peces para vender!</p>';
             return;
           }
 
@@ -1767,10 +1775,10 @@
                 <span style="font-size: 0.85rem; font-weight: bold; text-align: center; margin-bottom: 8px; color: #1e293b;">${group.name}</span>
                 
                 ${isLimited ? 
-                  `<span style="font-size: 0.7rem; color: #8e44ad; font-weight: bold; background: #f3e8ff; padding: 4px 8px; border-radius: 6px; width: 100%; text-align: center;">🔒 Untradeable</span>` :
+                  `<span style="font-size: 0.7rem; color: #8e44ad; font-weight: bold; background: #f3e8ff; padding: 4px 8px; border-radius: 6px; width: 100%; text-align: center;">🔒 No comerciable</span>` :
                   `<div style="display: flex; gap: 4px; width: 100%;">
-                    <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 4px; font-size: 0.7rem; flex:1;" onclick="botSellFish(${group.firstIndex}, '${group.name}', ${fishObj.value})">Bot Sell</button>
-                    <button type="button" class="modal-action-btn" style="background:#2980b9; padding: 4px; font-size: 0.7rem; flex:1;" onclick="promptMarketSell(${group.firstIndex}, '${group.name}')">Market</button>
+                    <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 4px; font-size: 0.7rem; flex:1;" onclick="botSellFish(${group.firstIndex}, '${group.name}', ${fishObj.value})">Vender Bot</button>
+                    <button type="button" class="modal-action-btn" style="background:#2980b9; padding: 4px; font-size: 0.7rem; flex:1;" onclick="promptMarketSell(${group.firstIndex}, '${group.name}')">Mercado</button>
                   </div>`
                 }
               </div>
@@ -1779,7 +1787,7 @@
           container.innerHTML = html;
         }
       } catch (err) {
-        container.innerHTML = '<p style="color:#e74c3c; text-align:center; grid-column: 1/-1;">Error loading inventory.</p>';
+        container.innerHTML = '<p style="color:#e74c3c; text-align:center; grid-column: 1/-1;">Error al cargar inventario.</p>';
       }
     }
 
@@ -1791,7 +1799,7 @@
       try {
         const snapshot = await db.collection('marketListings').where('sellerUid', '==', user.uid).get();
         if (snapshot.empty) {
-          container.innerHTML = '<p style="font-size: 0.8rem; color:#64748b; text-align:center;">You have no active market offers.</p>';
+          container.innerHTML = '<p style="font-size: 0.8rem; color:#64748b; text-align:center;">No tienes ofertas activas.</p>';
           return;
         }
 
@@ -1805,13 +1813,13 @@
                 <img src="${fishObj.img}" style="width: 25px; height: 25px; object-fit: contain;">
                 <span style="font-size: 0.85rem;"><strong>${item.fishName}</strong> - 💰 ${item.price}</span>
               </div>
-              <button type="button" class="modal-action-btn" style="background:#c0392b; padding: 4px 8px; font-size: 0.75rem; width: auto;" onclick="cancelMarketListing('${doc.id}', '${item.fishName}')">Cancel & Retrieve</button>
+              <button type="button" class="modal-action-btn" style="background:#c0392b; padding: 4px 8px; font-size: 0.75rem; width: auto;" onclick="cancelMarketListing('${doc.id}', '${item.fishName}')">Cancelar y Recuperar</button>
             </div>
           `;
         });
         container.innerHTML = html;
       } catch (err) {
-        container.innerHTML = '<p style="font-size: 0.8rem; color:#e74c3c; text-align:center;">Error loading active listings.</p>';
+        container.innerHTML = '<p style="font-size: 0.8rem; color:#e74c3c; text-align:center;">Error al cargar ofertas activas.</p>';
       }
     }
 
@@ -1821,7 +1829,7 @@
 
       const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName);
       if (fishObj && fishObj.isLimited) {
-        showToast("⚠️ Limited edition fishes cannot be sold!");
+        showToast("⚠️ ¡Los peces de edición limitada no se pueden vender!");
         return;
       }
 
@@ -1831,11 +1839,11 @@
 
         await db.runTransaction(async (transaction) => {
           const doc = await transaction.get(playerRef);
-          if (!doc.exists) throw new Error("Player not found");
+          if (!doc.exists) throw new Error("Jugador no encontrado");
           
           let fishes = doc.data().fishes || [];
           let tanksMap = doc.data().aquariumTanksMap || {};
-          if (fishes.length <= fishIndex) throw new Error("Fish not found");
+          if (fishes.length <= fishIndex) throw new Error("Pez no encontrado");
 
           let totalDisplayed = 0;
           Object.values(tanksMap).forEach(roomTanks => {
@@ -1848,7 +1856,7 @@
           let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
 
           if (totalOwned - precedingSameType <= totalDisplayed) {
-            throw new Error(`You cannot sell ${fishName} because displayed fishes in your Aquarium rooms are protected! Remove them first.`);
+            throw new Error(`¡No puedes vender ${fishName} porque está en exhibición en tu acuario! Quítalo primero.`);
           }
 
           fishes.splice(fishIndex, 1);
@@ -1861,7 +1869,7 @@
         });
 
         if (canSell) {
-          showToast(`💰 Bot sold ${fishName} for +${fishValue} coins!`);
+          showToast(`💰 Vendiste ${fishName} al bot por +${fishValue} monedas.`);
           loadMyFishesForMarket();
           updateGameHUD();
         }
@@ -1873,12 +1881,12 @@
     function promptMarketSell(fishIndex, fishName) {
       const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName);
       if (fishObj && fishObj.isLimited) {
-        showToast("⚠️ Limited edition fishes cannot be posted to the market!");
+        showToast("⚠️ ¡Los peces limitados no se pueden publicar en el mercado!");
         return;
       }
 
       selectedFishToMarket = { index: fishIndex, name: fishName };
-      document.getElementById('prompt-fish-name-label').innerText = `Fish: ${fishName}`;
+      document.getElementById('prompt-fish-name-label').innerText = `Pez: ${fishName}`;
       document.getElementById('market-sell-price-input').value = "";
       document.getElementById('modal-market-price-prompt').style.display = 'flex';
     }
@@ -1889,7 +1897,7 @@
 
       const priceInput = parseInt(document.getElementById('market-sell-price-input').value);
       if (isNaN(priceInput) || priceInput <= 0) {
-        showToast("⚠️ Please enter a valid price.");
+        showToast("⚠️ Ingresa un precio válido.");
         return;
       }
 
@@ -1905,7 +1913,7 @@
         const fishName = selectedFishToMarket.name;
 
         if (fishes.length <= fishIndex) {
-          showToast("❌ Fish no longer exists in your inventory.");
+          showToast("❌ El pez ya no existe en tu inventario.");
           document.getElementById('modal-market-price-prompt').style.display = 'none';
           return;
         }
@@ -1920,7 +1928,7 @@
         let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
 
         if (totalOwned - precedingSameType <= totalDisplayed) {
-          showToast(`⚠️ You cannot list ${fishName} on the market because displayed fishes in your Aquarium are protected!`);
+          showToast(`⚠️ ¡No puedes publicar ${fishName} porque está protegido en tu acuario!`);
           document.getElementById('modal-market-price-prompt').style.display = 'none';
           return;
         }
@@ -1929,7 +1937,7 @@
 
         await db.collection('marketListings').add({
           sellerUid: user.uid,
-          sellerName: playerData.username || "Player",
+          sellerName: playerData.username || "Jugador",
           fishName: fishName,
           price: priceInput,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1937,12 +1945,12 @@
 
         await playerRef.update({ fishes: fishes });
 
-        showToast(`✅ ${fishName} successfully listed on Market for ${priceInput} 💰!`);
+        showToast(`✅ ¡${fishName} publicado en el mercado por ${priceInput} 💰!`);
         document.getElementById('modal-market-price-prompt').style.display = 'none';
         loadMyFishesForMarket();
         loadMyActiveListings();
       } catch (err) {
-        showToast("❌ Error listing item: " + err.message);
+        showToast("❌ Error al publicar: " + err.message);
       }
     }
 
@@ -1956,10 +1964,10 @@
 
         await db.runTransaction(async (transaction) => {
           const listingSnap = await transaction.get(listingRef);
-          if (!listingSnap.exists) throw new Error("Listing does not exist.");
+          if (!listingSnap.exists) throw new Error("La oferta ya no existe.");
           
           const listingData = listingSnap.data();
-          if (listingData.sellerUid !== user.uid) throw new Error("Not authorized.");
+          if (listingData.sellerUid !== user.uid) throw new Error("No autorizado.");
 
           transaction.update(playerRef, {
             fishes: firebase.firestore.FieldValue.arrayUnion({ name: fishName, timestamp: new Date().toISOString() })
@@ -1968,11 +1976,11 @@
           transaction.delete(listingRef);
         });
 
-        showToast(`✅ Listing cancelled. ${fishName} returned.`);
+        showToast(`✅ Oferta cancelada. ${fishName} devuelto a tu mochila.`);
         loadMyActiveListings();
         loadMyFishesForMarket();
       } catch (err) {
-        showToast("❌ Error cancelling: " + err.message);
+        showToast("❌ Error al cancelar: " + err.message);
       }
     }
 
@@ -1980,7 +1988,7 @@
       const user = auth.currentUser;
       if (!user) return;
       if (user.uid === sellerUid) {
-        showToast("⚠️ You cannot buy your own listing!");
+        showToast("⚠️ ¡No puedes comprar tu propia oferta!");
         return;
       }
 
@@ -1994,11 +2002,11 @@
           const sellerSnap = await transaction.get(sellerRef);
           const listingSnap = await transaction.get(listingRef);
 
-          if (!listingSnap.exists) throw new Error("Item already sold!");
-          if (!buyerSnap.exists) throw new Error("Buyer profile error.");
+          if (!listingSnap.exists) throw new Error("¡El artículo ya fue vendido!");
+          if (!buyerSnap.exists) throw new Error("Error de perfil del comprador.");
 
           const buyerCoins = buyerSnap.data().coins || 0;
-          if (buyerCoins < price) throw new Error("Not enough coins!");
+          if (buyerCoins < price) throw new Error("¡No tienes suficientes monedas!");
 
           transaction.update(buyerRef, {
             coins: buyerCoins - price,
@@ -2014,11 +2022,11 @@
           transaction.delete(listingRef);
         });
 
-        showToast(`🎉 Purchased ${fishName} for ${price} 💰!`);
+        showToast(`🎉 ¡Compraste ${fishName} por ${price} 💰!`);
         loadMarketListings();
         updateGameHUD();
       } catch (err) {
-        showToast("❌ Purchase error: " + err.message);
+        showToast("❌ Error en compra: " + err.message);
       }
     }
 
@@ -2035,10 +2043,10 @@
           currentAquariumRoomIndex = 0;
           
           let tanksMap = data.aquariumTanksMap || {};
-          renderAquarium(data.username || "My", data.fishes || [], tanksMap);
+          renderAquarium(data.username || "Mi", data.fishes || [], tanksMap);
         }
       } catch (err) {
-        showToast("❌ Error loading aquarium.");
+        showToast("❌ Error al cargar acuario.");
       }
     }
 
@@ -2064,7 +2072,7 @@
         db.collection('jugadores').doc(user.uid).get().then(doc => {
           if (doc.exists) {
             const data = doc.data();
-            renderAquarium(data.username || "My", data.fishes || [], data.aquariumTanksMap || {});
+            renderAquarium(data.username || "Mi", data.fishes || [], data.aquariumTanksMap || {});
           }
         });
       } else {
@@ -2078,19 +2086,19 @@
         if (el.id !== 'modal-ban-notice') el.style.display = 'none';
       });
       document.getElementById('modal-aquarium').style.display = 'flex';
-      document.getElementById('aquarium-title').innerText = `🐠 ${username}'s Aquarium`;
+      document.getElementById('aquarium-title').innerText = `🐠 Acuario de ${username}`;
       
       const maxRooms = isViewingMyAquarium ? totalAquariumRoomsOwned : (Object.keys(tanksMap).length > 0 ? Object.keys(tanksMap).length : 1);
-      document.getElementById('aquarium-room-indicator').innerText = `Room ${currentAquariumRoomIndex + 1} / ${maxRooms}`;
+      document.getElementById('aquarium-room-indicator').innerText = `Sala ${currentAquariumRoomIndex + 1} / ${maxRooms}`;
 
       const subtitle = document.getElementById('aquarium-subtitle');
       const ownerControls = document.getElementById('aquarium-owner-controls');
       
       if (isViewingMyAquarium) {
-        subtitle.innerText = "Each slot requires 1 Mini Tank from your inventory!";
+        subtitle.innerText = "¡Cada espacio requiere 1 Tanque Mini de tu inventario!";
         ownerControls.style.display = 'block';
       } else {
-        subtitle.innerText = `Viewing ${username}'s displayed fish`;
+        subtitle.innerText = `Viendo peces exhibidos de ${username}`;
         ownerControls.style.display = 'none';
       }
 
@@ -2110,7 +2118,7 @@
       if (!slotEl) return;
       
       if (!fishName) {
-        slotEl.innerHTML = `<span style="font-size: 0.65rem; color: rgba(0,0,0,0.5); background: rgba(255,255,255,0.7); padding: 2px 5px; border-radius: 4px; pointer-events: none;">${isViewingMyAquarium ? '+ Slot (Needs Tank)' : 'Vacío'}</span>`;
+        slotEl.innerHTML = `<span style="font-size: 0.65rem; color: rgba(0,0,0,0.5); background: rgba(255,255,255,0.7); padding: 2px 5px; border-radius: 4px; pointer-events: none;">${isViewingMyAquarium ? '+ Espacio (Requiere Tanque)' : 'Vacío'}</span>`;
         slotEl.style.backgroundImage = 'none';
       } else {
         const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName) || ALLOWED_FISH_TYPES[0];
@@ -2145,7 +2153,7 @@
           }
 
           if (tanksCount <= 0) {
-            showToast("⚠️ You need a Mini Tank in your inventory! Buy one in Bob's Shop.");
+            showToast("⚠️ ¡Necesitas un Tanque Mini en tu inventario! Cómpralo en la tienda.");
             return;
           }
 
@@ -2157,7 +2165,7 @@
     function openSelectFishModal(fishes) {
       const listEl = document.getElementById('select-fish-list');
       if (!fishes || fishes.length === 0) {
-        listEl.innerHTML = '<p style="color:#64748b; text-align:center; margin:10px 0; grid-column:1/-1;">You have no fish in your inventory!</p>';
+        listEl.innerHTML = '<p style="color:#64748b; text-align:center; margin:10px 0; grid-column:1/-1;">¡No tienes peces en tu inventario!</p>';
       } else {
         let fishCounts = {};
         fishes.forEach(f => {
@@ -2173,7 +2181,7 @@
               <span style="position: absolute; top: 6px; right: 8px; background: #3498db; color: white; font-size: 0.75rem; font-weight: bold; padding: 1px 6px; border-radius: 10px;">x${count}</span>
               <img src="${fishObj.img}" style="width: 50px; height: 50px; object-fit: contain; margin: 8px 0;">
               <span style="font-size: 0.85rem; font-weight: bold; text-align: center; margin-bottom: 8px; color: #1e293b;">${fishName}</span>
-              <button type="button" class="modal-action-btn" style="background:#27ae60; padding: 4px; font-size: 0.7rem; width: 100%;">Select</button>
+              <button type="button" class="modal-action-btn" style="background:#27ae60; padding: 4px; font-size: 0.7rem; width: 100%;">Seleccionar</button>
             </div>
           `;
         });
@@ -2207,13 +2215,13 @@
           });
 
           if (totalDisplayedAcrossAllRooms + 1 > totalInInventory) {
-            showToast(`⚠️ You only have ${totalInInventory} ${fishName}(s) in your backpack and ${totalDisplayedAcrossAllRooms} already displayed elsewhere!`);
+            showToast(`⚠️ ¡Solo tienes ${totalInInventory} de ${fishName} en tu mochila y ya estás usando ${totalDisplayedAcrossAllRooms} en tus acuarios!`);
             return;
           }
 
           if (!tanks[selectedShelfIndex]) {
             if (tanksCount <= 0) {
-              showToast("⚠️ Not enough Mini Tanks in inventory!");
+              showToast("⚠️ ¡No hay suficientes Tanques Mini!");
               return;
             }
             tanksCount -= 1;
@@ -2227,9 +2235,9 @@
             miniTanksCount: tanksCount
           });
           
-          showToast(`✅ ${fishName} placed in tank!`);
+          showToast(`✅ ¡${fishName} colocado en el tanque!`);
           document.getElementById('modal-select-fish').style.display = 'none';
-          renderAquarium(data.username || "My", fishes, tanksMap);
+          renderAquarium(data.username || "Mi", fishes, tanksMap);
         }
       } catch (err) {
         showToast("❌ Error: " + err.message);
@@ -2259,11 +2267,11 @@
               miniTanksCount: tanksCount
             });
 
-            showToast("🗑️ Tank removed and returned to your inventory.");
+            showToast("🗑️ Tanque retirado y devuelto a tu inventario.");
           }
 
           document.getElementById('modal-select-fish').style.display = 'none';
-          renderAquarium(data.username || "My", data.fishes || [], tanksMap);
+          renderAquarium(data.username || "Mi", data.fishes || [], tanksMap);
         }
       } catch (err) {
         showToast("❌ Error: " + err.message);
@@ -2334,19 +2342,19 @@
     function startGame() {
       const user = auth.currentUser;
       if (!user) {
-        showToast("⚠️ You must be logged in to play!");
+        showToast("⚠️ ¡Debes iniciar sesión para jugar!");
         openModal('modal-account');
         return;
       }
       document.getElementById('game-screen').style.display = 'block';
       updateGameHUD();
-      showToast("🎣 Entered the fishing spot!");
+      showToast("🎣 ¡Entraste a la zona de pesca!");
     }
 
     function exitGame() {
       stopMinigame(false);
       document.getElementById('game-screen').style.display = 'none';
-      showToast("🏠 Returned to main menu.");
+      showToast("🏠 Regresaste al menú principal.");
     }
 
     async function updateGameHUD() {
@@ -2357,10 +2365,10 @@
         if (doc.exists) {
           const data = doc.data();
           document.getElementById('hud-coins').innerText = `💰 ${data.coins || 0}`;
-          document.getElementById('hud-fish').innerText = `🐟 ${(data.fishes || []).length} Fishes`;
+          document.getElementById('hud-fish').innerText = `🐟 ${(data.fishes || []).length} Peces`;
         }
       } catch (err) {
-        console.error("Error updating HUD:", err);
+        console.error("Error al actualizar HUD:", err);
       }
     }
 
@@ -2370,8 +2378,8 @@
 
       const castBtn = document.getElementById('cast-btn');
       castBtn.disabled = true;
-      castBtn.innerText = "⏳ Waiting for bite...";
-      showToast("🎣 Line cast! Waiting...");
+      castBtn.innerText = "⏳ Esperando picada...";
+      showToast("🎣 ¡Caña lanzada! Esperando...");
 
       try {
         const playerRef = db.collection('jugadores').doc(user.uid);
@@ -2387,29 +2395,54 @@
             isBaitActive: false
           });
           usedBaitThisCast = true;
-          showToast("🪱 Worm bait consumed for this cast!");
+          showToast("🪱 ¡Se ha consumido un cebo para este lanzamiento!");
         }
 
         setTimeout(() => {
           castBtn.disabled = false;
-          castBtn.innerText = "🎣 Cast Line!";
+          castBtn.innerText = "🎣 ¡Lanzar caña!";
           
           const standardFishes = ALLOWED_FISH_TYPES.filter(f => !f.isLimited);
           
-          if (usedBaitThisCast && Math.random() < 0.45) {
-            const rarePlusFishes = standardFishes.filter(f => f.rarity !== 'Common');
-            pendingCaughtFish = rarePlusFishes[Math.floor(Math.random() * rarePlusFishes.length)] || standardFishes[0];
-          } else {
-            pendingCaughtFish = standardFishes[Math.floor(Math.random() * standardFishes.length)];
+          let totalWeight = 0;
+          standardFishes.forEach(f => {
+            let w = f.weight;
+            // Cebo nerfeado: ya no da tanta suerte (ahora otorga un impulso menor del 15% para raros o superiores)
+            if (usedBaitThisCast) {
+              if (f.rarity !== 'Common') {
+                w *= 1.15;
+              } else {
+                w *= 0.90;
+              }
+            }
+            totalWeight += w;
+          });
+
+          let randomVal = Math.random() * totalWeight;
+          let currentSum = 0;
+          let selectedFish = standardFishes[0];
+
+          for (let f of standardFishes) {
+            let w = f.weight;
+            if (usedBaitThisCast) {
+              if (f.rarity !== 'Common') w *= 1.15;
+              else w *= 0.90;
+            }
+            currentSum += w;
+            if (randomVal <= currentSum) {
+              selectedFish = f;
+              break;
+            }
           }
 
+          pendingCaughtFish = selectedFish;
           startFishingMinigame();
         }, 2000 + Math.random() * 1500);
 
       } catch (err) {
         castBtn.disabled = false;
-        castBtn.innerText = "🎣 Cast Line!";
-        showToast("❌ Error casting line: " + err.message);
+        castBtn.innerText = "🎣 ¡Lanzar caña!";
+        showToast("❌ Error al lanzar: " + err.message);
       }
     }
 
@@ -2519,16 +2552,16 @@
             fishes: firebase.firestore.FieldValue.arrayUnion({ name: pendingCaughtFish.name, timestamp: new Date().toISOString() })
           });
 
-          showToast(`🎉 PERFECT CATCH! You caught a ${pendingCaughtFish.name} (${pendingCaughtFish.rarity})!`);
+          showToast(`🎉 ¡CAPTURA PERFECTA! ¡Atrapaste un ${pendingCaughtFish.name} (${pendingCaughtFish.rarity})!`);
           updateGameHUD();
           
           const isDivine = pendingCaughtFish.rarity === 'Divine';
           checkAchievements(currentFishes.length + 1, false, usedBaitThisCast, isDivine);
         } catch (err) {
-          showToast("❌ Error saving catch: " + err.message);
+          showToast("❌ Error al guardar captura: " + err.message);
         }
       } else if (!success && pendingCaughtFish) {
-        showToast("💥 The fish got away! Try again.");
+        showToast("💥 ¡El pez se ha escapado! Inténtalo de nuevo.");
       }
       pendingCaughtFish = null;
       usedBaitThisCast = false;
@@ -2537,11 +2570,11 @@
     async function buyMiniTank() {
       const user = auth.currentUser;
       if (!user) {
-        showToast("⚠️ You must be logged in.");
+        showToast("⚠️ Debes iniciar sesión.");
         return;
       }
 
-      const cost = 75;
+      const cost = 500; // Tanque mini ahora cuesta 500
       try {
         const playerRef = db.collection('jugadores').doc(user.uid);
         const doc = await playerRef.get();
@@ -2551,7 +2584,7 @@
           const currentTanksCount = data.miniTanksCount || 0;
 
           if (coins < cost) {
-            showToast("❌ Not enough coins! You need 75 💰.");
+            showToast("❌ ¡No tienes suficientes monedas! Necesitas 500 💰.");
             return;
           }
 
@@ -2560,24 +2593,24 @@
             miniTanksCount: currentTanksCount + 1
           });
 
-          showToast("🎉 Success! Mini Tank bought and added to your backpack!");
+          showToast("🎉 ¡Éxito! Tanque Mini comprado y añadido a tu mochila.");
           loadBackpackData();
           updateShopCoinsDisplay();
           checkAchievements((data.fishes || []).length, true);
         }
       } catch (err) {
-        showToast("❌ Error buying tank: " + err.message);
+        showToast("❌ Error al comprar tanque: " + err.message);
       }
     }
 
     async function buyWormBait() {
       const user = auth.currentUser;
       if (!user) {
-        showToast("⚠️ You must be logged in.");
+        showToast("⚠️ Debes iniciar sesión.");
         return;
       }
 
-      const cost = 25;
+      const cost = 250; // Cebo ahora cuesta 250
       try {
         const playerRef = db.collection('jugadores').doc(user.uid);
         const doc = await playerRef.get();
@@ -2587,7 +2620,7 @@
           const currentBaits = data.wormBaitsCount || 0;
 
           if (coins < cost) {
-            showToast("❌ Not enough coins! You need 25 💰.");
+            showToast("❌ ¡No tienes suficientes monedas! Necesitas 250 💰.");
             return;
           }
 
@@ -2596,23 +2629,23 @@
             wormBaitsCount: currentBaits + 1
           });
 
-          showToast("🪱 Success! Worm Bait bought and added to your backpack!");
+          showToast("🪱 ¡Éxito! Cebo comprado y añadido a tu mochila.");
           loadBackpackData();
           updateShopCoinsDisplay();
         }
       } catch (err) {
-        showToast("❌ Error buying bait: " + err.message);
+        showToast("❌ Error al comprar cebo: " + err.message);
       }
     }
 
     async function buyAquariumRoom() {
       const user = auth.currentUser;
       if (!user) {
-        showToast("⚠️ You must be logged in.");
+        showToast("⚠️ Debes iniciar sesión.");
         return;
       }
 
-      const cost = 1000;
+      const cost = 2000; // Sala de acuario ahora cuesta 2000
       try {
         const playerRef = db.collection('jugadores').doc(user.uid);
         const doc = await playerRef.get();
@@ -2622,7 +2655,7 @@
           const currentRooms = data.aquariumRoomsOwned || 1;
 
           if (coins < cost) {
-            showToast("❌ Not enough coins! You need 1000 💰 for a new aquarium room.");
+            showToast("❌ ¡No tienes suficientes monedas! Necesitas 2000 💰 para una nueva sala.");
             return;
           }
 
@@ -2631,13 +2664,13 @@
             aquariumRoomsOwned: currentRooms + 1
           });
 
-          showToast("🏰 Success! New aquarium room purchased!");
+          showToast("🏰 ¡Éxito! Nueva sala de acuario desbloqueada.");
           loadBackpackData();
           updateShopCoinsDisplay();
           updateGameHUD();
         }
       } catch (err) {
-        showToast("❌ Error buying room: " + err.message);
+        showToast("❌ Error al comprar sala: " + err.message);
       }
     }
 
@@ -2654,17 +2687,17 @@
           const currentActive = data.isBaitActive || false;
 
           if (baits <= 0 && !currentActive) {
-            showToast("⚠️ You don't have any Worm Baits! Buy some in Bob's Shop.");
+            showToast("⚠️ ¡No tienes cebos! Compra algunos en la tienda.");
             return;
           }
 
           const newActive = !currentActive;
           await playerRef.update({ isBaitActive: newActive });
-          showToast(newActive ? "🪱 Worm Bait equipped! Next cast will have better luck." : "🛑 Worm Bait unequipped.");
+          showToast(newActive ? "🪱 ¡Cebo equipado para el próximo lanzamiento!" : "🛑 Cebo desequipado.");
           loadBackpackData();
         }
       } catch (err) {
-        showToast("❌ Error toggling bait: " + err.message);
+        showToast("❌ Error al cambiar cebo: " + err.message);
       }
     }
 
@@ -2672,7 +2705,7 @@
       const user = auth.currentUser;
       if (!user) return;
       const listContainer = document.getElementById('backpack-fish-list');
-      listContainer.innerHTML = "Loading items...";
+      listContainer.innerHTML = "Cargando objetos...";
 
       try {
         const doc = await db.collection('jugadores').doc(user.uid).get();
@@ -2683,22 +2716,22 @@
           const baitsCount = data.wormBaitsCount || 0;
           const isBaitActive = data.isBaitActive || false;
 
-          document.getElementById('backpack-tanks-count').innerText = `Mini Tanks Bought: ${tanksCount}`;
-          document.getElementById('backpack-rooms-count').innerText = `Aquarium Rooms Owned: ${roomsCount}`;
-          document.getElementById('backpack-baits-count').innerText = `Worm Baits: ${baitsCount}`;
+          document.getElementById('backpack-tanks-count').innerText = `Tanques Mini Comprados: ${tanksCount}`;
+          document.getElementById('backpack-rooms-count').innerText = `Salas de Acuario: ${roomsCount}`;
+          document.getElementById('backpack-baits-count').innerText = `Cebos: ${baitsCount}`;
           
           const toggleBtn = document.getElementById('backpack-bait-toggle-btn');
           if (isBaitActive) {
-            toggleBtn.innerText = "Unequip Bait";
+            toggleBtn.innerText = "Desequipar";
             toggleBtn.style.background = "#e74c3c";
           } else {
-            toggleBtn.innerText = "Equip Bait";
+            toggleBtn.innerText = "Equipar Cebo";
             toggleBtn.style.background = "#2ecc71";
           }
 
           const fishes = data.fishes || [];
           if (fishes.length === 0) {
-            listContainer.innerHTML = "No fish caught yet. Go fishing!";
+            listContainer.innerHTML = "Aún no has pescado nada. ¡Sal a pescar!";
             return;
           }
 
@@ -2724,7 +2757,7 @@
           listContainer.innerHTML = html;
         }
       } catch (err) {
-        listContainer.innerHTML = "Error loading backpack.";
+        listContainer.innerHTML = "Error al cargar la mochila.";
       }
     }
 
@@ -2784,7 +2817,7 @@
       e.preventDefault();
       const captcha = grecaptcha.getResponse(recaptchaLoginId);
       if (!captcha) {
-        showToast("⚠️ Please complete the reCAPTCHA.");
+        showToast("⚠️ Por favor completa el reCAPTCHA.");
         return;
       }
 
@@ -2793,10 +2826,9 @@
 
       try {
         await auth.signInWithEmailAndPassword(email, pass);
-        // Ban check is handled in auth state observer
         grecaptcha.reset(recaptchaLoginId);
       } catch (err) {
-        showToast("❌ Login error: " + err.message);
+        showToast("❌ Error al iniciar sesión: " + err.message);
       }
     }
 
@@ -2804,7 +2836,7 @@
       e.preventDefault();
       const captcha = grecaptcha.getResponse(recaptchaRegisterId);
       if (!captcha) {
-        showToast("⚠️ Please complete the reCAPTCHA.");
+        showToast("⚠️ Por favor completa el reCAPTCHA.");
         return;
       }
 
@@ -2828,7 +2860,7 @@
         let photoURL = "";
         if (fileInput) {
           if (fileInput.size > 1048576) {
-            showToast("⚠️ Image exceeds 1MB limit.");
+            showToast("⚠️ La imagen excede el límite de 1MB.");
             return;
           }
           photoURL = await comprimirImagen(fileInput);
@@ -2858,11 +2890,11 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        showToast("📧 Account created! Verification email sent.");
+        showToast("📧 ¡Cuenta creada! Correo de verificación enviado.");
         closeAllModals();
         grecaptcha.reset(recaptchaRegisterId);
       } catch (err) {
-        showToast("❌ Registration error: " + err.message);
+        showToast("❌ Error en registro: " + err.message);
       }
     }
 
@@ -2870,17 +2902,17 @@
       const email = document.getElementById('resend-email').value;
       const pass = document.getElementById('resend-password').value;
       if (!email || !pass) {
-        showToast("⚠️ Enter your email and password.");
+        showToast("⚠️ Ingresa tu correo y contraseña.");
         return;
       }
 
       try {
         const cred = await auth.signInWithEmailAndPassword(email, pass);
         if (cred.user.emailVerified) {
-          showToast("✅ Your email is already verified!");
+          showToast("✅ ¡Tu correo ya está verificado!");
         } else {
           await cred.user.sendEmailVerification();
-          showToast("📧 Fresh verification email sent!");
+          showToast("📧 ¡Nuevo correo de verificación enviado!");
         }
         closeAllModals();
       } catch (err) {
@@ -2896,18 +2928,18 @@
         await user.reload();
         const statusEl = document.getElementById('verification-status');
         if (user.emailVerified) {
-          statusEl.innerText = "✅ Email verified";
+          statusEl.innerText = "✅ Correo verificado";
           statusEl.style.color = "#2ecc71";
         } else {
-          statusEl.innerText = "⚠️ Email not verified";
+          statusEl.innerText = "⚠️ Correo no verificado";
           statusEl.style.color = "#e74c3c";
         }
 
         const doc = await db.collection('jugadores').doc(user.uid).get();
         if (doc.exists) {
           const data = doc.data();
-          document.getElementById('profile-modal-name').innerText = data.username || "Player";
-          document.getElementById('profile-bio-display').innerText = data.bio || "No bio yet.";
+          document.getElementById('profile-modal-name').innerText = data.username || "Jugador";
+          document.getElementById('profile-bio-display').innerText = data.bio || "Sin biografía.";
           document.getElementById('profile-edit-username').value = data.username || "";
           document.getElementById('profile-edit-bio').value = data.bio || "";
           document.getElementById('profile-coins').innerText = data.coins || 0;
@@ -2918,14 +2950,14 @@
           }
         }
       } catch (err) {
-        console.error("Error loading profile:", err);
+        console.error("Error al cargar perfil:", err);
       }
     }
 
     async function updateProfileData() {
       const user = auth.currentUser;
       if (!user) {
-        showToast("⚠️ You must be logged in.");
+        showToast("⚠️ Debes iniciar sesión.");
         return;
       }
 
@@ -2951,7 +2983,7 @@
           }
 
           if (!currentPassword) {
-            showToast("⚠️ Enter your current password to change your username.");
+            showToast("⚠️ Ingresa tu contraseña actual para cambiar el nombre.");
             return;
           }
 
@@ -2961,18 +2993,18 @@
             const diffDays = (Date.now() - lastDate.getTime()) / (1000 * 3600 * 24);
             if (diffDays < 14) {
               const daysLeft = Math.ceil(14 - diffDays);
-              showToast(`⚠️ You can change your username again in ${daysLeft} day(s).`);
+              showToast(`⚠️ Podrás cambiar tu nombre nuevamente en ${daysLeft} día(s).`);
               return;
             }
           }
 
-          showToast("⏳ Saving profile changes...");
+          showToast("⏳ Guardando cambios...");
           const cred = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
           await user.reauthenticateWithCredential(cred);
 
           const nameCheck = await db.collection('jugadores').where('username', '==', newUsername).get();
           if (!nameCheck.empty) {
-            showToast("⚠️ This username is already taken.");
+            showToast("⚠️ Este nombre de usuario ya está en uso.");
             return;
           }
 
@@ -2986,7 +3018,7 @@
 
         if (fileInput) {
           if (fileInput.size > 1048576) {
-            showToast("⚠️ Image exceeds 1MB limit.");
+            showToast("⚠️ La imagen excede el límite de 1MB.");
             return;
           }
           photoURL = await comprimirImagen(fileInput);
@@ -2999,23 +3031,23 @@
           photoURL: photoURL
         });
 
-        showToast("✅ Profile updated successfully!");
+        showToast("✅ ¡Perfil actualizado con éxito!");
         document.getElementById('profile-edit-section').style.display = 'none';
         loadProfileData();
       } catch (err) {
-        showToast("❌ Error updating profile: " + err.message);
+        showToast("❌ Error al actualizar perfil: " + err.message);
       }
     }
 
     async function handleForgotPassword() {
       const email = document.getElementById('forgot-email').value;
       if (!email) {
-        showToast("⚠️ Enter your email address.");
+        showToast("⚠️ Ingresa tu correo electrónico.");
         return;
       }
       try {
         await auth.sendPasswordResetEmail(email);
-        showToast("📬 Password reset link sent.");
+        showToast("📬 Enlace de recuperación enviado.");
         closeAllModals();
       } catch (err) {
         showToast("❌ Error: " + err.message);
@@ -3025,13 +3057,13 @@
     async function redeemCode() {
       const user = auth.currentUser;
       if (!user) {
-        showToast("⚠️ You must be logged in to redeem codes.");
+        showToast("⚠️ Debes iniciar sesión para canjear códigos.");
         return;
       }
 
       const code = document.getElementById('redeemCodeInput').value.trim().toUpperCase();
       if (!code) {
-        showToast("⚠️ Enter a code.");
+        showToast("⚠️ Ingresa un código.");
         return;
       }
 
@@ -3040,7 +3072,7 @@
         const codeSnap = await codeRef.get();
 
         if (!codeSnap.exists) {
-          showToast("❌ Invalid or expired code.");
+          showToast("❌ Código inválido o expirado.");
           return;
         }
 
@@ -3051,7 +3083,7 @@
 
         const redeemedList = playerData.redeemedCodes || [];
         if (redeemedList.includes(code)) {
-          showToast("⚠️ You have already redeemed this code!");
+          showToast("⚠️ ¡Ya has canjeado este código anteriormente!");
           return;
         }
 
@@ -3069,19 +3101,19 @@
           transaction.update(playerRef, updateData);
         });
 
-        let msg = `🎉 Success! Received`;
+        let msg = `🎉 ¡Éxito! Recibiste`;
         let rewards = [];
 
-        if (codeData.coins > 0) rewards.push(`+${codeData.coins} coins`);
-        if (codeData.wormBaits > 0) rewards.push(`+${codeData.wormBaits} 🪱 Worm Baits`);
+        if (codeData.coins > 0) rewards.push(`+${codeData.coins} monedas`);
+        if (codeData.wormBaits > 0) rewards.push(`+${codeData.wormBaits} 🪱 cebos`);
         if (codeData.bonusFish) rewards.push(`🐟 ${codeData.bonusFish}`);
 
-        showToast(msg + " " + (rewards.length > 0 ? rewards.join(", ") : "code rewards") + "!");
+        showToast(msg + " " + (rewards.length > 0 ? rewards.join(", ") : "recompensas") + ".");
         document.getElementById('redeemCodeInput').value = "";
         updateShopCoinsDisplay();
         updateGameHUD();
       } catch (err) {
-        showToast("❌ Error redeeming code: " + err.message);
+        showToast("❌ Error al canjear código: " + err.message);
       }
     }
 
@@ -3089,14 +3121,14 @@
       const searchTerm = document.getElementById('searchUsernameInput').value.trim();
       const resultDiv = document.getElementById('searchResult');
       if (!searchTerm) {
-        showToast("⚠️ Enter a username to search.");
+        showToast("⚠️ Ingresa un nombre para buscar.");
         return;
       }
 
       const snapshot = await db.collection('jugadores').where('username', '==', searchTerm).get();
       if (snapshot.empty) {
         resultDiv.style.display = 'block';
-        resultDiv.innerHTML = '<p style="color:#e74c3c; font-size:0.9rem;">❌ No player found with that exact username.</p>';
+        resultDiv.innerHTML = '<p style="color:#e74c3c; font-size:0.9rem;">❌ No se encontró ningún jugador con ese nombre.</p>';
         return;
       }
 
@@ -3107,12 +3139,12 @@
         const fishesJson = JSON.stringify(data.fishes || []).replace(/"/g, '&quot;');
         const tanksMapJson = JSON.stringify(data.aquariumTanksMap || { room_0: new Array(8).fill(null) }).replace(/"/g, '&quot;');
         html += `
-          <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'No bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}', '${doc.id}', ${fishesJson}, ${tanksMapJson})">
+          <div class="search-player-item" onclick="viewOtherProfile('${data.username}', '${data.bio || 'Sin bio'}', ${data.coins || 0}, ${(data.fishes || []).length}, '${avatar}', '${doc.id}', ${fishesJson}, ${tanksMapJson})">
             <div style="display:flex; align-items:center; gap:10px;">
               <img src="${avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
               <div>
                 <strong>👤 ${data.username}</strong><br>
-                <span style="font-size:0.8rem; color:#64748b;">💰 Coins: ${data.coins || 0} | Click to view full profile</span>
+                <span style="font-size:0.8rem; color:#64748b;">💰 Monedas: ${data.coins || 0} | Clic para ver perfil</span>
               </div>
             </div>
           </div>
@@ -3151,7 +3183,7 @@
           const controls = document.getElementById('newsControls');
 
           if (newsList.length === 0) {
-            newsFeed.innerHTML = '<p>No news available yet.</p>';
+            newsFeed.innerHTML = '<p>No hay noticias disponibles.</p>';
             controls.style.display = 'none';
             return;
           }
@@ -3171,7 +3203,7 @@
       const nextBtn = document.getElementById('nextNewsBtn');
 
       const news = newsList[currentNewsIndex];
-      let formattedDate = "Just now";
+      let formattedDate = "Hace un momento";
       if (news.createdAt) {
         const dateObj = news.createdAt.toDate();
         formattedDate = dateObj.toLocaleDateString() + " " + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -3187,7 +3219,7 @@
           <p style="white-space: pre-line; margin-top:10px;">${news.content}</p>
           ${news.imageUrl ? `<img src="${news.imageUrl}" style="max-width: 100%; border-radius: 4px; margin-top: 10px;">` : ''}
           
-          ${isAdmin ? `<button type="button" class="modal-action-btn" style="background:#e74c3c; margin-top:15px;" onclick="deleteNews('${news.id}')">🗑️ Delete News</button>` : ''}
+          ${isAdmin ? `<button type="button" class="modal-action-btn" style="background:#e74c3c; margin-top:15px;" onclick="deleteNews('${news.id}')">🗑️ Borrar Noticia</button>` : ''}
         </div>
       `;
 
@@ -3204,9 +3236,9 @@
     async function deleteNews(newsId) {
       try {
         await db.collection('news').doc(newsId).delete();
-        showToast("✅ News deleted successfully.");
+        showToast("✅ Noticia eliminada con éxito.");
       } catch (err) {
-        showToast("❌ Error deleting news: " + err.message);
+        showToast("❌ Error al borrar noticia: " + err.message);
       }
     }
 
@@ -3230,36 +3262,36 @@
       const statBaits = document.getElementById('admin-stat-baits');
 
       if (!username) {
-        listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view fishes...</p>';
-        statCoins.innerText = '💰 Coins: 0';
-        statTanks.innerText = '🐠 Mini Tanks: 0';
-        statRooms.innerText = '🏰 Aquarium Rooms: 1';
-        statBaits.innerText = '🪱 Worm Baits: 0';
+        listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Selecciona un usuario arriba para ver sus peces...</p>';
+        statCoins.innerText = '💰 Monedas: 0';
+        statTanks.innerText = '🐠 Tanques Mini: 0';
+        statRooms.innerText = '🏰 Salas de Acuario: 1';
+        statBaits.innerText = '🪱 Cebos: 0';
         return;
       }
 
       try {
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
-          listContainer.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">User not found.</p>';
-          statCoins.innerText = '💰 Coins: 0';
-          statTanks.innerText = '🐠 Mini Tanks: 0';
-          statRooms.innerText = '🏰 Aquarium Rooms: 1';
-          statBaits.innerText = '🪱 Worm Baits: 0';
+          listContainer.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">Usuario no encontrado.</p>';
+          statCoins.innerText = '💰 Monedas: 0';
+          statTanks.innerText = '🐠 Tanques Mini: 0';
+          statRooms.innerText = '🏰 Salas de Acuario: 1';
+          statBaits.innerText = '🪱 Cebos: 0';
           return;
         }
 
         const doc = await db.collection('jugadores').doc(targetUid).get();
         if (doc.exists) {
           const data = doc.data();
-          statCoins.innerText = `💰 Coins: ${data.coins || 0}`;
-          statTanks.innerText = `🐠 Mini Tanks: ${data.miniTanksCount || 0}`;
-          statRooms.innerText = `🏰 Aquarium Rooms: ${data.aquariumRoomsOwned || 1}`;
-          statBaits.innerText = `🪱 Worm Baits: ${data.wormBaitsCount || 0}`;
+          statCoins.innerText = `💰 Monedas: ${data.coins || 0}`;
+          statTanks.innerText = `🐠 Tanques Mini: ${data.miniTanksCount || 0}`;
+          statRooms.innerText = `🏰 Salas de Acuario: ${data.aquariumRoomsOwned || 1}`;
+          statBaits.innerText = `🪱 Cebos: ${data.wormBaitsCount || 0}`;
 
           const fishes = data.fishes || [];
           if (fishes.length === 0) {
-            listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">User has no fishes.</p>';
+            listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">El usuario no tiene peces.</p>';
             return;
           }
 
@@ -3274,20 +3306,20 @@
             html += `
               <div style="display: flex; justify-content: space-between; align-items: center; background: #ffffff; padding: 6px 10px; border-radius: 6px; margin-bottom: 5px; border: 1px solid #cbd5e1;">
                 <span style="font-size: 0.85rem;"><strong>${fishName}</strong> (x${count})</span>
-                <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 3px 8px; font-size: 0.75rem; width: auto;" onclick="promptAdminRemoveFish('${fishName}')">Delete</button>
+                <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 3px 8px; font-size: 0.75rem; width: auto;" onclick="promptAdminRemoveFish('${fishName}')">Borrar</button>
               </div>
             `;
           });
           listContainer.innerHTML = html;
         }
       } catch (err) {
-        listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Error loading inventory.</p>';
+        listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Error al cargar inventario.</p>';
       }
     }
 
     function promptAdminRemoveFish(fishName) {
       adminSelectedFishToRemove = fishName;
-      document.getElementById('admin-remove-fish-name-label').innerText = `Fish: ${fishName}`;
+      document.getElementById('admin-remove-fish-name-label').innerText = `Pez: ${fishName}`;
       document.getElementById('admin-remove-fish-qty-input').value = 1;
       document.getElementById('modal-admin-remove-fish').style.display = 'flex';
     }
@@ -3296,14 +3328,14 @@
       const username = document.getElementById('adminTargetUsername').value.trim();
       const qtyToRemove = parseInt(document.getElementById('admin-remove-fish-qty-input').value);
       if (!username || isNaN(qtyToRemove) || qtyToRemove <= 0) {
-        showToast("⚠️ Enter a valid quantity.");
+        showToast("⚠️ Ingresa una cantidad válida.");
         return;
       }
 
       try {
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
-          showToast("❌ User not found.");
+          showToast("❌ Usuario no encontrado.");
           return;
         }
 
@@ -3322,11 +3354,11 @@
         }
 
         await playerRef.update({ fishes: fishes });
-        showToast(`✅ Successfully removed ${removedCount} ${adminSelectedFishToRemove}(s) from ${username}.`);
+        showToast(`✅ Se eliminaron ${removedCount} ${adminSelectedFishToRemove}(s) de ${username}.`);
         document.getElementById('modal-admin-remove-fish').style.display = 'none';
         loadTargetUserInventoryForAdmin();
       } catch (err) {
-        showToast("❌ Error removing fish: " + err.message);
+        showToast("❌ Error al quitar pez: " + err.message);
       }
     }
 
@@ -3334,7 +3366,7 @@
       const username = document.getElementById('adminTargetUsername').value.trim();
       const fishNameInput = document.getElementById('adminAddFishName').value.trim();
       if (!username || !fishNameInput) {
-        showToast("⚠️ Enter a target username and fish name.");
+        showToast("⚠️ Ingresa el nombre del usuario y del pez.");
         return;
       }
 
@@ -3344,7 +3376,7 @@
       try {
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
-          showToast("❌ User not found.");
+          showToast("❌ Usuario no encontrado.");
           return;
         }
 
@@ -3352,11 +3384,11 @@
           fishes: firebase.firestore.FieldValue.arrayUnion({ name: exactFishName, timestamp: new Date().toISOString() })
         });
 
-        showToast(`✅ Added ${exactFishName} to ${username}!`);
+        showToast(`✅ ¡Se añadió ${exactFishName} a ${username}!`);
         document.getElementById('adminAddFishName').value = "";
         loadTargetUserInventoryForAdmin();
       } catch (err) {
-        showToast("❌ Error adding fish: " + err.message);
+        showToast("❌ Error al añadir pez: " + err.message);
       }
     }
 
@@ -3364,14 +3396,14 @@
       const username = document.getElementById('adminTargetUsername').value.trim();
       const amount = parseInt(document.getElementById('adminTanksAmount').value);
       if (!username || isNaN(amount) || amount <= 0) {
-        showToast("⚠️ Enter a valid username and tank amount.");
+        showToast("⚠️ Ingresa un usuario y cantidad válidos.");
         return;
       }
 
       try {
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
-          showToast("❌ User not found.");
+          showToast("❌ Usuario no encontrado.");
           return;
         }
 
@@ -3385,10 +3417,10 @@
         if (newTanksCount < 0) newTanksCount = 0;
 
         await playerRef.update({ miniTanksCount: newTanksCount });
-        showToast(`✅ Mini Tanks updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+        showToast(`✅ Tanques Mini actualizados para ${username} (${val > 0 ? '+' : ''}${val})`);
         loadTargetUserInventoryForAdmin();
       } catch (err) {
-        showToast("❌ Error updating tanks: " + err.message);
+        showToast("❌ Error al actualizar tanques: " + err.message);
       }
     }
 
@@ -3396,14 +3428,14 @@
       const username = document.getElementById('adminTargetUsername').value.trim();
       const amount = parseInt(document.getElementById('adminRoomsAmount').value);
       if (!username || isNaN(amount) || amount <= 0) {
-        showToast("⚠️ Enter a valid username and room amount.");
+        showToast("⚠️ Ingresa un usuario y cantidad válidos.");
         return;
       }
 
       try {
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
-          showToast("❌ User not found.");
+          showToast("❌ Usuario no encontrado.");
           return;
         }
 
@@ -3417,10 +3449,10 @@
         if (newRoomsCount < 1) newRoomsCount = 1;
 
         await playerRef.update({ aquariumRoomsOwned: newRoomsCount });
-        showToast(`✅ Aquarium Rooms updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+        showToast(`✅ Salas de Acuario actualizadas para ${username} (${val > 0 ? '+' : ''}${val})`);
         loadTargetUserInventoryForAdmin();
       } catch (err) {
-        showToast("❌ Error updating rooms: " + err.message);
+        showToast("❌ Error al actualizar salas: " + err.message);
       }
     }
 
@@ -3428,14 +3460,14 @@
       const username = document.getElementById('adminTargetUsername').value.trim();
       const amount = parseInt(document.getElementById('adminBaitsAmount').value);
       if (!username || isNaN(amount) || amount <= 0) {
-        showToast("⚠️ Enter a valid username and bait amount.");
+        showToast("⚠️ Ingresa un usuario y cantidad válidos.");
         return;
       }
 
       try {
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
-          showToast("❌ User not found.");
+          showToast("❌ Usuario no encontrado.");
           return;
         }
 
@@ -3449,21 +3481,21 @@
         if (newBaitsCount < 0) newBaitsCount = 0;
 
         await playerRef.update({ wormBaitsCount: newBaitsCount });
-        showToast(`✅ Worm Baits updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+        showToast(`✅ Cebos actualizados para ${username} (${val > 0 ? '+' : ''}${val})`);
         loadTargetUserInventoryForAdmin();
       } catch (err) {
-        showToast("❌ Error updating baits: " + err.message);
+        showToast("❌ Error al actualizar cebos: " + err.message);
       }
     }
 
     function openBanPrompt(isPerma) {
       const username = document.getElementById('adminTargetUsername').value.trim();
       if (!username) {
-        showToast("⚠️ Enter a target username first.");
+        showToast("⚠️ Ingresa un usuario objetivo primero.");
         return;
       }
       isCurrentBanPerma = isPerma;
-      document.getElementById('admin-ban-prompt-title').innerText = isPerma ? "🔨 Permanent Ban User" : "⏳ Temporary Ban User";
+      document.getElementById('admin-ban-prompt-title').innerText = isPerma ? "🔨 Banear Permanentemente" : "⏳ Banear Temporalmente";
       document.getElementById('admin-ban-duration-group').style.display = isPerma ? 'none' : 'block';
       document.getElementById('adminBanReasonInput').value = "";
       document.getElementById('modal-admin-ban-prompt').style.display = 'flex';
@@ -3471,13 +3503,13 @@
 
     async function confirmAdminBanAction() {
       const username = document.getElementById('adminTargetUsername').value.trim();
-      const reason = document.getElementById('adminBanReasonInput').value.trim() || "No reason provided";
+      const reason = document.getElementById('adminBanReasonInput').value.trim() || "Sin razón especificada";
       if (!username) return;
 
       try {
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
-          showToast("❌ User not found.");
+          showToast("❌ Usuario no encontrado.");
           return;
         }
 
@@ -3487,7 +3519,7 @@
             tempBanUntil: null,
             banReason: reason
           });
-          showToast(`✅ Permanently banned ${username}.`);
+          showToast(`✅ Usuario ${username} baneado permanentemente.`);
         } else {
           const days = parseInt(document.getElementById('tempBanDaysInput').value) || 0;
           const hours = parseInt(document.getElementById('tempBanHoursInput').value) || 0;
@@ -3497,7 +3529,7 @@
           const totalMilliseconds = (days * 24 * 3600 + hours * 3600 + minutes * 60 + seconds) * 1000;
 
           if (totalMilliseconds <= 0) {
-            showToast("⚠️ Please specify a valid duration greater than 0.");
+            showToast("⚠️ Especifica una duración mayor a 0.");
             return;
           }
 
@@ -3507,7 +3539,7 @@
             tempBanUntil: unbanDate,
             banReason: reason
           });
-          showToast(`✅ Temp banned ${username} successfully.`);
+          showToast(`✅ Baneo temporal aplicado a ${username}.`);
         }
         document.getElementById('modal-admin-ban-prompt').style.display = 'none';
       } catch (err) {
@@ -3518,13 +3550,13 @@
     async function adminUnbanUser() {
       const username = document.getElementById('adminTargetUsername').value.trim();
       if (!username) {
-        showToast("⚠️ Enter a target username.");
+        showToast("⚠️ Ingresa un usuario objetivo.");
         return;
       }
       try {
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
-          showToast("❌ User not found.");
+          showToast("❌ Usuario no encontrado.");
           return;
         }
         await db.collection('jugadores').doc(targetUid).update({
@@ -3532,9 +3564,9 @@
           tempBanUntil: null,
           banReason: ""
         });
-        showToast(`✅ User ${username} successfully unbanned.`);
+        showToast(`✅ Usuario ${username} desbaneado con éxito.`);
       } catch (err) {
-        showToast("❌ Error unbanning user: " + err.message);
+        showToast("❌ Error al desbanear: " + err.message);
       }
     }
 
@@ -3542,24 +3574,24 @@
       const username = document.getElementById('adminTargetUsername').value.trim();
       const amount = parseInt(document.getElementById('adminCoinsAmount').value);
       if (!username || isNaN(amount)) {
-        showToast("⚠️ Enter a valid username and coin amount.");
+        showToast("⚠️ Ingresa un usuario y cantidad válidos.");
         return;
       }
 
       try {
         const targetUid = await getUidByUsername(username);
         if (!targetUid) {
-          showToast("❌ User not found.");
+          showToast("❌ Usuario no encontrado.");
           return;
         }
         const val = amount * multiplier;
         await db.collection('jugadores').doc(targetUid).update({
           coins: firebase.firestore.FieldValue.increment(val)
         });
-        showToast(`✅ Coins updated for ${username} (${val > 0 ? '+' : ''}${val})`);
+        showToast(`✅ Monedas actualizadas para ${username} (${val > 0 ? '+' : ''}${val})`);
         loadTargetUserInventoryForAdmin();
       } catch (err) {
-        showToast("❌ Error updating coins: " + err.message);
+        showToast("❌ Error al actualizar monedas: " + err.message);
       }
     }
 
@@ -3570,7 +3602,7 @@
       const bonusFishInput = document.getElementById('adminPromoFish').value.trim();
 
       if (!codeName) {
-        showToast("⚠️ Enter a valid code name.");
+        showToast("⚠️ Ingresa un nombre de código válido.");
         return;
       }
 
@@ -3587,25 +3619,25 @@
           bonusFish: exactBonusFish,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        showToast(`✅ Promo code "${codeName}" created successfully!`);
+        showToast(`✅ ¡Código "${codeName}" creado con éxito!`);
         document.getElementById('adminPromoCode').value = "";
         document.getElementById('adminPromoCoins').value = "";
         document.getElementById('adminPromoBaits').value = "";
         document.getElementById('adminPromoFish').value = "";
         loadAdminCodes();
       } catch (err) {
-        showToast("❌ Error creating code: " + err.message);
+        showToast("❌ Error al crear código: " + err.message);
       }
     }
 
     async function loadAdminCodes() {
       const container = document.getElementById('adminCodesList');
-      container.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Loading codes...</p>';
+      container.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Cargando códigos...</p>';
       
       try {
         const snapshot = await db.collection('codes').get();
         if (snapshot.empty) {
-          container.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">No active codes.</p>';
+          container.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">No hay códigos activos.</p>';
           return;
         }
 
@@ -3614,28 +3646,28 @@
           const data = doc.data();
           const code = doc.id;
           const coins = data.coins || 0;
-          const baitsText = data.wormBaits ? ` + 🪱 ${data.wormBaits} Baits` : '';
+          const baitsText = data.wormBaits ? ` + 🪱 ${data.wormBaits} cebos` : '';
           const fishText = data.bonusFish ? ` + 🐟 ${data.bonusFish}` : '';
           html += `
             <div class="admin-code-item">
               <span><strong>🎟️ ${code}</strong> (${coins} 💰${baitsText}${fishText})</span>
-              <button type="button" style="background:#e74c3c; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="adminDeleteCode('${code}')">🗑️ Delete</button>
+              <button type="button" style="background:#e74c3c; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;" onclick="adminDeleteCode('${code}')">🗑️ Borrar</button>
             </div>
           `;
         });
         container.innerHTML = html;
       } catch (err) {
-        container.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Error loading codes.</p>';
+        container.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Error al cargar códigos.</p>';
       }
     }
 
     async function adminDeleteCode(codeName) {
       try {
         await db.collection('codes').doc(codeName).delete();
-        showToast(`✅ Code "${codeName}" deleted successfully.`);
+        showToast(`✅ Código "${codeName}" eliminado.`);
         loadAdminCodes();
       } catch (err) {
-        showToast("❌ Error deleting code: " + err.message);
+        showToast("❌ Error al eliminar código: " + err.message);
       }
     }
 
@@ -3645,14 +3677,14 @@
       const imageFile = document.getElementById('newsImage').files[0];
 
       if (!title || !content) {
-        showToast("⚠️ Title and content are required.");
+        showToast("⚠️ El título y contenido son obligatorios.");
         return;
       }
 
       let imageBase64 = null;
       if (imageFile) {
         if (imageFile.size > 1048576) {
-          showToast("⚠️ News image cannot exceed 1MB.");
+          showToast("⚠️ La imagen de la noticia no puede exceder 1MB.");
           return;
         }
         imageBase64 = await new Promise((resolve) => {
@@ -3669,13 +3701,13 @@
           imageUrl: imageBase64,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        showToast("✅ News published successfully!");
+        showToast("✅ ¡Noticia publicada con éxito!");
         closeAllModals();
         document.getElementById('newsTitle').value = "";
         document.getElementById('newsContent').value = "";
         document.getElementById('newsImage').value = "";
       } catch (err) {
-        showToast("❌ Error publishing news: " + err.message);
+        showToast("❌ Error al publicar noticia: " + err.message);
       }
     }
 
@@ -3687,32 +3719,29 @@
           if (doc.exists) {
             const data = doc.data();
             
-            // Check ban status
             let isBanned = data.isBanned === true;
             let tempBanUntil = data.tempBanUntil;
-            let banReason = data.banReason || "No reason specified";
+            let banReason = data.banReason || "Sin razón especificada";
 
             if (!isBanned && tempBanUntil) {
               const unbanDate = tempBanUntil.toDate ? tempBanUntil.toDate() : new Date(tempBanUntil);
               if (Date.now() < unbanDate.getTime()) {
                 isBanned = true;
               } else {
-                // Temp ban expired, clear it
                 await db.collection('jugadores').doc(user.uid).update({ tempBanUntil: null, banReason: "" });
                 isBanned = false;
               }
             }
 
             if (isBanned) {
-              // Display ban notice modal
-              document.getElementById('ban-type-label').innerText = tempBanUntil ? "Your account is temporarily banned." : "Your account has been permanently banned.";
+              document.getElementById('ban-type-label').innerText = tempBanUntil ? "Tu cuenta está suspendida temporalmente." : "Tu cuenta ha sido suspendida permanentemente.";
               document.getElementById('ban-reason-text').innerText = banReason;
               
               if (tempBanUntil) {
                 const unbanDate = tempBanUntil.toDate ? tempBanUntil.toDate() : new Date(tempBanUntil);
-                document.getElementById('ban-duration-text').innerText = `Temporary (Expires: ${unbanDate.toLocaleString()})`;
+                document.getElementById('ban-duration-text').innerText = `Temporal (Expira: ${unbanDate.toLocaleString()})`;
               } else {
-                document.getElementById('ban-duration-text').innerText = "Permanent";
+                document.getElementById('ban-duration-text').innerText = "Permanente";
               }
 
               document.getElementById('modal-ban-notice').style.display = 'flex';
@@ -3722,13 +3751,13 @@
             document.getElementById('account-container').style.display = 'none';
             document.getElementById('btn-logout').style.display = 'inline-flex';
             document.getElementById('user-badge').style.display = 'flex';
-            document.getElementById('user-display-name').innerText = data.username || "Player";
+            document.getElementById('user-display-name').innerText = data.username || "Jugador";
             if (data.photoURL) {
               document.getElementById('user-avatar').src = data.photoURL;
             }
           }
         } catch(e) {
-          console.error("Error loading user session:", e);
+          console.error("Error al cargar sesión de usuario:", e);
         }
 
         if (ADMIN_UID && user.uid === ADMIN_UID) {
@@ -3755,7 +3784,7 @@
 
     function logout() {
       auth.signOut();
-      showToast("Logged out successfully.");
+      showToast("Sesión cerrada correctamente.");
     }
   </script>
 </body>
