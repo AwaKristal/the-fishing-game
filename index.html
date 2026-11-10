@@ -1448,6 +1448,12 @@
       if (modalId === 'modal-achievements') {
         loadAchievementsUI();
       }
+      if (modalId === 'modal-news') {
+        if (newsList.length > 0) {
+          currentNewsIndex = newsList.length - 1;
+          renderCurrentNews();
+        }
+      }
     }
 
     function toggleEditProfileSection() {
@@ -3314,7 +3320,7 @@
 
     function listenToNews() {
       db.collection('news')
-        .orderBy('createdAt', 'desc')
+        .orderBy('createdAt', 'asc')
         .onSnapshot(snapshot => {
           newsList = [];
           snapshot.forEach(doc => {
@@ -3331,9 +3337,7 @@
           }
 
           controls.style.display = 'flex';
-          if (currentNewsIndex >= newsList.length) {
-            currentNewsIndex = newsList.length - 1;
-          }
+          currentNewsIndex = newsList.length - 1;
           renderCurrentNews();
         });
     }
@@ -3343,6 +3347,15 @@
       const newsCounter = document.getElementById('newsCounter');
       const prevBtn = document.getElementById('prevNewsBtn');
       const nextBtn = document.getElementById('nextNewsBtn');
+
+      if (newsList.length === 0) return;
+
+      if (currentNewsIndex >= newsList.length) {
+        currentNewsIndex = newsList.length - 1;
+      }
+      if (currentNewsIndex < 0) {
+        currentNewsIndex = 0;
+      }
 
       const news = newsList[currentNewsIndex];
       let formattedDate = "Just now";
@@ -3857,7 +3870,6 @@
       }
     }
 
-    // Corrección crítica en el observador de estado de autenticación de Firebase
     auth.onAuthStateChanged(async user => {
       const adminBtn = document.getElementById('adminBtn');
       if (user) {
@@ -3867,7 +3879,6 @@
           let doc = await docRef.get();
           
           if (!doc.exists) {
-            // Si por alguna razón el documento de perfil no existe en Firestore, lo creamos por defecto para evitar pantallas en blanco
             const defaultUsername = user.displayName || user.email.split('@')[0] || "Player";
             await docRef.set({
               username: defaultUsername,
@@ -3949,7 +3960,10 @@
       }
       
       if (document.getElementById('modal-news').style.display === 'flex') {
-        renderCurrentNews();
+        if (newsList.length > 0) {
+          currentNewsIndex = newsList.length - 1;
+          renderCurrentNews();
+        }
       }
     });
 
