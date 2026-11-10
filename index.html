@@ -52,13 +52,13 @@
       align-items: center;
       padding: 12px 20px;
       z-index: 10;
-      gap: 10px;
+      gap: 12px;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .version-tag {
@@ -70,6 +70,26 @@
       border-radius: 8px;
       border: 1px solid #cbd5e1;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .rules-header-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+    .rules-header-btn:hover {
+      transform: scale(1.08);
+      filter: brightness(1.1);
+    }
+    .rules-header-btn img {
+      width: 85px !important;
+      height: auto !important;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
     }
 
     .download-app-btn {
@@ -137,6 +157,7 @@
       cursor: pointer;
       padding: 0;
       transition: transform 0.2s ease, filter 0.2s ease;
+      position: relative;
     }
 
     .img-btn:hover {
@@ -173,6 +194,55 @@
       z-index: 99;
     }
 
+    /* Estilo para el contenedor del botón de recompensa diaria y su temporizador */
+    .daily-reward-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      margin-bottom: 4px;
+    }
+
+    .daily-timer-badge {
+      font-size: 0.7rem;
+      font-weight: bold;
+      color: #ffffff;
+      background: rgba(30, 58, 138, 0.85);
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-top: -4px;
+      border: 1px solid rgba(255,255,255,0.4);
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .btn-news-container {
+      position: relative;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .unread-news-indicator {
+      display: none;
+      position: absolute;
+      top: -42px;
+      right: 25px;
+      pointer-events: none;
+      z-index: 101;
+      animation: bounceCheck 1.2s infinite ease-in-out;
+    }
+
+    .unread-news-indicator img {
+      width: 85px;
+      height: auto;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    }
+
+    @keyframes bounceCheck {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
     .btn-news-img {
       width: 95px !important;
       height: auto !important;
@@ -188,6 +258,13 @@
     }
 
     .btn-market-img {
+      width: 85px !important;
+      height: auto !important;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    }
+
+    .btn-daily-img {
       width: 85px !important;
       height: auto !important;
       object-fit: contain;
@@ -557,10 +634,29 @@
       font-size: 0.9rem;
     }
 
+    .rule-item {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .rule-title {
+      font-weight: bold;
+      color: #1e3a8a;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+    .rule-desc {
+      font-size: 0.85rem;
+      color: #475569;
+      line-height: 1.4;
+    }
+
     #toast-container {
       position: fixed;
       bottom: 20px; right: 20px;
-      z-index: 2000;
+      z-index: 4000;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -587,6 +683,7 @@
     @media (max-width: 768px) {
       header { padding: 8px 12px; }
       .version-tag { font-size: 0.8rem; padding: 4px 8px; }
+      .rules-header-btn img { width: 68px !important; }
       .download-app-btn img { height: 36px; }
       .main-container { padding-top: 65px; padding-bottom: 110px; gap: 10px; }
       .fish-logo-img { max-width: 250px; }
@@ -595,6 +692,10 @@
       .btn-news-img { width: 75px !important; }
       .btn-index-img { width: 68px !important; }
       .btn-market-img { width: 68px !important; }
+      .btn-daily-img { width: 68px !important; }
+      .daily-timer-badge { font-size: 0.6rem; padding: 1px 4px; }
+      .unread-news-indicator { top: -38px; right: 15px; }
+      .unread-news-indicator img { width: 70px; }
       .admin-trigger-btn { right: 10px; bottom: 80px; width: 38px; height: 38px; }
       .corner-bottom-left { bottom: 10px; left: 10px; }
       .corner-bottom-right { bottom: 10px; right: 10px; gap: 6px; }
@@ -608,7 +709,10 @@
 
   <header>
     <div class="header-left">
-      <div class="version-tag">v.1.0.0.1</div>
+      <div class="version-tag">v.1.0.0.2</div>
+      <button class="rules-header-btn" onclick="openRulesModal()" title="Game Rules">
+        <img src="https://i.postimg.cc/CMsgQZbC/rules.png" alt="Rules">
+      </button>
     </div>
     <a href="https://github.com/AwaKristal/the-fishing-game/releases/tag/file" target="_blank" class="download-app-btn">
       <img src="https://i.postimg.cc/tgytXzq8/download.png" alt="Download">
@@ -676,20 +780,85 @@
   </div>
 
   <div class="corner-bottom-right">
+    <!-- Botón de Recompensa Diaria con Temporizador -->
+    <div class="daily-reward-container">
+      <button class="img-btn" onclick="claimDailyReward()" title="Daily Reward">
+        <img src="https://i.postimg.cc/fb0Ltxkr/dailyreward.png" alt="Daily Reward" class="btn-daily-img">
+      </button>
+      <div id="daily-timer-display" class="daily-timer-badge">Ready!</div>
+    </div>
+
     <button class="img-btn" onclick="openMarketModal()">
       <img src="https://i.postimg.cc/pXqPJd8Z/market.png" alt="Market" class="btn-market-img">
     </button>
     <button class="img-btn" onclick="openIndexModal()">
       <img src="https://i.postimg.cc/Y9mR2jN6/index.png" alt="Fish Index" class="btn-index-img">
     </button>
-    <button class="img-btn" onclick="openModal('modal-news')">
-      <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
-    </button>
+    
+    <div class="btn-news-container">
+      <div id="unread-news-badge" class="unread-news-indicator">
+        <img src="https://i.postimg.cc/CMsgQZbk/check-here.png" alt="Check News!">
+      </div>
+      <button class="img-btn" onclick="openNewsModal()">
+        <img src="https://i.postimg.cc/Vvg0FRsd/news.png" alt="News" class="btn-news-img">
+      </button>
+    </div>
   </div>
 
   <button id="adminBtn" class="admin-trigger-btn" onclick="openModal('modal-admin')">
     <img src="https://i.postimg.cc/L6SrYVZf/admin.png" alt="Admin Panel">
   </button>
+
+  <!-- Rules Modal -->
+  <div id="modal-rules" class="modal-overlay" style="z-index: 3500;">
+    <div class="modal-card" style="max-width: 500px;">
+      <button id="rules-modal-close" class="modal-close" onclick="closeRulesModal()">✖</button>
+      <h2 style="color: #1e3a8a; text-align: center; margin-top: 0;">📜 Game Rules</h2>
+      <p style="font-size:0.85rem; color:#64748b; text-align:center; margin-bottom: 12px;" id="rules-subtitle">Please review community rules carefully.</p>
+
+      <div id="rules-scroll-container" style="max-height: 280px; overflow-y: auto; padding-right: 5px;" onscroll="checkRulesScroll()">
+        <div class="rule-item">
+          <div class="rule-title">1. Respect within the community</div>
+          <div class="rule-desc">The use of offensive, toxic, or discriminatory topics in profiles (includes pfp, username, and bio) is prohibited.</div>
+        </div>
+
+        <div class="rule-item">
+          <div class="rule-title">2. Zero cheating (Fair Play)</div>
+          <div class="rule-desc">Exploits, external modifications, bots, or third-party tools used to alter fishing or market mechanics are not permitted.</div>
+        </div>
+
+        <div class="rule-item">
+          <div class="rule-title">3. Fair trading</div>
+          <div class="rule-desc">Transactions in the player marketplace must be fair; the use of secondary accounts to inflate prices or artificially transfer currency is prohibited.</div>
+        </div>
+
+        <div class="rule-item">
+          <div class="rule-title">4. Account security</div>
+          <div class="rule-desc">You are responsible for the security of your account. Do not share your login credentials with anyone. Administrators will never ask for your password.</div>
+        </div>
+      </div>
+
+      <div id="rules-accept-container" style="display: none; margin-top: 15px;">
+        <p style="font-size: 0.75rem; color: #e74c3c; text-align: center; margin: 0 0 8px 0;" id="scroll-warning-text">Scroll to the bottom of the rules to unlock Accept button.</p>
+        <button id="btn-accept-rules" type="button" class="modal-action-btn" style="background: #27ae60;" disabled onclick="acceptRulesAction()">Accept Rules</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Warning Notice Modal for Players -->
+  <div id="modal-warning-notice" class="modal-overlay" style="z-index: 3200;">
+    <div class="modal-card" style="max-width: 420px; text-align: center; border: 3px solid #f39c12;">
+      <h2 style="color: #d35400; margin-top: 0;">⚠️ ACCOUNT WARNING</h2>
+      <p style="font-size: 1rem; color: #2c3e50; font-weight: bold;">An administrator has issued a warning for your account:</p>
+      
+      <div style="background: #fff3cd; padding: 14px; border-radius: 8px; border: 1px solid #ffeeba; margin: 15px 0; text-align: left;">
+        <p style="margin: 0; font-size: 0.95rem; color: #856404;"><strong>Reason:</strong> <span id="warning-reason-text">Behavior violation</span></p>
+      </div>
+
+      <p style="font-size: 0.8rem; color: #7f8c8d; margin-bottom: 15px;">Please make sure to follow the game rules to avoid further penalties or permanent ban.</p>
+      <button type="button" class="modal-action-btn" style="background: #f39c12;" onclick="dismissPlayerWarning()">Understood</button>
+    </div>
+  </div>
 
   <!-- Ban Notification Modal -->
   <div id="modal-ban-notice" class="modal-overlay" style="z-index: 3000;">
@@ -701,6 +870,21 @@
         <p style="margin: 0; font-size: 0.9rem;"><strong>Duration:</strong> <span id="ban-duration-text" style="color: #2980b9;">Permanent</span></p>
       </div>
       <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="handleBanDismiss()">Acknowledge & Logout</button>
+    </div>
+  </div>
+
+  <!-- Admin Warning Prompt Modal -->
+  <div id="modal-admin-warning-prompt" class="modal-overlay" style="z-index: 1060;">
+    <div class="modal-card" style="max-width: 360px;">
+      <button class="modal-close" onclick="document.getElementById('modal-admin-warning-prompt').style.display='none'">✖</button>
+      <h3 style="color: #d35400;">⚠️ Issue Warning to User</h3>
+      <p style="font-size: 0.85rem; color: #64748b;">The target user will see a popup requiring them to press "Understood".</p>
+      
+      <div class="form-group">
+        <label>Reason for Warning</label>
+        <textarea id="adminWarningReasonInput" placeholder="Specify violation reason..." rows="3" style="resize:none;" required></textarea>
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="confirmAdminSendWarning()">Send Warning</button>
     </div>
   </div>
 
@@ -1206,10 +1390,11 @@
         <span id="admin-stat-baits">Worm Baits: 0</span>
       </div>
 
-      <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 15px;">
         <button type="button" class="modal-action-btn" style="background:#e74c3c;" onclick="openBanPrompt(true)">Perma Ban</button>
-        <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="adminUnbanUser()">Unban</button>
         <button type="button" class="modal-action-btn" style="background:#f39c12;" onclick="openBanPrompt(false)">Temp Ban</button>
+        <button type="button" class="modal-action-btn" style="background:#d35400;" onclick="openAdminWarningPrompt()">Send Warning</button>
+        <button type="button" class="modal-action-btn" style="background:#2ecc71;" onclick="adminUnbanUser()">Unban User</button>
       </div>
 
       <div class="form-group">
@@ -1251,7 +1436,7 @@
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
       <h3>🐟 Add Fish to User</h3>
       <div class="form-group">
-        <label>Fish Name (e.g. Legacy Fish, Divine Fish, Opah)</label>
+        <label>Fish Name (e.g. Sardine, Betta Fish, Swordfish, Whale Shark, Goldfish Snack)</label>
         <input type="text" id="adminAddFishName" placeholder="Fish name...">
       </div>
       <button type="button" class="modal-action-btn" style="background:#27ae60; margin-bottom: 15px;" onclick="adminAddFishToUser()">Add Fish</button>
@@ -1278,7 +1463,7 @@
       </div>
       <div class="form-group">
         <label>Bonus Fish Reward (Optional - exact fish name)</label>
-        <input type="text" id="adminPromoFish" placeholder="e.g. Legacy Fish or leave blank">
+        <input type="text" id="adminPromoFish" placeholder="e.g. Goldfish Snack or leave blank">
       </div>
       <button type="button" class="modal-action-btn" style="background:#2980b9; margin-bottom: 10px;" onclick="adminCreateCode()">Create Code</button>
       
@@ -1342,6 +1527,9 @@
     let adminSelectedFishToRemove = "";
     let isCurrentBanPerma = true;
     let verificationTimerInterval = null;
+    let isMandatoryRulesView = false;
+    let hasUserAcceptedRulesLocal = false;
+    let dailyTimerInterval = null;
 
     let isMouseDown = false;
     let minigameLoop = null;
@@ -1354,27 +1542,33 @@
     let usedBaitThisCast = false;
 
     const ALLOWED_FISH_TYPES = [
+      { name: "Sardine", value: 5, rarity: "Common", desc: "A small, silvery fish that moves in large schools.", img: "https://i.postimg.cc/c1BSbKfF/sardine.png" },
       { name: "Opah", value: 10, rarity: "Common", desc: "A large, colorful deep-water fish known for its distinct round body.", img: "https://i.postimg.cc/sxhg04JM/opah.png" },
       { name: "Clownfish", value: 8, rarity: "Common", desc: "A small, vibrant orange fish with white stripes.", img: "https://i.postimg.cc/ry3jHGkf/clownfish.png" },
       { name: "Guppy", value: 4, rarity: "Common", desc: "A tiny, active freshwater fish featuring a colorful tail fin.", img: "https://i.postimg.cc/VkcRfY5g/guppy.png" },
       { name: "Tilapia", value: 9, rarity: "Common", desc: "A sturdy cichlid fish found in warm regions.", img: "https://i.postimg.cc/zXTCP9pD/tilapia.png" },
-      { name: "Goldfish", value: 6, rarity: "Common", desc: "A classic golden freshwater companion.", img: "https://i.postimg.cc/nLSBDZV3/goldfish.png" },
+      { name: "Goldfish", value: 6, rarity: "Common", desc: "A classic golden freshwater companion.", img: "https://i.postimg.cc/VkD2cTRZ/goldfish2.png" },
       { name: "Cod", value: 7, rarity: "Common", desc: "A standard ocean fish found in cold northern waters.", img: "https://i.postimg.cc/rp8x6Fgw/cod.png" },
+      { name: "Maroon Clownfish", value: 24, rarity: "Rare", desc: "A striking clownfish variant with deep maroon hues and bright white bars.", img: "https://i.postimg.cc/3rFTcy29/maroon-clownfish.png" },
       { name: "Carp", value: 20, rarity: "Rare", desc: "A large freshwater fish celebrated for its strength.", img: "https://i.postimg.cc/N0gmhfb0/carp.png" },
       { name: "Neon Tetra", value: 22, rarity: "Rare", desc: "A glowing tropical fish with iridescent stripes.", img: "https://i.postimg.cc/TPRg8YQ2/neon-tetra.png" },
       { name: "Salmon", value: 25, rarity: "Rare", desc: "A migratory swimmer traveling upstream through rivers.", img: "https://i.postimg.cc/bvzkXNLz/salmon.png" },
       { name: "Surgeonfish", value: 28, rarity: "Rare", desc: "A bright blue marine swimmer with defensive spines.", img: "https://i.postimg.cc/BvqHWQNS/surgeonfish.png" },
+      { name: "Betta Fish", value: 80, rarity: "Epic", desc: "A vibrant and elegant freshwater fish with flowing fins.", img: "https://i.postimg.cc/T2J64ynq/betta-fish.png" },
       { name: "Barreleye Fish", value: 55, rarity: "Epic", desc: "A deep-sea fish with a transparent fluid-filled head.", img: "https://i.postimg.cc/cLC5QKF2/barreleye-fish.png" },
       { name: "Electric Eel", value: 75, rarity: "Epic", desc: "A serpentine fish capable of generating high voltage.", img: "https://i.postimg.cc/kgHYwnZX/electric-eel.png" },
       { name: "Coelacanth", value: 120, rarity: "Epic", desc: "A rare prehistoric 'living fossil' fish.", img: "https://i.postimg.cc/SxRtWXZs/coelacanth.png" },
       { name: "Bluefin Tuna", value: 65, rarity: "Rare", desc: "A powerful and fast ocean predator.", img: "https://i.postimg.cc/6pPbz9SC/bluefin-tuna.png" },
       { name: "Manta ray", value: 160, rarity: "Legendary", desc: "A graceful giant gliding through tropical waters.", img: "https://i.postimg.cc/mgnpVbqk/mantaray.png" },
       { name: "Great White Shark", value: 220, rarity: "Legendary", desc: "The undisputed king of ocean predators.", img: "https://i.postimg.cc/4x02wJMf/great-white-shark.png" },
+      { name: "Swordfish", value: 650, rarity: "Mythic", desc: "A formidable oceanic hunter featuring an elongated sword-like bill.", img: "https://i.postimg.cc/h41B5JVV/swordfish.png" },
+      { name: "Whale Shark", value: 850, rarity: "Mythic", desc: "The massive yet gentle giant filter-feeder of the deep sea.", img: "https://i.postimg.cc/HW9ghJbQ/whale-shark.png" },
       { name: "Leafy Seadragon", value: 450, rarity: "Mythic", desc: "A master of camouflage adorned with leaf-like appendages.", img: "https://i.postimg.cc/rwsYSdfb/leafy-seadragon.png" },
       { name: "Megamouth Shark", value: 700, rarity: "Mythic", desc: "An elusive deep-water giant with glowing lips.", img: "https://i.postimg.cc/WbXHFmwx/megamouth-shark.png" },
       { name: "Basking Shark", value: 1200, rarity: "Divine", desc: "A massive filter-feeding shark gliding peacefully.", img: "https://i.postimg.cc/nhrwvs3R/basking-shark.png" },
       { name: "Oarfish", value: 2000, rarity: "Divine", desc: "A magnificent serpent-like creature of ancient myth.", img: "https://i.postimg.cc/Z5nDr9fZ/oarfish.png" },
-      { name: "Legacy Fish", value: 3000, rarity: "Legacy", isLimited: true, desc: "A legendary collector species from ancient waters.", img: "https://i.postimg.cc/J79pfZXs/legacy-fish.png" }
+      { name: "Legacy Fish", value: 3000, rarity: "Legacy", isLimited: true, desc: "A legendary collector species from ancient waters.", img: "https://i.postimg.cc/J79pfZXs/legacy-fish.png" },
+      { name: "Goldfish Snack", value: 5000, rarity: "Secret", isLimited: true, desc: "A mysterious secret snack fish, no one knows where it came from.", img: "https://i.postimg.cc/MGHNZD3K/goldfishsnack.png" }
     ];
 
     function onloadCallback() {
@@ -1429,8 +1623,11 @@
     }
 
     function openModal(modalId) {
+      if (isMandatoryRulesView && modalId !== 'modal-rules') {
+        return;
+      }
       document.querySelectorAll('.modal-overlay').forEach(el => {
-        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+        if (el.id !== 'modal-ban-notice' && el.id !== 'modal-warning-notice') el.style.display = 'none';
       });
       document.getElementById(modalId).style.display = 'flex';
       if (modalId === 'modal-profile') {
@@ -1458,6 +1655,230 @@
       }
     }
 
+    function openNewsModal() {
+      openModal('modal-news');
+      markNewsAsRead();
+    }
+
+    function markNewsAsRead() {
+      if (newsList.length > 0) {
+        const latestId = newsList[newsList.length - 1].id;
+        localStorage.setItem('lastReadNewsId', latestId);
+      }
+      document.getElementById('unread-news-badge').style.display = 'none';
+    }
+
+    function openRulesModal(isMandatory = false) {
+      isMandatoryRulesView = isMandatory;
+      const modal = document.getElementById('modal-rules');
+      const closeBtn = document.getElementById('rules-modal-close');
+      const acceptContainer = document.getElementById('rules-accept-container');
+      const subtitle = document.getElementById('rules-subtitle');
+
+      if (isMandatory) {
+        closeBtn.style.display = 'none';
+        acceptContainer.style.display = 'block';
+        subtitle.innerText = "Welcome! You must read and accept the rules to continue.";
+        document.getElementById('btn-accept-rules').disabled = true;
+        document.getElementById('scroll-warning-text').style.display = 'block';
+      } else {
+        closeBtn.style.display = 'block';
+        acceptContainer.style.display = 'none';
+        subtitle.innerText = "Please review community rules carefully.";
+      }
+
+      const scrollContainer = document.getElementById('rules-scroll-container');
+      scrollContainer.scrollTop = 0;
+
+      modal.style.display = 'flex';
+    }
+
+    function closeRulesModal() {
+      if (isMandatoryRulesView) return;
+      document.getElementById('modal-rules').style.display = 'none';
+    }
+
+    function checkRulesScroll() {
+      if (!isMandatoryRulesView) return;
+      const el = document.getElementById('rules-scroll-container');
+      const isAtBottom = el.scrollHeight - el.scrollTop <= el.clientHeight + 15;
+
+      if (isAtBottom) {
+        const acceptBtn = document.getElementById('btn-accept-rules');
+        acceptBtn.disabled = false;
+        document.getElementById('scroll-warning-text').style.display = 'none';
+      }
+    }
+
+    async function acceptRulesAction() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        await db.collection('jugadores').doc(user.uid).update({
+          acceptedRules: true
+        });
+        hasUserAcceptedRulesLocal = true;
+        isMandatoryRulesView = false;
+        document.getElementById('modal-rules').style.display = 'none';
+        showToast("Rules accepted! Welcome to The Fishing Game.");
+      } catch (err) {
+        showToast("Error accepting rules: " + err.message);
+      }
+    }
+
+    /* Lógica para la Recompensa Diaria y Temporizador de 24 horas */
+    async function claimDailyReward() {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("You must be logged in to claim daily rewards.");
+        openModal('modal-account');
+        return;
+      }
+
+      try {
+        const docRef = db.collection('jugadores').doc(user.uid);
+        const doc = await docRef.get();
+        if (!doc.exists) return;
+
+        const data = doc.data();
+        const lastClaim = data.lastDailyClaim ? (data.lastDailyClaim.toDate ? data.lastDailyClaim.toDate() : new Date(data.lastDailyClaim)) : null;
+        const now = new Date();
+
+        if (lastClaim) {
+          const diffMs = now - lastClaim;
+          const coolDownMs = 24 * 60 * 60 * 1000;
+          if (diffMs < coolDownMs) {
+            showToast("Daily reward already claimed! Come back later.");
+            return;
+          }
+        }
+
+        // Recompensas: 300 monedas, 2 baits y con 15% de probabilidad un Mini Tank adicional
+        const rewardCoins = 300;
+        const rewardBaits = 2;
+        const luckTank = Math.random() < 0.15;
+
+        let updateData = {
+          coins: firebase.firestore.FieldValue.increment(rewardCoins),
+          wormBaitsCount: firebase.firestore.FieldValue.increment(rewardBaits),
+          lastDailyClaim: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (luckTank) {
+          updateData.miniTanksCount = firebase.firestore.FieldValue.increment(1);
+        }
+
+        await docRef.update(updateData);
+
+        let msg = `🎉 Daily Reward Claimed! +${rewardCoins} 💰, +${rewardBaits} Worm Baits`;
+        if (luckTank) {
+          msg += ` & 🐠 LUCKY! +1 Mini Tank!`;
+        }
+        showToast(msg);
+        updateGameHUD();
+        startDailyTimer(new Date());
+      } catch (err) {
+        showToast("Error claiming reward: " + err.message);
+      }
+    }
+
+    function initDailyTimerSync() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      db.collection('jugadores').doc(user.uid).get().then(doc => {
+        if (doc.exists) {
+          const data = doc.data();
+          const lastClaim = data.lastDailyClaim ? (data.lastDailyClaim.toDate ? data.lastDailyClaim.toDate() : new Date(data.lastDailyClaim)) : null;
+          startDailyTimer(lastClaim);
+        }
+      });
+    }
+
+    function startDailyTimer(lastClaimDate) {
+      if (dailyTimerInterval) clearInterval(dailyTimerInterval);
+
+      const timerDisplay = document.getElementById('daily-timer-display');
+      if (!lastClaimDate) {
+        timerDisplay.innerText = "Ready!";
+        return;
+      }
+
+      const coolDownMs = 24 * 60 * 60 * 1000;
+
+      dailyTimerInterval = setInterval(() => {
+        const now = Date.now();
+        const lastTime = lastClaimDate.getTime();
+        const diff = coolDownMs - (now - lastTime);
+
+        if (diff <= 0) {
+          timerDisplay.innerText = "Ready!";
+          clearInterval(dailyTimerInterval);
+        } else {
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const secs = Math.floor((diff % (1000 * 60)) / 1000);
+          timerDisplay.innerText = `${hours}h ${mins}m ${secs}s`;
+        }
+      }, 1000);
+    }
+
+    function openAdminWarningPrompt() {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      if (!username) {
+        showToast("Enter a target username first.");
+        return;
+      }
+      document.getElementById('adminWarningReasonInput').value = "";
+      document.getElementById('modal-admin-warning-prompt').style.display = 'flex';
+    }
+
+    async function confirmAdminSendWarning() {
+      const username = document.getElementById('adminTargetUsername').value.trim();
+      const reason = document.getElementById('adminWarningReasonInput').value.trim();
+
+      if (!username || !reason) {
+        showToast("Username and Warning reason are required.");
+        return;
+      }
+
+      try {
+        const targetUid = await getUidByUsername(username);
+        if (!targetUid) {
+          showToast("User not found.");
+          return;
+        }
+
+        await db.collection('jugadores').doc(targetUid).update({
+          hasWarning: true,
+          warningReason: reason
+        });
+
+        showToast(`Warning successfully issued to ${username}!`);
+        document.getElementById('modal-admin-warning-prompt').style.display = 'none';
+      } catch (err) {
+        showToast("Error issuing warning: " + err.message);
+      }
+    }
+
+    async function dismissPlayerWarning() {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        await db.collection('jugadores').doc(user.uid).update({
+          hasWarning: false,
+          warningReason: ""
+        });
+
+        document.getElementById('modal-warning-notice').style.display = 'none';
+        showToast("Warning acknowledged.");
+      } catch (err) {
+        showToast("Error updating status.");
+      }
+    }
+
     function toggleEditProfileSection() {
       const sec = document.getElementById('profile-edit-section');
       sec.style.display = (sec.style.display === 'none' || sec.style.display === '') ? 'block' : 'none';
@@ -1478,10 +1899,11 @@
     }
 
     function closeAllModals() {
+      if (isMandatoryRulesView) return;
       stopFishAnimations();
       if (verificationTimerInterval) clearInterval(verificationTimerInterval);
       document.querySelectorAll('.modal-overlay').forEach(el => {
-        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+        if (el.id !== 'modal-ban-notice' && el.id !== 'modal-warning-notice') el.style.display = 'none';
       });
     }
 
@@ -1495,7 +1917,7 @@
       updateIndexRarityDropdown();
       renderIndexFish();
       document.querySelectorAll('.modal-overlay').forEach(el => {
-        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+        if (el.id !== 'modal-ban-notice' && el.id !== 'modal-warning-notice') el.style.display = 'none';
       });
       document.getElementById('modal-index').style.display = 'flex';
     }
@@ -1522,10 +1944,12 @@
       select.innerHTML = '';
 
       if (isLimitedMode) {
-        const option = document.createElement('option');
-        option.value = "Legacy";
-        option.innerText = "Legacy";
-        select.appendChild(option);
+        ['Legacy', 'Secret'].forEach(rarity => {
+          const opt = document.createElement('option');
+          opt.value = rarity;
+          opt.innerText = rarity;
+          select.appendChild(opt);
+        });
       } else {
         ['Common', 'Rare', 'Epic', 'Legendary', 'Mythic', 'Divine'].forEach(rarity => {
           const opt = document.createElement('option');
@@ -1587,6 +2011,7 @@
       else if (fish.rarity === "Mythic") badge.style.background = "#e74c3c";
       else if (fish.rarity === "Divine") badge.style.background = "#f1c40f";
       else if (fish.rarity === "Legacy") badge.style.background = "#8e44ad";
+      else if (fish.rarity === "Secret") badge.style.background = "#d35400";
       else badge.style.background = "#27ae60";
 
       document.getElementById('index-counter').innerText = `${currentIndexFish + 1} / ${filteredFishes.length}`;
@@ -1688,7 +2113,7 @@
         return;
       }
       document.querySelectorAll('.modal-overlay').forEach(el => {
-        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+        if (el.id !== 'modal-ban-notice' && el.id !== 'modal-warning-notice') el.style.display = 'none';
       });
       document.getElementById('modal-market').style.display = 'flex';
       switchMarketTab('buy');
@@ -2160,7 +2585,7 @@
     function renderAquarium(username, fishes, tanksMap) {
       stopFishAnimations();
       document.querySelectorAll('.modal-overlay').forEach(el => {
-        if (el.id !== 'modal-ban-notice') el.style.display = 'none';
+        if (el.id !== 'modal-ban-notice' && el.id !== 'modal-warning-notice') el.style.display = 'none';
       });
       document.getElementById('modal-aquarium').style.display = 'flex';
       document.getElementById('aquarium-title').innerText = `🐠 ${username}'s Aquarium`;
@@ -2986,6 +3411,10 @@
           isBanned: false,
           tempBanUntil: null,
           banReason: "",
+          hasWarning: false,
+          warningReason: "",
+          acceptedRules: false,
+          lastDailyClaim: null,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -3335,12 +3764,25 @@
           if (newsList.length === 0) {
             newsFeed.innerHTML = '<p>No news available yet.</p>';
             controls.style.display = 'none';
+            document.getElementById('unread-news-badge').style.display = 'none';
             return;
           }
 
           controls.style.display = 'flex';
-          currentNewsIndex = newsList.length - 1;
-          renderCurrentNews();
+          
+          const latestNewsId = newsList[newsList.length - 1].id;
+          const lastReadId = localStorage.getItem('lastReadNewsId');
+
+          if (latestNewsId !== lastReadId) {
+            document.getElementById('unread-news-badge').style.display = 'block';
+          } else {
+            document.getElementById('unread-news-badge').style.display = 'none';
+          }
+
+          if (document.getElementById('modal-news').style.display === 'flex') {
+            currentNewsIndex = newsList.length - 1;
+            renderCurrentNews();
+          }
         });
     }
 
@@ -3872,10 +4314,13 @@
       }
     }
 
+    listenToNews();
+
     auth.onAuthStateChanged(async user => {
       const adminBtn = document.getElementById('adminBtn');
       if (user) {
         closeAllModals(); 
+        initDailyTimerSync();
         try {
           const docRef = db.collection('jugadores').doc(user.uid);
           let doc = await docRef.get();
@@ -3900,6 +4345,10 @@
               isBanned: false,
               tempBanUntil: null,
               banReason: "",
+              hasWarning: false,
+              warningReason: "",
+              acceptedRules: false,
+              lastDailyClaim: null,
               createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             doc = await docRef.get();
@@ -3936,6 +4385,17 @@
             return;
           }
 
+          if (data.hasWarning) {
+            document.getElementById('warning-reason-text').innerText = data.warningReason || "Behavior violation";
+            document.getElementById('modal-warning-notice').style.display = 'flex';
+          } else {
+            document.getElementById('modal-warning-notice').style.display = 'none';
+          }
+
+          if (!data.acceptedRules) {
+            openRulesModal(true);
+          }
+
           document.getElementById('account-container').style.display = 'none';
           document.getElementById('btn-logout').style.display = 'inline-flex';
           document.getElementById('user-badge').style.display = 'flex';
@@ -3959,6 +4419,7 @@
         document.getElementById('btn-logout').style.display = 'none';
         document.getElementById('user-badge').style.display = 'none';
         adminBtn.style.display = 'none';
+        if (dailyTimerInterval) clearInterval(dailyTimerInterval);
       }
       
       if (document.getElementById('modal-news').style.display === 'flex') {
