@@ -702,6 +702,20 @@
     </div>
   </div>
 
+  <!-- Bot Sell Quantity Prompt Modal -->
+  <div id="modal-botsell-prompt" class="modal-overlay" style="z-index: 1050;">
+    <div class="modal-card" style="max-width: 320px;">
+      <button class="modal-close" onclick="document.getElementById('modal-botsell-prompt').style.display='none'">✖</button>
+      <h3>Bot Sell Fish</h3>
+      <p style="font-size:0.85rem; color:#64748b;" id="prompt-botsell-name-label">Fish: Goldfish</p>
+      <div class="form-group">
+        <label>Quantity to Sell (Max: <span id="prompt-botsell-max-label">1</span>)</label>
+        <input type="number" id="botsell-qty-input" min="1" value="1" placeholder="Quantity">
+      </div>
+      <button type="button" class="modal-action-btn" style="background:#27ae60;" onclick="confirmBotSell()">Sell to Bot</button>
+    </div>
+  </div>
+
   <!-- Admin Ban Reason Prompt Modal -->
   <div id="modal-admin-ban-prompt" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 350px;">
@@ -1322,6 +1336,7 @@
     let currentIndexFish = 0;
     let isLimitedMode = false;
     let selectedFishToMarket = null;
+    let selectedFishToBotSell = null; // Para Bot Sell con cantidad
     let adminSelectedFishToRemove = "";
     let isCurrentBanPerma = true;
     let verificationTimerInterval = null;
@@ -1772,7 +1787,7 @@
                 ${isLimited ? 
                   `<span style="font-size: 0.7rem; color: #8e44ad; font-weight: bold; background: #f3e8ff; padding: 4px 8px; border-radius: 6px; width: 100%; text-align: center;">Untradeable</span>` :
                   `<div style="display: flex; gap: 4px; width: 100%;">
-                    <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 4px; font-size: 0.68rem; flex:1;" onclick="botSellFish(${group.firstIndex}, '${group.name}', ${fishObj.value})">Bot Sell (${fishObj.value} 💰)</button>
+                    <button type="button" class="modal-action-btn" style="background:#e74c3c; padding: 4px; font-size: 0.68rem; flex:1;" onclick="promptBotSell('${group.name}', ${group.count}, ${fishObj.value})">Bot Sell</button>
                     <button type="button" class="modal-action-btn" style="background:#2980b9; padding: 4px; font-size: 0.68rem; flex:1;" onclick="promptMarketSell(${group.firstIndex}, '${group.name}')">Market</button>
                   </div>`
                 }
@@ -1818,15 +1833,40 @@
       }
     }
 
-    async function botSellFish(fishIndex, fishName, fishValue) {
-      const user = auth.currentUser;
-      if (!user) return;
-
+    // Funciones para Bot Sell con selección de cantidad (Soluciona el bug de venta doble)
+    function promptBotSell(fishName, maxAvailable, fishValue) {
       const fishObj = ALLOWED_FISH_TYPES.find(f => f.name === fishName);
       if (fishObj && fishObj.isLimited) {
         showToast("Limited edition fishes cannot be sold!");
         return;
       }
+
+      selectedFishToBotSell = { name: fishName, maxAvailable: maxAvailable, value: fishValue };
+      document.getElementById('prompt-botsell-name-label').innerText = `Fish: ${fishName}`;
+      document.getElementById('prompt-botsell-max-label').innerText = maxAvailable;
+      document.getElementById('botsell-qty-input').value = 1;
+      document.getElementById('botsell-qty-input').max = maxAvailable;
+      document.getElementById('modal-botsell-prompt').style.display = 'flex';
+    }
+
+    async function confirmBotSell() {
+      const user = auth.currentUser;
+      if (!user || !selectedFishToBotSell) return;
+
+      const qtyInput = parseInt(document.getElementById('botsell-qty-input').value);
+      if (isNaN(qtyInput) || qtyInput <= 0) {
+        showToast("Please enter a valid quantity.");
+        return;
+      }
+
+      if (qtyInput > selectedFishToBotSell.maxAvailable) {
+        showToast("You don't have that many fishes to sell!");
+        return;
+      }
+
+      const fishName = selectedFishToBotSell.name;
+      const fishValue = selectedFishToBotSell.value;
+      const totalCoinsEarned = fishValue * qtyInput;
 
       try {
         const playerRef = db.collection('jugadores').doc(user.uid);
@@ -1838,8 +1878,8 @@
           
           let fishes = doc.data().fishes || [];
           let tanksMap = doc.data().aquariumTanksMap || {};
-          if (fishes.length <= fishIndex) throw new Error("Fish not found");
 
+          // Calcular cuántos de este tipo están protegidos en acuarios
           let totalDisplayed = 0;
           Object.values(tanksMap).forEach(roomTanks => {
             if (Array.isArray(roomTanks)) {
@@ -1848,23 +1888,29 @@
           });
 
           let totalOwned = fishes.filter(f => f.name === fishName).length;
-          let precedingSameType = fishes.slice(0, fishIndex).filter(f => f.name === fishName).length;
-
-          if (totalOwned - precedingSameType <= totalDisplayed) {
-            throw new Error(`You cannot sell ${fishName} because displayed fishes in your Aquarium rooms are protected! Remove them first.`);
+          if (totalOwned - qtyInput < totalDisplayed) {
+            throw new Error(`You cannot sell ${qtyInput} ${fishName}(s) because ${totalDisplayed} of them are protected in your Aquarium rooms!`);
           }
 
-          fishes.splice(fishIndex, 1);
+          // Remover la cantidad exacta de forma segura
+          let removed = 0;
+          for (let i = fishes.length - 1; i >= 0 && removed < qtyInput; i--) {
+            if (fishes[i].name === fishName) {
+              fishes.splice(i, 1);
+              removed++;
+            }
+          }
 
           transaction.update(playerRef, {
-            coins: firebase.firestore.FieldValue.increment(fishValue),
+            coins: firebase.firestore.FieldValue.increment(totalCoinsEarned),
             fishes: fishes
           });
           canSell = true;
         });
 
         if (canSell) {
-          showToast(`💰 Bot sold ${fishName} for +${fishValue} coins!`);
+          showToast(`💰 Bot sold ${qtyInput}x ${fishName} for +${totalCoinsEarned} coins!`);
+          document.getElementById('modal-botsell-prompt').style.display = 'none';
           loadMyFishesForMarket();
           updateGameHUD();
         }
@@ -3761,7 +3807,7 @@
     auth.onAuthStateChanged(async user => {
       const adminBtn = document.getElementById('adminBtn');
       if (user) {
-        closeAllModals(); // Cierra los modales de autenticación al iniciar o recargar sesión
+        closeAllModals(); 
         try {
           const doc = await db.collection('jugadores').doc(user.uid).get();
           if (doc.exists) {
