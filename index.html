@@ -16,7 +16,7 @@
 
   <style>
     :root {
-      --bg-color: #f4f7fb;
+      --bg-color: #ffffff;
       --panel-bg: #ffffff;
       --panel-card-bg: #eef2f7;
       --accent-color: #1e3a8a;
@@ -224,7 +224,7 @@
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
-      background-color: #0b1329;
+      background-color: #ffffff;
       z-index: 100;
     }
 
@@ -598,7 +598,7 @@
       .corner-bottom-right { bottom: 10px; right: 10px; gap: 6px; }
       .modal-card { padding: 14px; max-height: 88vh; }
       .backpack-on-map { bottom: 125px; right: 15px; width: 48px; }
-      #game-screen { background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #0b1329; }
+      #game-screen { background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #ffffff; }
     }
   </style>
 </head>
@@ -2817,6 +2817,7 @@
       try {
         await auth.signInWithEmailAndPassword(email, pass);
         grecaptcha.reset(recaptchaLoginId);
+        closeAllModals();
       } catch (err) {
         showToast("Login error: " + err.message);
       }
@@ -3755,6 +3756,7 @@
     auth.onAuthStateChanged(async user => {
       const adminBtn = document.getElementById('adminBtn');
       if (user) {
+        closeAllModals(); // Cierra los modales automáticamente al autenticarse o recargar con sesión activa
         try {
           const doc = await db.collection('jugadores').doc(user.uid).get();
           if (doc.exists) {
