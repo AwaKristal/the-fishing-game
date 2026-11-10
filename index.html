@@ -2369,7 +2369,12 @@
 
     async function castLine() {
       const user = auth.currentUser;
-      if (!user) return;
+      if (!user) {
+        showToast("Session expired. Please log in again.");
+        exitGame();
+        openModal('modal-account');
+        return;
+      }
 
       const castBtn = document.getElementById('cast-btn');
       castBtn.disabled = true;
@@ -2542,7 +2547,7 @@
             fishes: firebase.firestore.FieldValue.arrayUnion({ name: pendingCaughtFish.name, timestamp: new Date().toISOString() })
           });
 
-          showToast(`🐟 You caught a ${pendingCaughtFish.name} (${pendingCaughtFish.rarity})!`);
+          showToast(`You caught a ${pendingCaughtFish.name} (${pendingCaughtFish.rarity})!`);
           updateGameHUD();
           
           const isDivine = pendingCaughtFish.rarity === 'Divine';
@@ -3756,7 +3761,7 @@
     auth.onAuthStateChanged(async user => {
       const adminBtn = document.getElementById('adminBtn');
       if (user) {
-        closeAllModals(); // Cierra los modales automáticamente al autenticarse o recargar con sesión activa
+        closeAllModals(); // Cierra los modales de autenticación al iniciar o recargar sesión
         try {
           const doc = await db.collection('jugadores').doc(user.uid).get();
           if (doc.exists) {
