@@ -812,7 +812,7 @@
 
   <header>
     <div class="header-left">
-      <div class="version-tag">v.1.0.0.2</div>
+      <div class="version-tag">v.1.0.0.3</div>
       <button class="rules-header-btn" onclick="openRulesModal()" title="Game Rules">
         <img src="https://i.postimg.cc/CMsgQZbC/rules.png" alt="Rules">
       </button>
@@ -833,7 +833,7 @@
           <img src="https://i.postimg.cc/Kjf35Nc8/account.png" alt="Account">
         </button>
       </div>
-      <button id="btn-friends" class="modal-action-btn" style="display:none; width:auto; padding: 6px 12px; font-size: 0.85rem; background:#8e44ad;" onclick="openFriendsModal()">👥 Friends & DMs</button>
+      <button id="btn-friends" class="modal-action-btn" style="display:none; width:auto; padding: 6px 12px; font-size: 0.85rem; background:#8e44ad;" onclick="openFriendsModal()">Friends & DMs</button>
     </div>
     <button id="btn-logout" class="modal-action-btn" style="display:none; width:auto; padding: 6px 12px; font-size: 0.85rem;" onclick="logout()">Log out</button>
   </div>
@@ -918,7 +918,7 @@
   <div id="modal-rules" class="modal-overlay" style="z-index: 3500;">
     <div class="modal-card" style="max-width: 500px;">
       <button id="rules-modal-close" class="modal-close" onclick="closeRulesModal()">✖</button>
-      <h2 style="color: #1e3a8a; text-align: center; margin-top: 0;">📜 Game Rules</h2>
+      <h2 style="color: #1e3a8a; text-align: center; margin-top: 0;">Game Rules</h2>
       <p style="font-size:0.85rem; color:#64748b; text-align:center; margin-bottom: 12px;" id="rules-subtitle">Please review community rules carefully.</p>
 
       <div id="rules-scroll-container" style="max-height: 280px; overflow-y: auto; padding-right: 5px;" onscroll="checkRulesScroll()">
@@ -959,7 +959,7 @@
   <div id="modal-friends" class="modal-overlay">
     <div class="modal-card" style="max-width: 550px;">
       <button class="modal-close" onclick="closeAllModals()">✖</button>
-      <h2>👥 Friends & Direct Messages</h2>
+      <h2>Friends & Direct Messages</h2>
       
       <div class="tab-container">
         <button id="tab-friends-list-btn" class="tab-btn active" onclick="switchFriendsTab('list')">Friends Chat</button>
@@ -994,7 +994,7 @@
   <div id="modal-chat-dm" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 480px;">
       <button class="modal-close" onclick="document.getElementById('modal-chat-dm').style.display='none'">✖</button>
-      <h3 style="margin-top:0;" id="chat-dm-title">💬 Chat with Friend</h3>
+      <h3 style="margin-top:0;" id="chat-dm-title">Chat with Friend</h3>
       
       <div class="chat-box-container">
         <div id="chat-messages-area" class="chat-messages-area">
@@ -1012,7 +1012,7 @@
   <!-- Warning Notice Modal for Players -->
   <div id="modal-warning-notice" class="modal-overlay" style="z-index: 3200;">
     <div class="modal-card" style="max-width: 420px; text-align: center; border: 3px solid #f39c12;">
-      <h2 style="color: #d35400; margin-top: 0;">⚠️ ACCOUNT WARNING</h2>
+      <h2 style="color: #d35400; margin-top: 0;">ACCOUNT WARNING</h2>
       <p style="font-size: 1rem; color: #2c3e50; font-weight: bold;">An administrator has issued a warning for your account:</p>
       
       <div style="background: #fff3cd; padding: 14px; border-radius: 8px; border: 1px solid #ffeeba; margin: 15px 0; text-align: left;">
@@ -1041,7 +1041,7 @@
   <div id="modal-admin-warning-prompt" class="modal-overlay" style="z-index: 1060;">
     <div class="modal-card" style="max-width: 360px;">
       <button class="modal-close" onclick="document.getElementById('modal-admin-warning-prompt').style.display='none'">✖</button>
-      <h3 style="color: #d35400;">⚠️ Issue Warning to User</h3>
+      <h3 style="color: #d35400;">Issue Warning to User</h3>
       <p style="font-size: 0.85rem; color: #64748b;">The target user will see a popup requiring them to press "Understood".</p>
       
       <div class="form-group">
@@ -1257,7 +1257,7 @@
       </div>
 
       <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-        <button type="button" class="modal-action-btn" style="background: #2980b9; flex: 1;" onclick="openMyAquarium()">🐠 See Aquarium</button>
+        <button type="button" class="modal-action-btn" style="background: #2980b9; flex: 1;" onclick="openMyAquarium()">See Aquarium</button>
         <button type="button" class="modal-action-btn" style="background: #f39c12; flex: 1;" onclick="toggleEditProfileSection()">Edit Profile</button>
       </div>
 
@@ -1316,8 +1316,8 @@
       </div>
 
       <div style="display: flex; gap: 8px; margin-top: 10px;">
-        <button type="button" class="modal-action-btn" style="background: #2980b9; flex:1;" onclick="openOtherAquarium()">🐠 See Aquarium</button>
-        <button type="button" class="modal-action-btn" style="background: #8e44ad; flex:1;" id="btn-send-friend-req-view" onclick="sendFriendRequestFromView()">➕ Add Friend</button>
+        <button type="button" class="modal-action-btn" style="background: #2980b9; flex:1;" onclick="openOtherAquarium()">See Aquarium</button>
+        <button type="button" class="modal-action-btn" style="background: #8e44ad; flex:1;" id="btn-send-friend-req-view" onclick="sendFriendRequestFromView()">Add Friend</button>
       </div>
     </div>
   </div>
@@ -1325,7 +1325,7 @@
   <div id="modal-aquarium" class="modal-overlay">
     <div class="modal-card" style="max-width: 680px; padding: 15px; background: #ffffff; border: 2px solid #3498db;">
       <button class="modal-close" onclick="closeAquariumModal()">✖</button>
-      <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 3px; font-size: 1.3rem;">🐠 Aquarium</h2>
+      <h2 id="aquarium-title" style="text-align:center; margin-top: 0; margin-bottom: 3px; font-size: 1.3rem;">Aquarium</h2>
       <p style="font-size: 0.8rem; color: #64748b; text-align: center; margin-top:0; margin-bottom: 10px;" id="aquarium-subtitle">Viewing aquarium...</p>
       
       <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 10px;">
@@ -1361,7 +1361,7 @@
   <div id="modal-select-fish" class="modal-overlay" style="z-index: 1050;">
     <div class="modal-card" style="max-width: 440px;">
       <button class="modal-close" onclick="document.getElementById('modal-select-fish').style.display='none'">✖</button>
-      <h3 style="margin-top:0;">🐟 Select a Fish for Tank</h3>
+      <h3 style="margin-top:0;">Select a Fish for Tank</h3>
       <p style="font-size:0.85rem; color:#64748b;">Choose a fish from your inventory:</p>
       <div id="select-fish-list" style="max-height: 240px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; margin-bottom: 10px;"></div>
       <button type="button" class="modal-action-btn" style="background: #e74c3c;" onclick="removeFishFromShelf()">Remove Tank / Fish</button>
@@ -1487,7 +1487,7 @@
       </div>
 
       <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
-        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #27ae60;">🐟 Caught Fishes</h3>
+        <h3 style="margin: 0 0 5px 0; font-size: 1rem; color: #27ae60;">Caught Fishes</h3>
         <div id="backpack-fish-list" style="max-height: 180px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; font-size: 0.85rem; color: #64748b; padding-top: 5px;">
           No fish caught yet. Go fishing!
         </div>
@@ -1557,7 +1557,7 @@
       <div id="admin-user-stats-box" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; margin-bottom: 12px; font-size: 0.9rem; display: flex; flex-direction: column; gap: 4px;">
         <span style="font-weight: bold; color: #1e3a8a;">User Overview:</span>
         <span id="admin-stat-coins">💰 Coins: 0</span>
-        <span id="admin-stat-tanks">🐠 Mini Tanks: 0</span>
+        <span id="admin-stat-tanks">Mini Tanks: 0</span>
         <span id="admin-stat-rooms">Aquarium Rooms: 1</span>
         <span id="admin-stat-baits">Worm Baits: 0</span>
       </div>
@@ -1606,7 +1606,7 @@
       </div>
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
-      <h3>🐟 Add Fish to User</h3>
+      <h3>Add Fish to User</h3>
       <div class="form-group">
         <label>Fish Name (e.g. Sardine, Betta Fish, Swordfish, Whale Shark, Goldfish Snack)</label>
         <input type="text" id="adminAddFishName" placeholder="Fish name..." autocomplete="off">
@@ -1702,7 +1702,7 @@
     let isMandatoryRulesView = false;
     let hasUserAcceptedRulesLocal = false;
     let dailyTimerInterval = null;
-    let lastActionTimestamp = 0; // Sistema de Cooldown de 5s
+    let lastActionTimestamp = 0;
 
     // Amigos y DM
     let activeChatFriendUid = null;
@@ -1754,7 +1754,7 @@
       const diff = (now - lastActionTimestamp) / 1000;
       if (diff < 5) {
         const remaining = (5 - diff).toFixed(1);
-        showToast(`⏳ Cooldown active! Wait ${remaining}s before performing another action.`);
+        showToast(`Cooldown active! Wait ${remaining}s before performing another action.`);
         return false;
       }
       lastActionTimestamp = now;
@@ -1766,7 +1766,7 @@
       popup.className = 'caught-fish-popup';
       popup.innerHTML = `
         <img src="${fishObj.img}" alt="${fishObj.name}">
-        <div class="fish-title">✨ ${fishObj.name} (${fishObj.rarity}) ✨</div>
+        <div class="fish-title">${fishObj.name} (${fishObj.rarity})</div>
       `;
       document.body.appendChild(popup);
       setTimeout(() => popup.remove(), 2800);
@@ -1971,9 +1971,9 @@
 
         await docRef.update(updateData);
 
-        let msg = `🎉 Daily Reward Claimed! +${rewardCoins} 💰, +${rewardBaits} Worm Baits`;
+        let msg = `Daily Reward Claimed! +${rewardCoins} 💰, +${rewardBaits} Worm Baits`;
         if (luckTank) {
-          msg += ` & 🐠 LUCKY! +1 Mini Tank!`;
+          msg += ` & LUCKY! +1 Mini Tank!`;
         }
         showToast(msg);
         updateGameHUD();
@@ -2100,6 +2100,28 @@
           return;
         }
 
+        // Verificar si ya existe solicitud enviada de ti hacia él
+        const existingQuery = await db.collection('friendRequests')
+          .where('senderUid', '==', user.uid)
+          .where('receiverUid', '==', targetUid)
+          .get();
+
+        if (!existingQuery.empty) {
+          showToast("You already sent a friend request to this user.");
+          return;
+        }
+
+        // Verificar si el otro usuario ya te envió solicitud (para evitar cruces y duplicados)
+        const reverseQuery = await db.collection('friendRequests')
+          .where('senderUid', '==', targetUid)
+          .where('receiverUid', '==', user.uid)
+          .get();
+
+        if (!reverseQuery.empty) {
+          showToast("This user already sent you a request! Check your Requests tab.");
+          return;
+        }
+
         await db.collection('friendRequests').add({
           senderUid: user.uid,
           senderName: myData.username || "Player",
@@ -2214,7 +2236,10 @@
                   <img src="${avatar}" style="width:35px; height:35px; border-radius:50%; object-fit:cover;">
                   <strong>${fData.username || 'Player'}</strong>
                 </div>
-                <button type="button" class="modal-action-btn" style="background:#1e3a8a; padding:6px 12px; font-size:0.8rem; width:auto;" onclick="openChatWithFriend('${fUid}', '${fData.username}')">💬 Open DM</button>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" class="modal-action-btn" style="background:#1e3a8a; padding:6px 12px; font-size:0.8rem; width:auto;" onclick="openChatWithFriend('${fUid}', '${fData.username}')">Open DM</button>
+                  <button type="button" class="modal-action-btn" style="background:#e74c3c; padding:6px 10px; font-size:0.8rem; width:auto;" onclick="removeFriend('${fUid}', '${fData.username}')">Remove</button>
+                </div>
               </div>
             `;
           }
@@ -2222,6 +2247,25 @@
         container.innerHTML = html;
       } catch (err) {
         container.innerHTML = '<p style="color:#e74c3c; text-align:center;">Error loading friends.</p>';
+      }
+    }
+
+    async function removeFriend(friendUid, friendName) {
+      if (!confirm(`Are you sure you want to remove ${friendName} from your friends list?`)) return;
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        await db.collection('jugadores').doc(user.uid).update({
+          friends: firebase.firestore.FieldValue.arrayRemove(friendUid)
+        });
+        await db.collection('jugadores').doc(friendUid).update({
+          friends: firebase.firestore.FieldValue.arrayRemove(user.uid)
+        });
+        showToast(`Removed ${friendName} from friends.`);
+        loadFriendsList();
+      } catch (err) {
+        showToast("Error removing friend: " + err.message);
       }
     }
 
@@ -2236,7 +2280,7 @@
       activeChatFriendUid = friendUid;
       activeChatFriendName = friendName;
 
-      document.getElementById('chat-dm-title').innerText = `💬 Chat with ${friendName}`;
+      document.getElementById('chat-dm-title').innerText = `Chat with ${friendName}`;
       document.getElementById('modal-chat-dm').style.display = 'flex';
 
       const chatId = getChatId(user.uid, friendUid);
@@ -2312,13 +2356,13 @@
         const reporterDoc = await db.collection('jugadores').doc(user.uid).get();
         const reporterName = reporterDoc.exists ? reporterDoc.data().username : "Anonymous Player";
 
-        const botReportMessage = `🚨 MESSAGE REPORTED 🚨\nReporter: ${reporterName} (UID: ${user.uid})\nAuthor: ${senderName} (UID: ${senderUid})\nMessage: "${msgText}"`;
+        const botReportMessage = `MESSAGE REPORTED\nReporter: ${reporterName} (UID: ${user.uid})\nAuthor: ${senderName} (UID: ${senderUid})\nMessage: "${msgText}"`;
 
         const chatId = getChatId(ADMIN_UID, user.uid);
         
         await db.collection('directChats').doc(chatId).collection('messages').add({
           senderUid: "SYSTEM_BOT",
-          senderName: "SYSTEM BOT 🤖",
+          senderName: "SYSTEM BOT",
           text: botReportMessage,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -2679,7 +2723,7 @@
               <div style="display:flex; align-items:center; gap:10px;">
                 <img src="${fishObj.img}" style="width: 35px; height: 35px; object-fit: contain;">
                 <div>
-                  <strong>🐟 ${item.fishName}</strong><br>
+                  <strong>${item.fishName}</strong><br>
                   <span style="font-size:0.75rem; color:#64748b;">Seller: ${item.sellerName} | Price: 💰 ${item.price}</span>
                 </div>
               </div>
@@ -2826,7 +2870,6 @@
       }
     }
 
-    /* BOT SELL CON CODIGO COMPLETO PARA SELL ALL */
     async function confirmBotSell(isSellAll = false) {
       if (!checkCooldown()) return;
       const user = auth.currentUser;
@@ -2890,7 +2933,7 @@
         });
 
         if (canSell) {
-          showToast(`💰 Bot sold ${qtyInput}x ${fishName} for +${totalCoinsEarned} coins!`);
+          showToast(`Bot sold ${qtyInput}x ${fishName} for +${totalCoinsEarned} 💰 coins!`);
           document.getElementById('modal-botsell-prompt').style.display = 'none';
           loadMyFishesForMarket();
           updateGameHUD();
@@ -3111,7 +3154,7 @@
         if (el.id !== 'modal-ban-notice' && el.id !== 'modal-warning-notice') el.style.display = 'none';
       });
       document.getElementById('modal-aquarium').style.display = 'flex';
-      document.getElementById('aquarium-title').innerText = `🐠 ${username}'s Aquarium`;
+      document.getElementById('aquarium-title').innerText = `${username}'s Aquarium`;
       
       const maxRooms = isViewingMyAquarium ? totalAquariumRoomsOwned : (Object.keys(tanksMap).length > 0 ? Object.keys(tanksMap).length : 1);
       document.getElementById('aquarium-room-indicator').innerText = `Room ${currentAquariumRoomIndex + 1} / ${maxRooms}`;
@@ -3210,7 +3253,6 @@
         let html = '';
         Object.entries(fishCounts).forEach(([fishName, count]) => {
           const fishObj = ALLOWED_FISH_TYPES.find(item => item.name === fishName) || ALLOWED_FISH_TYPES[0];
-          
           const isListed = marketListedFishes.includes(fishName);
 
           html += `
@@ -3598,7 +3640,6 @@
             fishes: firebase.firestore.FieldValue.arrayUnion({ name: pendingCaughtFish.name, timestamp: new Date().toISOString() })
           });
 
-          // Disparar Animación de Pez Saliendo del Agua
           triggerCaughtFishPopup(pendingCaughtFish);
 
           showToast(`You caught a ${pendingCaughtFish.name} (${pendingCaughtFish.rarity})!`);
@@ -4421,7 +4462,7 @@
       if (!username) {
         listContainer.innerHTML = '<p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view fishes...</p>';
         statCoins.innerText = '💰 Coins: 0';
-        statTanks.innerText = '🐠 Mini Tanks: 0';
+        statTanks.innerText = 'Mini Tanks: 0';
         statRooms.innerText = 'Aquarium Rooms: 1';
         statBaits.innerText = 'Worm Baits: 0';
         return;
@@ -4432,7 +4473,7 @@
         if (!targetUid) {
           listContainer.innerHTML = '<p style="font-size:0.8rem; color:#e74c3c; text-align:center; margin:10px 0;">User not found.</p>';
           statCoins.innerText = '💰 Coins: 0';
-          statTanks.innerText = '🐠 Mini Tanks: 0';
+          statTanks.innerText = 'Mini Tanks: 0';
           statRooms.innerText = 'Aquarium Rooms: 1';
           statBaits.innerText = 'Worm Baits: 0';
           return;
@@ -4442,7 +4483,7 @@
         if (doc.exists) {
           const data = doc.data();
           statCoins.innerText = `💰 Coins: ${data.coins || 0}`;
-          statTanks.innerText = `🐠 Mini Tanks: ${data.miniTanksCount || 0}`;
+          statTanks.innerText = `Mini Tanks: ${data.miniTanksCount || 0}`;
           statRooms.innerText = `Aquarium Rooms: ${data.aquariumRoomsOwned || 1}`;
           statBaits.innerText = `Worm Baits: ${data.wormBaitsCount || 0}`;
 
@@ -4808,7 +4849,7 @@
           const code = doc.id;
           const coins = data.coins || 0;
           const baitsText = data.wormBaits ? ` + ${data.wormBaits} Baits` : '';
-          const fishText = data.bonusFish ? ` + 🐟 ${data.bonusFish}` : '';
+          const fishText = data.bonusFish ? ` + ${data.bonusFish}` : '';
           html += `
             <div class="admin-code-item">
               <span><strong>${code}</strong> (${coins} 💰${baitsText}${fishText})</span>
