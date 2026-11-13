@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>The Fishing Game test</title>
+  <title>The Fishing Game</title>
   <link rel="icon" type="image/png" href="https://i.postimg.cc/rsFhhvFP/icon.png">
 
   <!-- Firebase v10.8.0 Compat SDKs -->
@@ -6420,8 +6420,16 @@
       // 10–65% horizontally and 20–70% vertically), then clamp by sprite size.
       let minX = Math.max(pad, w * 0.10);
       let maxX = Math.min(w * 0.65, w - iw - pad);
-      let minY = isSandCreature ? h * 0.70 : h * (isJelly ? 0.22 : 0.20);
-      let maxY = isSandCreature ? h * 0.84 : h * (isJelly ? 0.66 : 0.70);
+      // Sandcastle is anchored with bottom:28%, so its ground line is
+      // at 72% of the inner tank viewport. Sand creatures crawl ON that line:
+      // their top coordinate is the ground line minus their own image height.
+      const sandGroundY = h * 0.72;
+      let minY = isSandCreature
+        ? sandGroundY - ih - 1.5
+        : h * (isJelly ? 0.22 : 0.20);
+      let maxY = isSandCreature
+        ? sandGroundY - ih + 1.5
+        : h * (isJelly ? 0.66 : 0.70);
 
       minY = Math.max(pad, Math.min(minY, h - ih - pad));
       maxY = Math.max(minY, Math.min(maxY, h - ih - pad));
@@ -6440,7 +6448,7 @@
       let y = isSandCreature
         ? rand(b.minY, b.maxY)
         : rand(b.minY, Math.max(b.minY, b.maxY));
-      let vx = rand(0.25, isTurtle ? 0.75 : 1.15) * (Math.random() < 0.5 ? -1 : 1);
+      let vx = (isSandCreature ? rand(0.07, 0.16) : rand(0.25, isTurtle ? 0.75 : 1.15)) * (Math.random() < 0.5 ? -1 : 1);
       let vy = isSandCreature ? 0 : rand(0.12, isJelly ? 0.48 : 0.72) * (Math.random() < 0.5 ? -1 : 1);
       let choiceIn = Math.floor(rand(18, 75));
       let pause = 0;
@@ -6474,14 +6482,14 @@
               ? (Math.random() < 0.5 ? 0 : Math.PI)
               : rand(-Math.PI, Math.PI);
 
-            let speed = isSandCreature ? rand(0.25, 0.55)
+            let speed = isSandCreature ? rand(0.07, 0.16)
               : isTurtle ? rand(0.25, 0.65)
               : isJelly ? rand(0.22, 0.58)
               : isOctopus ? rand(0.45, 0.95)
               : rand(0.35, 0.85);
 
-            if (Math.random() < (isSandCreature ? 0.06 : 0.22)) {
-              speed *= rand(1.7, 2.4);
+            if (Math.random() < (isSandCreature ? 0.015 : 0.22)) {
+              speed *= rand(isSandCreature ? 1.15 : 1.7, isSandCreature ? 1.35 : 2.4);
               burst = Math.floor(rand(8, 18));
             } else {
               burst = 0;
@@ -6490,7 +6498,7 @@
             vx = Math.cos(angle) * speed;
             vy = isSandCreature ? 0 : Math.sin(angle) * speed * (isJelly ? 0.75 : 0.65);
             choiceIn = Math.floor(rand(20, 80));
-            if (Math.random() < 0.17) pause = Math.floor(rand(6, 22));
+            if (Math.random() < (isSandCreature ? 0.08 : 0.17)) pause = Math.floor(rand(isSandCreature ? 10 : 6, isSandCreature ? 28 : 22));
           }
 
           if (burst > 0) burst--;
