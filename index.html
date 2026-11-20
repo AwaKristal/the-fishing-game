@@ -1764,17 +1764,20 @@
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
       <h3>User Baits (Give / Remove)</h3>
-      <div id="admin-target-baits-list" style="max-height: 140px; overflow-y: auto; background: #f8fafc; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
-        <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view baits...</p>
-      </div>
       <div class="form-group">
         <label>Give Bait (e.g. Worm Bait or Mini Tuna Cube)</label>
         <div style="display:flex; gap:8px;">
-          <input type="text" id="adminBaitName" placeholder="Worm Bait, Mini Tuna Cube, or Mini Tung Cube (admin only)" autocomplete="off" style="flex:2;">
+          <input type="text" id="adminBaitName" list="adminBaitTypes" placeholder="Choose or type a bait name..." autocomplete="off" style="flex:2;">
+          <datalist id="adminBaitTypes"><option value="Worm Bait"></option><option value="Mini Tuna Cube"></option><option value="Mini Tung Cube"></option></datalist>
           <input type="number" id="adminBaitQty" placeholder="Qty" value="1" min="1" autocomplete="off" style="flex:1;">
         </div>
       </div>
       <button type="button" class="modal-action-btn" style="background:#27ae60;margin-bottom:15px" onclick="adminGiveNamedItem('bait')">Give Baits</button>
+      <h4 style="margin:4px 0 6px;color:#1e3a8a;">Remove Baits</h4>
+      <div id="admin-target-baits-list" style="max-height: 140px; overflow-y: auto; background: #f8fafc; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
+        <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view baits...</p>
+      </div>
+
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
       <h3>User Fish Food (Give / Remove)</h3>
@@ -1793,9 +1796,6 @@
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
       <h3>User Cosmetics (Give / Remove)</h3>
-      <div id="admin-target-cosmetics-list" style="max-height: 140px; overflow-y: auto; background: #f8fafc; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
-        <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view cosmetics...</p>
-      </div>
       <div class="form-group">
         <label>Give Cosmetic (type the exact name)</label>
         <div style="display:flex; gap:8px;">
@@ -1805,12 +1805,20 @@
         </div>
       </div>
       <button type="button" class="modal-action-btn" style="background:#27ae60;margin-bottom:15px" onclick="adminGiveNamedItem('cosmetic')">Give Cosmetics</button>
+      <h4 style="margin:4px 0 6px;color:#1e3a8a;">Remove Cosmetics</h4>
+      <div id="admin-target-cosmetics-list" style="max-height: 140px; overflow-y: auto; background: #f8fafc; padding: 8px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #cbd5e1;">
+        <p style="font-size:0.8rem; color:#64748b; text-align:center; margin:10px 0;">Select a target username above to view cosmetics...</p>
+      </div>
+
 
       <hr style="border:0; border-top:1px solid #cbd5e1; margin:15px 0;">
       <h3>Add Fish to User</h3>
       <div class="form-group">
         <label>Fish Name (e.g. Sardine, Betta Fish, Swordfish, Whale Shark, Goldfish Snack)</label>
-        <input type="text" id="adminAddFishName" list="adminFishTypes" placeholder="Fish name..." autocomplete="off">
+        <div style="display:flex;gap:8px;align-items:stretch;">
+          <input type="text" id="adminAddFishName" list="adminFishTypes" placeholder="Fish name..." autocomplete="off" style="flex:2;min-width:0;">
+          <input type="number" id="adminAddFishQty" placeholder="Qty" value="1" min="1" step="1" autocomplete="off" style="flex:1;min-width:75px;">
+        </div>
         <datalist id="adminFishTypes"></datalist>
       </div>
       <button type="button" class="modal-action-btn" style="background:#27ae60; margin-bottom: 15px;" onclick="adminAddFishToUser()">Add Fish</button>
@@ -2099,6 +2107,19 @@
       adminFishTypes.appendChild(option);
     });
     document.getElementById('adminPromoFish')?.setAttribute('list', 'adminFishTypes');
+    // Keep admin tank suggestions synchronized with all registered tank types.
+    const adminTankSuggestions = document.getElementById('adminTankTypeSuggestions');
+    if (adminTankSuggestions) {
+      adminTankSuggestions.innerHTML = '';
+      const tankNames = [...new Set(['Mini Tank', 'Rocky Tank', ...(window.TANK_TYPES || []).map(t => t.name)])];
+      tankNames.forEach(name => { const option = document.createElement('option'); option.value = name; adminTankSuggestions.appendChild(option); });
+    }
+    // Baits support both typing and picking from the same native suggestion list.
+    const adminBaitSuggestions = document.getElementById('adminBaitTypes');
+    if (adminBaitSuggestions) {
+      adminBaitSuggestions.innerHTML = '';
+      ['Worm Bait', 'Mini Tuna Cube', 'Mini Tung Cube'].forEach(name => { const option = document.createElement('option'); option.value = name; adminBaitSuggestions.appendChild(option); });
+    }
 
     window.getFishCookedValue = function(baseValue, cooking) {
       const base = Number(baseValue) || 0;
@@ -5973,8 +5994,9 @@
     async function adminAddFishToUser() {
       const username = document.getElementById('adminTargetUsername').value.trim();
       const fishNameInput = document.getElementById('adminAddFishName').value.trim();
-      if (!username || !fishNameInput) {
-        showToast("Enter a target username and fish name.");
+      const quantity = Number.parseInt(document.getElementById('adminAddFishQty')?.value || '1', 10);
+      if (!username || !fishNameInput || !Number.isSafeInteger(quantity) || quantity < 1 || quantity > 10000) {
+        showToast("Enter a target username, fish name, and a valid quantity (1–10000).");
         return;
       }
 
@@ -5992,12 +6014,19 @@
           return;
         }
 
-        await db.collection('jugadores').doc(targetUid).update({
-          fishes: firebase.firestore.FieldValue.arrayUnion({ name: exactFishName, timestamp: new Date().toISOString() })
+        const playerRef = db.collection('jugadores').doc(targetUid);
+        await db.runTransaction(async transaction => {
+          const snap = await transaction.get(playerRef);
+          if (!snap.exists) throw new Error('Player profile not found.');
+          const existing = Array.isArray(snap.data().fishes) ? snap.data().fishes : [];
+          const stamp = new Date().toISOString();
+          const additions = Array.from({length: quantity}, () => ({name: exactFishName, timestamp: stamp}));
+          transaction.update(playerRef, {fishes: existing.concat(additions)});
         });
 
-        showToast(`Added ${exactFishName} to ${username}!`);
+        showToast(`Added ${quantity} ${exactFishName}${quantity === 1 ? '' : 's'} to ${username}!`);
         document.getElementById('adminAddFishName').value = "";
+        document.getElementById('adminAddFishQty').value = "1";
         loadTargetUserInventoryForAdmin();
       } catch (err) {
         showToast("Error adding fish: " + err.message);
