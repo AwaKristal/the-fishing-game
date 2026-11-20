@@ -10010,12 +10010,15 @@
 
     const portionCount = opts.foodName === 'Tiny Cheese' ? 1 : DOTS_PER_FEED;
     for (let i = 0; i < portionCount; i++) {
-      const dot = document.createElement(opts.foodName === 'Tiny Cheese' ? 'img' : 'span');
+      const usesFoodImage = opts.foodName === 'Tiny Cheese' || opts.foodName === 'Algae';
+      const dot = document.createElement(usesFoodImage ? 'img' : 'span');
       dot.className = 'fish-food-dot';
-      if (opts.foodName === 'Tiny Cheese') {
+      if (usesFoodImage) {
         dot.src = foodImg(opts.foodName);
         dot.alt = '';
-        dot.style.cssText = 'width:30px;height:30px;margin:-15px;background:transparent;box-shadow:none;object-fit:contain;';
+        dot.style.cssText = opts.foodName === 'Algae'
+          ? 'width:10px;height:10px;margin:-5px;background:transparent;box-shadow:none;object-fit:contain;'
+          : 'width:30px;height:30px;margin:-15px;background:transparent;box-shadow:none;object-fit:contain;';
       }
       const x = clamp(fishCenterX + (Math.random() - 0.5) * 2 * halfSpread, bounds.minX, bounds.maxX);
       const y = bounds.minY + Math.random() * 3;
