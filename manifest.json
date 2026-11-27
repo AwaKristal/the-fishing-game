@@ -1,0 +1,21 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "The Fishing Game",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "The Fishing Game",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/AwaKristal/the-fishing-game/main/icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ],
+  "id": "fishgame.awakristal",
+  "description": "The revival of my old game i made in school with paper about fishing!"
+}
