@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "fishgame.awakristal",
+        "sha256_cert_fingerprints": ["C0:99:F2:5E:93:B9:14:BD:A2:95:85:F6:F7:D4:5B:AD:B6:55:B7:09:97:54:DA:76:4B:B7:3E:DA:30:8E:00:72"]
+      }
+    }]
