@@ -4,9 +4,9 @@
   "display": "standalone",
   "name": "The Fishing Game",
   "orientation": "any",
-  "scope": "/",
+  "scope": "/the-fishing-game/",
   "short_name": "The Fishing Game",
-  "start_url": "/",
+  "start_url": "/the-fishing-game/",
   "theme_color": "#ffffff",
   "icons": [
     {
